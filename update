@@ -1,0 +1,93 @@
+#!/bin/bash
+BASEDIR=`cd $(dirname $0); pwd`
+
+## -----
+## pack/.gitignore is the spec for the plugins we are using
+#  To remove an existing plugin:
+#    1 rm -fr pack/plugin-<category>/start/<plugin>
+#    2 rm line for plugin from pack/.gitignore
+#    3 if you didn't remove the plugin, the script will tell you at the end to do this
+# To add a new plugin:
+#    1 pushd pack/plugin-<catgory>/start && git clone <url> <plugin>
+#    2 add the plugin to pack/.gitignore
+#    3 if you didn't add the plugin, the script will automatically do this
+## -----
+
+packdir="$BASEDIR/pack"
+gitignore=$packdir/.gitignore
+gitall=$packdir/gitall.sh
+
+## run any line in gitall matching line in gitignore
+path=
+if [[ -f $gitall ]]; then
+	while IFS='' read -r line || [[ -n "$line" ]]; do
+		d=$(echo $line|sed -e 's/.* ## \(plugins-.*\)/\1/')
+		line=$(echo $line|sed -e 's/## .*//')
+		[[ $line && $d =~ ^plugins- ]] && {
+			path="$path:$d"
+			grep -q "$d" $gitignore && eval "(packdir=\"$packdir\"; $line)"
+		}
+	done <"$gitall"
+fi
+
+## re-generate gitall
+echo "##  -- GENERATED FILE" >$gitall
+
+declare -a notspec
+#for giturl in `grep -h "^	url = " $packdir/b*/.git/config | sed -e 's/^	url = //'`; do
+for d in $(ls -d $packdir/plugins-*/start); do
+	n=`basename $(dirname $d)`
+	#echo "cd \$(dirname \$0) && mkdir -p $n/start && cd $n/start" >>$gitall
+	for f in $(ls $d|sort -f); do # osx doesn't sort in same order as linux
+		subdir=$n/start/$f
+		gitdir="pack/$subdir"
+		[[ -d $gitdir ]] || continue
+		[ -L "$gitdir" ] && continue
+
+		if ! grep -q "^$subdir$" "$gitignore"; then
+			notspec+=($gitdir)
+			continue
+		fi
+
+		gconf=$gitdir/.git/config
+		[ -f "$gconf" ] || continue
+
+		has_submods=0
+		has_remote=0
+		while read line; do
+			[[ $has_remote = 0 && $line =~ "[remote \"origin\"]" ]] && has_remote=1;
+			[[ $has_remote = 0 ]] && continue
+			[[ $line =~ "url = " ]] && giturl=`echo $line|sed -e 's/^\s*url = //'`
+			[[ $line =~ "[submodule " ]] && has_submods=1 && break
+		done <$gconf
+		name=`echo $giturl|sed 's/.*\/\(.*\)/\1/'|sed 's/\.git$//'|sed 's/\.vim$//'|sed 's/\.zip$//'|sed 's/^vim-//'|sed 's/-vim$//'|tr '[:upper:]' '[:lower:]'`
+
+		echo "[ -d \"\$packdir/$subdir\" ] || { mkdir -p \"\$packdir/$subdir\" && cd \"\$packdir/$n/start\" && git clone --recursive $giturl $name; } ## $subdir" >>$gitall
+		if [ -z "$opt_noupdate" ]; then
+			pushd $gitdir >/dev/null
+			git fetch >/dev/null 2>&1
+			$(git diff origin --quiet) || {
+				gt0=1
+				echo "$(tput bold)>>> UPDATE $subdir -----$(tput sgr0)"
+				git pull
+				git submodule update --remote
+			}
+			popd >/dev/null
+		fi
+	done
+done
+if [[ ${#notspec[@]} -gt 0 ]]; then
+	echo "*** These are in pack/ but not in gitignore, probably need to be deleted:"
+	for f in ${notspec[@]}; do
+		echo "      $f"
+	done
+fi
+
+#tmpfile=$(mktemp vimup.XXX)
+#awk '!seen[$0]++' $gitignore >$tmpfile
+#mv $tmpfile $gitignore
+#awk '!seen[$0]++' $gitall >$tmpfile
+#mv $tmpfile $gitall
+
+# regenerate helptags
+[ -n "$gt0" ] && vim -N -c 'helptags ALL|q'
