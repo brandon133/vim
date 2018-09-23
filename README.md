@@ -79,4 +79,3 @@ Try:
   background (solarized-light is my preferred.) With dark backgrounds (Tomorrow-Night-Blue, iceberg,
   nord), I need to increase the font size to 12pt. My other favorite font is IBM Plex Mono, it's
   beautiful for printing and browsers but at smaller sizes (10pt), the Mac fonts are more readable.
-
