@@ -162,22 +162,18 @@ noremap [q :cprev<CR>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
 
-" switch with last buffer
-nnoremap <silent> <Space><Space> <C-^>
-nnoremap <silent> <C-n> :bp<CR>
-nnoremap <silent> <C-p> :bn<CR>
-
-" easy buffer navigation, save current buffer
+" easy window navigation, save current buffer
 noremap <silent> <C-h> <C-w>h:call PulseCursorLine()<CR>
 noremap <silent> <C-j> <C-w>j:call PulseCursorLine()<CR>
 noremap <silent> <C-k> <C-w>k:call PulseCursorLine()<CR>
 noremap <silent> <C-l> <C-w>l:call PulseCursorLine()<CR>
 
-" navigation via fzf (fzf opts/mappings below)
+" buffer nav, fzf
+nnoremap <Leader><Space> <C-^>
 nmap <Leader>, :Buffers<CR>
-nmap <Leader><Space> :Files<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>g :Find<CR>
 nmap <Leader>t :Tags<CR>
-nmap <Leader>f :Find<CR>
 " https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
@@ -191,10 +187,10 @@ nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
 " Closes all folds and opens the folds containing the current line.
 
 function! FocusLine()
-    let oldscrolloff = &scrolloff
-    set scrolloff=0
-    execute "keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<CR>"
-    let &scrolloff = oldscrolloff
+	let oldscrolloff=&scrolloff
+	set scrolloff=0
+	execute "keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<CR>"
+	let &scrolloff=oldscrolloff
 endfunction
 
 " Pulse cursor line
@@ -251,14 +247,18 @@ endfunction
 " Highlight words temporarily
 " http://vim.wikia.com/wiki/Highlight_multiple_words
 
-hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
-hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
-hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
-hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
-hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
-hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+function! HiInterestingWordDef()
+	hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+	hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+	hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+	hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+	hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+	hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+endfunction
 
 function! HiInterestingWord(n)
+	call HiInterestingWordDef()
+
 	" Save our location.
 	normal! mz
 
@@ -298,10 +298,10 @@ function! EatChar(pat)
 	return (c =~ a:pat) ? '' : c
 endfunction
 
+" delete the space after, so: abbrev<space> -> expansion
 function! MakeSpacelessIabbrev(from, to) " global
 	execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
 endfunction
-
 function! MakeSpacelessBufferIabbrev(from, to) " buffer local
 	execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
 endfunction
@@ -316,6 +316,10 @@ set completeopt=menuone,preview
 inoremap <C-]> <C-x><C-]>
 " http://tilvim.com/2016/01/06/fzf.html
 imap <C-l> <Plug>(fzf-complete-line)
+
+" disable ale/polyglot for java
+let g:ale_linters={'java': []}
+let g:polyglot_disabled=['java']
 
 " supertab
 let g:SuperTabDefaultCompletionType="context"
@@ -364,6 +368,11 @@ au FileType java nnoremap <silent> <Leader>jh :JavaCallHierarchy<CR>
 au FileType java nnoremap <silent> <Leader>ji :JavaImport<CR>
 au FileType java nnoremap <silent> <Leader>jI :JavaImportOrganize<CR>
 
+" go
+let g:go_fmt_command="goimports"
+let g:go_fmt_experimental=1
+let g:go_doc_keywordprg_enabled=0
+
 " clam
 let g:clam_autoreturn=1
 let g:clam_debug=1
@@ -406,25 +415,18 @@ let NERDTreeIgnore=[
 let NERDTreeMinimalUI=1
 let NERDTreeChDirMode=2
 let NERDTreeMapJumpFirstChild='gK'
-"let NERDTreeDirArrows = 1
-"let NERDChristmasTree = 1
+"let NERDTreeDirArrows=1
+"let NERDChristmasTree=1
 
 " ale
 "let g:ale_lint_on_save=1
 "let g:ale_lint_on_text_changed=0
 "let g:ale_lint_on_enter=0
 
-"let g:ale_pattern_options = {
-"\	'.*\.json$': {'ale_enabled': 0},
-"\	'.*\.js$': {'ale_enabled': 0},
-"\	'.*\.html$': {'ale_enabled': 0},
-"\}
-"\	'\.foo\.js$': { 'ale_linters': {'javascript': ['eslint']}, },
-
 "let g:ale_sign_error='>>'
 "let g:ale_sign_warning='>'
-let g:ale_sign_error = '•'
-let g:ale_sign_warning = '•'
+let g:ale_sign_error='•'
+let g:ale_sign_warning='•'
 
 "let g:ale_echo_msg_error_str='E'
 "let g:ale_echo_msg_warning_str='W'
@@ -488,7 +490,10 @@ augroup ft_java
 	au FileType java call MakeSpacelessBufferIabbrev('slf.', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
 	au FileType java call MakeSpacelessBufferIabbrev('sb.', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
 
-	let g:ale_linters={'java': []}
+	" map list
+	au FileType java call MakeSpacelessBufferIabbrev('ml.', 'List<Map<>><left><left>')
+	au FileType java iabbrev <buffer> limapso List<Map<String, Object>>
+	au FileType java iabbrev <buffer> mapso Map<String, Object>
 augroup END
 
 augroup ft_javascript
@@ -498,7 +503,7 @@ augroup END
 
 augroup ft_python
 	au!
-	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab textwidth=110
+	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab textwidth=100
 	au FileType python setlocal nowrap
 	au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
@@ -511,6 +516,15 @@ augroup ft_python
 	au FileType python vnoremap <buffer> <localleader>p :!yapf<CR>
 
 	au FileType python call MakeSpacelessBufferIabbrev('pr.', "print(f'>>> {}')<left><left><left>")
+augroup END
+
+augroup ft_go
+	au!
+	au FileType go setlocal foldmethod=syntax
+	au FileType go nnoremap <buffer> <silent> M :GoDoc<cr>
+	" this language is incredible
+	au FileType go iabbrev <buffer> ernil if err != nil {<cr>return nil, err<esc>jA
+	" }
 augroup END
 
 augroup ft_postgres
@@ -532,14 +546,20 @@ augroup END
 
 augroup ft_html
 	au!
-	au FileType markdown setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=100
-	au Filetype markdown nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
+	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=100
+	au Filetype html nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
+	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=100
+	au Filetype html.mustache nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
 augroup END
 
 augroup ft_markdown
 	au!
 	au Filetype markdown setlocal spell
 	au FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab textwidth=100
+
+	" Linkify selected text inline to contents of pasteboard.
+	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
+
 	au Filetype markdown nnoremap <buffer> <localleader>p :w<CR>:!gfm % \|bcat<CR>
 augroup END
 
@@ -573,8 +593,8 @@ augroup END
 " clojure/fireplace/paredit -----
 
 let g:clojure_fold_extra=[
-            \ 'defgauge',
-            \ 'defsketch'
+	\ 'defgauge',
+	\ 'defsketch'
 	\ ]
 
 let g:fireplace_no_maps=1
@@ -663,7 +683,7 @@ augroup END
 
 " lightline
 
-let g:lightline = {
+let g:lightline={
 	\ 'colorscheme': 'my',
 	\ 'separator': { 'left': '', 'right': '' },
 	\ 'subseparator': { 'left': '│', 'right': '⋮' }
@@ -695,6 +715,8 @@ function! ColorSolarized()
 	let g:solarized_contrast='normal' " normal/high/low
 	let g:solarized_visibility='low'  " normal/high/low
 	colorscheme solarized
+	hi Cursor guibg=#f92672
+	hi Search guifg=#f0c674
 	if &background == 'light'
 		hi SpecialKey ctermfg=6 guifg=#ded8b5
 		hi NonText ctermfg=178 guifg=#ffd885
@@ -726,7 +748,7 @@ endfunction
 
 if &diff
 	" better diff colorscheme
-	colorscheme Tomorrow-Night
+	colorscheme nord
 else
 	if $TERM_PROFILE == 'Ocean'
 		set background=dark
@@ -741,8 +763,8 @@ else
 endif
 
 if has("gui_macvim")
-	set guifont=SF\ Mono:h10'
-	"set guifont=IBM\ Plex\ Mono:h11'
+	set guifont=SF\ Mono:h10
+	"set guifont=IBM\ Plex\ Mono:h11
 
 	set blurradius=15
 	au FocusLost * :set transparency=15
@@ -776,11 +798,11 @@ let &t_EI.="\e[2 q"
 
 " http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
 function! CtermColors()
-	let num = 255
+	let num=255
 	while num >= 0
 		exec 'hi col_'.num.' ctermbg='.num.' ctermfg=white'
 		exec 'syn match col_'.num.' "ctermbg='.num.':...." containedIn=ALL'
 		call append(0, 'cterm='.num.':....')
-		let num = num - 1
+		let num=num - 1
 	endwhile
 endfunction

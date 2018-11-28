@@ -1,4 +1,4 @@
-" 2018-08-01
+" 2018-10-29
 " .vimrc
 " Author: Steve Losh <steve@stevelosh.com>
 " Source: http://bitbucket.org/sjl/dotfiles/src/tip/vim/
@@ -46,6 +46,7 @@ set shiftround
 set title
 set linebreak
 set colorcolumn=+1
+set diffopt+=vertical
 
 " Spelling
 "
@@ -151,10 +152,6 @@ set wildignore+=*.orig                           " Merge resolution files
 set wildignore+=*.fasl                           " Lisp FASLs
 set wildignore+=*.dx64fsl                        " CCL
 
-" Clojure/Leiningen
-set wildignore+=classes
-set wildignore+=lib
-
 " }}}
 " Line Return {{{
 
@@ -205,6 +202,7 @@ endif
 " Color scheme {{{
 
 syntax on
+set termguicolors
 set background=dark
 let g:badwolf_tabline = 2
 let g:badwolf_html_link_underline = 0
@@ -253,6 +251,8 @@ iabbrev c8 CHIP-8
 iabbrev todo TODO
 
 iabbrev sl@ steve@stevelosh.com
+
+iabbrev spf set -euo pipefail
 
 silent! digr -. 8230 "U+2026=…    HORIZONTAL ELLIPSIS
 silent! digr !, 8816 "U+2270=≰    NEITHER LESS-THAN NOR EQUAL TO
@@ -583,7 +583,7 @@ function! SetStatusLine(winnr)
         let s .= "%#GWStatusLineModeY#"
         let s .= ""
         let s .= "%#GWStatusLineMode#"
-        let s .= " %c/"
+        let s .= " %c:"
         let s .= "%l"        " Current line
         let s .= "/"
         let s .= "%L"        " Total lines
@@ -1394,6 +1394,20 @@ augroup ft_gnuplot
 augroup END
 
 " }}}
+" Go {{{
+
+augroup ft_go
+    au!
+
+    au FileType go setlocal shiftwidth=8
+    au FileType go setlocal foldmethod=syntax
+    au FileType go nnoremap <buffer> <silent> M :GoDoc<cr>
+
+    " this language is incredible
+    au FileType go iabbrev <buffer> ernil if err != nil {<cr>return nil, err<esc>jA
+augroup END
+
+" }}}
 " hgrc {{{
 
 augroup ft_hgrc
@@ -1430,6 +1444,16 @@ augroup ft_html
 
     " Django variables
     au FileType jinja,htmldjango inoremap <buffer> <c-b> {{<space><space>}}<left><left><left>
+augroup END
+
+" }}}
+" Jade Templates {{{
+
+augroup ft_jade
+    au!
+
+    au BufRead,BufNewFile *.jade setlocal filetype=jade
+    au FileType jade setlocal foldmethod=indent
 augroup END
 
 " }}}
@@ -1508,6 +1532,9 @@ augroup ft_markdown
     au BufNewFile,BufRead *.m*down setlocal filetype=markdown foldlevel=1
 
     au Filetype markdown setlocal spell
+
+    " Linkify selected text inline to contents of pasteboard.
+    au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
     " Use <localleader>1/2/3 to add headings.
     au Filetype markdown nnoremap <buffer> <localleader>1 yypVr=:redraw<cr>
@@ -1589,7 +1616,8 @@ endfunction
 augroup ft_plan
     au!
 
-    au BufNewFile,BufRead ~/.plan/README.markdown nnoremap <buffer> <localleader>l :call PlanLinkPaste()<cr>
+    " au BufNewFile,BufRead ~/.plan/README.markdown nnoremap <buffer> <localleader>l :call PlanLinkPaste()<cr>
+    au BufNewFile,BufRead ~/.plan/README.markdown nnoremap <buffer> <localleader>d o##<esc>:r!date +\%Y-\%m-\%d<cr>kJ
 augroup END
 
 " }}}
@@ -2143,6 +2171,13 @@ nnoremap <leader>H V:Gbrowse<cr>
 " "(Upstream) Hub"
 vnoremap <leader>u :Gbrowse @upstream<cr>
 nnoremap <leader>u V:Gbrowse @upstream<cr>
+
+" }}}
+" Go {{{
+
+let g:go_fmt_command = "goimports"
+let g:go_fmt_experimental = 1
+let g:go_doc_keywordprg_enabled = 0
 
 " }}}
 " Gundo {{{

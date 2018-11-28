@@ -90,4 +90,6 @@ fi
 #mv $tmpfile $gitall
 
 # regenerate helptags
-[ -n "$gt0" ] && vim -N -c 'helptags ALL|q'
+if [ -n "$gt0" ]; then
+	vim -N -c 'helptags ALL|q'
+fi

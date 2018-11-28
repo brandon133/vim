@@ -1,4 +1,4 @@
-## colorscheme
+## ----- colorscheme
 plugins-color/start/iceberg
 plugins-color/start/molokai
 plugins-color/start/monochrome
@@ -7,33 +7,33 @@ plugins-color/start/solarized
 plugins-color/start/tender
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table
-## ui
+## ----- ui
 plugins-ui/start/lightline
-plugins-ui/start/matchit
-plugins-ui/start/vitality
-## syntax/languages
+## ----- syntax/languages
 plugins-syn/start/ale
 plugins-syn/start/autotag
 plugins-syn/start/closer
-plugins-syn/start/commentary
-plugins-syn/start/endwise
 plugins-syn/start/indent-sh
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
-## lisp/clojure
-plugins-clj/start/cljfmt
-plugins-clj/start/eastwood
-plugins-clj/start/fireplace
-plugins-clj/start/paredit
-## utilities, etc
-plugins-util/start/abolish
+plugins-syn/start/supertab
+## ----- lisp/clojure
+#plugins-clj/start/cljfmt
+#plugins-clj/start/eastwood
+#plugins-clj/start/fireplace
+#plugins-clj/start/paredit
+## ----- utilities, etc
 plugins-util/start/ack
 plugins-util/start/clam
-plugins-util/start/dadbod
 plugins-util/start/dirdiff
-plugins-util/start/fugitive
 plugins-util/start/fzf
 plugins-util/start/kwbd
+plugins-util/start/matchit
 plugins-util/start/nerdtree
-plugins-util/start/supertab
+## ----- tpope
+plugins-syn/start/commentary
+plugins-syn/start/endwise
+plugins-util/start/abolish
+plugins-util/start/dadbod
+plugins-util/start/fugitive
 plugins-util/start/surround
