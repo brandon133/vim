@@ -381,7 +381,6 @@ let g:clam_winpos='botright'
 nnoremap ! :Clam<Space>
 vnoremap ! :ClamVisual<Space>
 
-" dadbod
 " dbext
 let g:dbext_default_prompt_for_parameters=0 " globally turn off input prompt
 let g:dbext_default_buffer_lines=27 " size of Result buffer window (default is 5)
@@ -438,6 +437,9 @@ let g:ale_sign_warning='•'
 
 " filetype/plugins -------------------------------------------------------------
 
+" only set (local) this if you want something different
+set textwidth=99
+
 " highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
@@ -471,7 +473,6 @@ vnoremap <leader>J :!python -mjson.tool<CR>
 augroup ft_text
 	au!
 	au Filetype text setlocal spell
-	au FileType text setlocal textwidth=100
 augroup END
 
 augroup ft_vim
@@ -498,12 +499,12 @@ augroup END
 
 augroup ft_javascript
 	au!
-	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', "console.log('>>> ', );<left><left>")
+	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', "console.log(`>>> ${}`);<left><left><left><left>")
 augroup END
 
 augroup ft_python
 	au!
-	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab textwidth=100
+	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 	au FileType python setlocal nowrap
 	au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
@@ -546,16 +547,16 @@ augroup END
 
 augroup ft_html
 	au!
-	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=100
+	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 	au Filetype html nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
-	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab textwidth=100
+	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 	au Filetype html.mustache nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
 augroup END
 
 augroup ft_markdown
 	au!
 	au Filetype markdown setlocal spell
-	au FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab textwidth=100
+	au FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P

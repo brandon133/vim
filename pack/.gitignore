@@ -18,10 +18,10 @@ plugins-syn/start/polyglot
 plugins-syn/start/prettier
 plugins-syn/start/supertab
 ## ----- lisp/clojure
-#plugins-clj/start/cljfmt
-#plugins-clj/start/eastwood
-#plugins-clj/start/fireplace
-#plugins-clj/start/paredit
+plugins-clj/start/cljfmt
+plugins-clj/start/eastwood
+plugins-clj/start/fireplace
+plugins-clj/start/paredit
 ## ----- utilities, etc
 plugins-util/start/ack
 plugins-util/start/clam
@@ -34,6 +34,5 @@ plugins-util/start/nerdtree
 plugins-syn/start/commentary
 plugins-syn/start/endwise
 plugins-util/start/abolish
-plugins-util/start/dadbod
 plugins-util/start/fugitive
 plugins-util/start/surround
