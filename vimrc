@@ -603,8 +603,10 @@ let g:fireplace_no_maps=1
 let g:paredit_smartjump=1
 let g:paredit_shortmaps=0
 let g:paredit_electric_return=1
-let g:paredit_disable_lisp=1
+
 let g:paredit_matchlines=200
+let g:paredit_disable_lisp=1
+let g:paredit_disable_clojure=1
 
 augroup ft_clojure
 	au!
@@ -620,8 +622,8 @@ augroup ft_clojure
 	" Things that should be indented 2-spaced
 	au FileType clojure setlocal lispwords+=when-found,defform,when-valid,try,while-let,try+,throw+
 
-	au FileType clojure RainbowParenthesesActivate
-	au syntax clojure RainbowParenthesesLoadRound
+	"au FileType clojure RainbowParenthesesActivate
+	"au syntax clojure RainbowParenthesesLoadRound
 
 	" Paredit
 	au FileType clojure call EnableParedit()

@@ -1,4 +1,7 @@
 ##  -- GENERATED FILE
+[ -d "$packdir/plugins-clj/start/cljfmt" ] || { mkdir -p "$packdir/plugins-clj/start/cljfmt" && cd "$packdir/plugins-clj/start" && git clone --recursive https://github.com/weavejester/cljfmt.git cljfmt; } ## plugins-clj/start/cljfmt
+[ -d "$packdir/plugins-clj/start/eastwood" ] || { mkdir -p "$packdir/plugins-clj/start/eastwood" && cd "$packdir/plugins-clj/start" && git clone --recursive https://github.com/venantius/vim-eastwood.git eastwood; } ## plugins-clj/start/eastwood
+[ -d "$packdir/plugins-clj/start/fireplace" ] || { mkdir -p "$packdir/plugins-clj/start/fireplace" && cd "$packdir/plugins-clj/start" && git clone --recursive https://github.com/tpope/vim-fireplace.git fireplace; } ## plugins-clj/start/fireplace
 [ -d "$packdir/plugins-color/start/iceberg" ] || { mkdir -p "$packdir/plugins-color/start/iceberg" && cd "$packdir/plugins-color/start" && git clone --recursive https://github.com/cocopon/iceberg.vim.git iceberg; } ## plugins-color/start/iceberg
 [ -d "$packdir/plugins-color/start/molokai" ] || { mkdir -p "$packdir/plugins-color/start/molokai" && cd "$packdir/plugins-color/start" && git clone --recursive https://github.com/tomasr/molokai.git molokai; } ## plugins-color/start/molokai
 [ -d "$packdir/plugins-color/start/monochrome" ] || { mkdir -p "$packdir/plugins-color/start/monochrome" && cd "$packdir/plugins-color/start" && git clone --recursive https://github.com/fxn/vim-monochrome.git monochrome; } ## plugins-color/start/monochrome

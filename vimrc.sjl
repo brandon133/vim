@@ -1,4 +1,4 @@
-" 2018-12-25
+" 2019-01-14
 " .vimrc
 " Author: Steve Losh <steve@stevelosh.com>
 " Source: http://bitbucket.org/sjl/dotfiles/src/tip/vim/
@@ -1119,6 +1119,7 @@ augroup ft_commonlisp " {{{
     au BufNewFile,BufRead *.asd,*.ros set filetype=lisp
     au BufNewFile,BufRead *.paren set filetype=lisp
     au BufNewFile,BufRead .abclrc set filetype=lisp
+    au BufNewFile,BufRead .lisprc set filetype=lisp
     au BufNewFile,BufRead .stumpwmrc set filetype=lisp
 
     au FileType lisp nnoremap <buffer> U :syntax sync fromstart<cr>:redraw!<cr>:call TurnOnLispFolding()<cr>
@@ -2651,6 +2652,10 @@ augroup LocalVlime
 
     " Keys for the Inspector
     au FileType vlime_inspector nnoremap <buffer> <2-LeftMouse> :call vlime#ui#inspector#InspectorSelect()<cr>
+
+    " Keys for the Preview
+    au FileType vlime_preview nnoremap <buffer> <localleader>p :call vlime#plugin#SetPackage()<cr>
+    au FileType vlime_preview nnoremap <buffer> <localleader>m1 :call vlime#plugin#ExpandMacro(vlime#ui#CurExpr(), "one")<cr>
 
     " Universal keys, for all kinds of Vlime windows
     au FileType lisp,vlime_repl,vlime_inspector,vlime_sldb,vlime_notes,vlime_xref,vlime_preview call MapVlimeKeys()

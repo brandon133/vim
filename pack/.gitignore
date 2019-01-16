@@ -21,7 +21,6 @@ plugins-syn/start/supertab
 plugins-clj/start/cljfmt
 plugins-clj/start/eastwood
 plugins-clj/start/fireplace
-plugins-clj/start/paredit
 ## ----- utilities, etc
 plugins-util/start/ack
 plugins-util/start/clam
