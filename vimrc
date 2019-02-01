@@ -77,8 +77,9 @@ endfunction
 " mappings ---------------------------------------------------------------------
 
 " fuck you apple for taking away the physical ESC key
-" tried various mappings, using karabiner w/ cmd key combos for now
-" always works: <c-[> and <c-c>
+" tried various mappings but haven't found a vim solution yet,
+"  so using karabiner w/ cmd key combos for now (in my dotfiles project)
+" note: this always works for escape in VIM: <c-[> and <c-c>
 
 " toggle options
 nnoremap <Leader>S :setlocal spell!<CR>
@@ -179,6 +180,11 @@ command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-h
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
+
+"
+" URL encode/decode selection
+vnoremap <leader>e :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
+vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
 
 
 " functions --------------------------------------------------------------------
@@ -694,13 +700,17 @@ let g:lightline={
 
 " ----- colors/highlights/cursors
 
-set notermguicolors " not available for terminal :(
+set notermguicolors " not available for terminal.app :(
+
 hi Comment gui=italic cterm=italic
 hi SpellBad cterm=undercurl,italic guifg=#d33682
 
 " 117 matches lightline (also can use 24, 31)
 autocmd InsertEnter * hi ColorColumn ctermbg=117 guibg=#87dfff
 autocmd InsertLeave * hi ColorColumn ctermbg=7 guibg=#eee8d5
+
+" colorscheme settings
+let ayucolor='light'
 
 function! ColorSet(...)
 	if a:0 > 0
@@ -761,7 +771,11 @@ else
 		call ColorNord()
 	else
 		set background=light
-		call ColorSolarized()
+		if has("gui_macvim")
+			call ColorSolarized()
+		else
+			color PaperColor
+		endif
 	endif
 endif
 

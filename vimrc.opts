@@ -47,7 +47,7 @@ set visualbell
 set clipboard=unnamed
 " 14 editing text
 set undofile
-set undodir=~/.tmp/undo//
+set undodir=~/.tmp/undo/
 set undoreload=20000 " save the reload unless > #lines
 set textwidth=100
 set backspace=indent,eol,start

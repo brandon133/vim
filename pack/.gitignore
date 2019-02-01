@@ -1,8 +1,10 @@
 ## ----- colorscheme
+plugins-color/start/ayu
 plugins-color/start/iceberg
 plugins-color/start/molokai
 plugins-color/start/monochrome
 plugins-color/start/nord
+plugins-color/start/papercolor-theme
 plugins-color/start/solarized
 plugins-color/start/tender
 plugins-color/start/tomorrow-theme

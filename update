@@ -95,6 +95,5 @@ fi
 
 # regenerate helptags
 if [ -n "$gt0" ]; then
-	echo ">>3"
 	vim -N -c 'helptags ALL|q'
 fi
