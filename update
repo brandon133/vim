@@ -86,6 +86,11 @@ if [[ ${#notspec[@]} -gt 0 ]]; then
 	done
 fi
 
+# check links for colors
+pushd pack/plugins-color/start >/dev/null
+[ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
+[ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
+popd >/dev/null
 
 #tmpfile=$(mktemp vimup.XXX)
 #awk '!seen[$0]++' $gitignore >$tmpfile

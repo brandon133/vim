@@ -41,12 +41,12 @@ au FocusLost * :silent! wa
 au StdinReadPost * :set buftype=nofile
 
 " the . to execute once for each line of a visual selection
-vnoremap . :normal .<CR>
+vnoremap . :normal .<cr>
 " and same for macros
 vnoremap <Leader>@ :normal @
 
 " don't move on first *
-nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay_star_view)<CR>
+nnoremap <silent> * :let stay_star_view=winsaveview()<cr>*:call winrestview(stay_star_view)<cr>
 
 " resize panes when window/terminal gets resize
 au VimResized * :wincmd =
@@ -82,9 +82,9 @@ endfunction
 " note: this always works for escape in VIM: <c-[> and <c-c>
 
 " toggle options
-nnoremap <Leader>S :setlocal spell!<CR>
-nnoremap <Leader>N :setlocal number!<CR>
-nnoremap <Leader>P :set paste!<CR>
+nnoremap <Leader>S :setlocal spell!<cr>
+nnoremap <Leader>N :setlocal number!<cr>
+nnoremap <Leader>P :set paste!<cr>
 
 " natural move
 nnoremap <down> gj
@@ -93,27 +93,27 @@ nnoremap <up> gk
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
 " split line (sister to [J]oin lines)
-nnoremap S i<CR><Esc>^mwgk:silent! s/\v +$//<CR>:noh<CR>`w
+nnoremap S i<cr><Esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
 
 " add to local dictionary
 nnoremap zg 2zg
 nnoremap zG 1zg
 
 " display the number of matches for the last search
-nmap <Leader>/ :%s:<C-R>/::gn<CR>
+nmap <Leader>/ :%s:<C-R>/::gn<cr>
 
-nnoremap <Leader>L :call FocusLine()<CR>
+nnoremap <Leader>L :call FocusLine()<cr>
 
 " half/double spaces, clear trailing spaces
-noremap <Leader>W1 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
-noremap <Leader>W2 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))*2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
-noremap <Leader>W0 mz:set ts=4 sts=4 et<CR>:retab<CR>:set ts=8 sts=2 noet<CR>:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
+noremap <Leader>W1 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
+noremap <Leader>W2 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))*2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
+noremap <Leader>W0 mz:set ts=4 sts=4 et<cr>:retab<cr>:set ts=8 sts=2 noet<cr>:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 " clean trailing whitespace in entire file
-nnoremap <Leader>WW mz:%s/\s\+$//<CR>:let @/=''<CR>`z
+nnoremap <Leader>WW mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 " zip right, this should preserve your last yank/delete as well
-nnoremap zl :let @z=@"<CR>x$p:let @"=@z<CR>
+nnoremap zl :let @z=@"<cr>x$p:let @"=@z<cr>
 
 " underline the current line
 nnoremap <Leader>1 yypVr=
@@ -127,61 +127,62 @@ nnoremap <F9> mzggg?G`z
 command! RemoveFancyCharacters :call RemoveFancyCharacters()
 
 " show syntax group(s)
-nmap <Leader>ss :call <SID>SynStack()<CR>
+nmap <Leader>ss :call <SID>SynStack()<cr>
 " show highlight group(s)
-nnoremap <Leader>SS :echo "hi<"
+nnoremap <Leader>syn :echo "hi<"
 	\ . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 	\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-	\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+	\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
 
-nnoremap <silent> <Leader>h0 :call ClearInterestingWords()<CR>
-nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<CR>
-nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<CR>
-nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<CR>
-nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<CR>
-nnoremap <silent> <Leader>h5 :call HiInterestingWord(5)<CR>
-nnoremap <silent> <Leader>h6 :call HiInterestingWord(6)<CR>
+nnoremap <silent> <Leader>h0 :call ClearInterestingWords()<cr>
+nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<cr>
+nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<cr>
+nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<cr>
+nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<cr>
+nnoremap <silent> <Leader>h5 :call HiInterestingWord(5)<cr>
+nnoremap <silent> <Leader>h6 :call HiInterestingWord(6)<cr>
 
 " listchars
-nnoremap <Leader>I :set listchars+=tab:⋮\ <CR>
-nnoremap <Leader>i :set listchars-=tab:⋮\ <CR>
-"nnoremap <Leader>I :set listchars+=tab:▸‧<CR>
-"nnoremap <Leader>i :set listchars-=tab:▸‧<CR>
+nnoremap <Leader>I :set listchars+=tab:⋮\ <cr>
+nnoremap <Leader>i :set listchars-=tab:⋮\ <cr>
+"nnoremap <Leader>I :set listchars+=tab:▸‧<cr>
+"nnoremap <Leader>i :set listchars-=tab:▸‧<cr>
 
 " select (charwise) the contents of the current line, excluding indentation.
 nnoremap vv ^vg_
 
 " custom copy/paste using tmp file
-vmap <Leader>C :w! ~/.tmp/.pbuf<CR>
-nmap <Leader>V :r ~/.tmp/.pbuf<CR>
+vmap <Leader>C :w! ~/.tmp/.pbuf<cr>
+nmap <Leader>V :r ~/.tmp/.pbuf<cr>
 
 " quickfix
-noremap <Leader>co :copen<CR>zvzz
-noremap <Leader>cc :ccl<CR>zvzz
-noremap ]q :cnext<CR>
-noremap [q :cprev<CR>
+noremap <Leader>co :copen<cr>zvzz
+noremap <Leader>cc :ccl<cr>zvzz
+noremap ]q :cnext<cr>
+noremap [q :cprev<cr>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
 
 " easy window navigation, save current buffer
-noremap <silent> <C-h> <C-w>h:call PulseCursorLine()<CR>
-noremap <silent> <C-j> <C-w>j:call PulseCursorLine()<CR>
-noremap <silent> <C-k> <C-w>k:call PulseCursorLine()<CR>
-noremap <silent> <C-l> <C-w>l:call PulseCursorLine()<CR>
+noremap <silent> <C-h> <C-w>h:call PulseCursorLine()<cr>
+noremap <silent> <C-j> <C-w>j:call PulseCursorLine()<cr>
+noremap <silent> <C-k> <C-w>k:call PulseCursorLine()<cr>
+noremap <silent> <C-l> <C-w>l:call PulseCursorLine()<cr>
 
 " buffer nav, fzf
 nnoremap <Leader><Space> <C-^>
-nmap <Leader>, :Buffers<CR>
-nmap <Leader>f :Files<CR>
-nmap <Leader>g :Find<CR>
-nmap <Leader>t :Tags<CR>
+nmap <Leader>, :Buffers<cr>
+nmap <Leader>f :GFiles<cr>
+nmap <Leader>F :Files<cr>
+nmap <Leader>g :Find<cr>
+nmap <Leader>t :BTags<cr>
+nmap <Leader>T :Tags<cr>
 " https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 " mkdir dir(s) that contains the file in the current buffer
-nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
+nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
 
-"
 " URL encode/decode selection
 vnoremap <leader>e :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
 vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
@@ -195,7 +196,7 @@ vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin
 function! FocusLine()
 	let oldscrolloff=&scrolloff
 	set scrolloff=0
-	execute "keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<CR>"
+	execute "keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<cr>"
 	let &scrolloff=oldscrolloff
 endfunction
 
@@ -306,10 +307,10 @@ endfunction
 
 " delete the space after, so: abbrev<space> -> expansion
 function! MakeSpacelessIabbrev(from, to) " global
-	execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+	execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<cr>"
 endfunction
 function! MakeSpacelessBufferIabbrev(from, to) " buffer local
-	execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
+	execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<cr>"
 endfunction
 
 
@@ -344,7 +345,7 @@ let g:ackhighlight=1
 
 nnoremap <Leader>G :Ack!<Space>""<left>
 xnoremap <Leader>G y:Ack!<Space>"<C-r>""
-xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<CR>
+xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<cr>
 
 " The directory for where bookmarks and history are saved (as .netrwbook and .netrwhist)
 let g:netrw_home='$HOME/.tmp'
@@ -366,13 +367,13 @@ let g:EclimHighlightDebug='Normal'       " (Default: “Normal”)
 let g:EclimHighlightTrace='Normal'       " (Default: “Normal”)
 
 " eclim mappings
-au FileType java nnoremap <buffer> <silent> <Leader>v :silent! w<CR>:Validate<CR>
-au FileType java inoremap <buffer> <silent> <Leader>v <Esc>:silent! w<CR>:Validate<CR>
-au FileType java nnoremap <silent> <Leader>jc :JavaCorrect<CR>
-au FileType java nnoremap <silent> <Leader>jd :JavaDocSearch -x declarations<CR>
-au FileType java nnoremap <silent> <Leader>jh :JavaCallHierarchy<CR>
-au FileType java nnoremap <silent> <Leader>ji :JavaImport<CR>
-au FileType java nnoremap <silent> <Leader>jI :JavaImportOrganize<CR>
+au FileType java nnoremap <buffer> <silent> <Leader>v :silent! w<cr>:Validate<cr>
+au FileType java inoremap <buffer> <silent> <Leader>v <Esc>:silent! w<cr>:Validate<cr>
+au FileType java nnoremap <silent> <Leader>jc :JavaCorrect<cr>
+au FileType java nnoremap <silent> <Leader>jd :JavaDocSearch -x declarations<cr>
+au FileType java nnoremap <silent> <Leader>jh :JavaCallHierarchy<cr>
+au FileType java nnoremap <silent> <Leader>ji :JavaImport<cr>
+au FileType java nnoremap <silent> <Leader>jI :JavaImportOrganize<cr>
 
 " go
 let g:go_fmt_command="goimports"
@@ -398,14 +399,14 @@ let g:dbext_default_profile_pg='type=PGSQL:user=postgres:passwd='
 au BufNewFile,BufRead .git/index setlocal nolist
 
 " nerdtree
-noremap  <F2> :NERDTreeToggle<CR>
-inoremap <F2> <Esc>:NERDTreeToggle<CR>
+noremap  <F2> :NERDTreeToggle<cr>
+inoremap <F2> <Esc>:NERDTreeToggle<cr>
 augroup ps_nerdtree
 	au!
 	au Filetype nerdtree setlocal nolist
-	au Filetype nerdtree nnoremap <buffer> H :vertical resize -10<CR>
-	au Filetype nerdtree nnoremap <buffer> L :vertical resize +10<CR>
-	"au Filetype nerdtree nnoremap <buffer> K :q<CR>
+	au Filetype nerdtree nnoremap <buffer> H :vertical resize -10<cr>
+	au Filetype nerdtree nnoremap <buffer> L :vertical resize +10<cr>
+	"au Filetype nerdtree nnoremap <buffer> K :q<cr>
 augroup END
 let g:NERDTreeDirArrowExpandable='▸'
 let g:NERDTreeDirArrowCollapsible='▾'
@@ -473,8 +474,8 @@ endfunction
 
 
 " JSON formating is generally useful, jq leaves order and is fast, py is slow and sorts the keys
-vnoremap <leader>j :!jq '.'<CR>
-vnoremap <leader>J :!python -mjson.tool<CR>
+vnoremap <leader>j :!jq '.'<cr>
+vnoremap <leader>J :!python -mjson.tool<cr>
 
 augroup ft_text
 	au!
@@ -497,10 +498,13 @@ augroup ft_java
 	au FileType java call MakeSpacelessBufferIabbrev('slf.', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
 	au FileType java call MakeSpacelessBufferIabbrev('sb.', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
 
-	" map list
-	au FileType java call MakeSpacelessBufferIabbrev('ml.', 'List<Map<>><left><left>')
-	au FileType java iabbrev <buffer> limapso List<Map<String, Object>>
-	au FileType java iabbrev <buffer> mapso Map<String, Object>
+	" abbreviations
+	au FileType java call MakeSpacelessBufferIabbrev('lm.', 'List<Map<>><left><left>')
+	au FileType java iabbrev <buffer> lmso. List<Map<String, Object>>
+	au FileType java iabbrev <buffer> mso. Map<String, Object>
+	au FileType java iabbrev <buffer> implog. import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
+	au FileType java iabbrev <buffer> imppre. import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
+	au FileType java iabbrev <buffer> tostr.  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
 augroup END
 
 augroup ft_javascript
@@ -514,13 +518,13 @@ augroup ft_python
 	au FileType python setlocal nowrap
 	au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
-	au FileType python nnoremap <localleader>e :w<CR>:Clam python %:p<CR>
-	au FileType python nnoremap <localleader>E :w<CR>:Clam python <C-R>=expand("%:p")<CR>
+	au FileType python nnoremap <localleader>e :w<cr>:Clam python %:p<cr>
+	au FileType python nnoremap <localleader>E :w<cr>:Clam python <C-R>=expand("%:p")<cr>
 
 	" yapf doesn't work w/ gq generally (only formats complete blocks)
 	let g:yapf_style="pep8"
-	au FileType python nnoremap <buffer> <localleader>p ^vg_:!yapf<CR>
-	au FileType python vnoremap <buffer> <localleader>p :!yapf<CR>
+	au FileType python nnoremap <buffer> <localleader>p ^vg_:!yapf<cr>
+	au FileType python vnoremap <buffer> <localleader>p :!yapf<cr>
 
 	au FileType python call MakeSpacelessBufferIabbrev('pr.', "print(f'>>> {}')<left><left><left>")
 augroup END
@@ -545,18 +549,18 @@ augroup ft_postgres
 	au FileType pgsql setlocal commentstring=--\ %s comments=:--
 
 	" send to tmux with localleader e
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<CR>vip"ry:call SendToTmux(@r)<CR>:call winrestview(psql_tslime_view)<CR>
+	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<cr>vip"ry:call SendToTmux(@r)<cr>:call winrestview(psql_tslime_view)<cr>
 
 	" kill pager with q
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>q :call SendToTmuxRaw("q")<CR>
+	"au FileType pgsql nnoremap <buffer> <silent> <localleader>q :call SendToTmuxRaw("q")<cr>
 augroup END
 
 augroup ft_html
 	au!
 	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
+	au Filetype html nnoremap <buffer> <localleader>p :w<cr>:!open %<cr>
 	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html.mustache nnoremap <buffer> <localleader>p :w<CR>:!open %<CR>
+	au Filetype html.mustache nnoremap <buffer> <localleader>p :w<cr>:!open %<cr>
 augroup END
 
 augroup ft_markdown
@@ -567,7 +571,7 @@ augroup ft_markdown
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
-	au Filetype markdown nnoremap <buffer> <localleader>p :w<CR>:!gfm % \|bcat<CR>
+	au Filetype markdown nnoremap <buffer> <localleader>p :w<cr>:!gfm % \|bcat<cr>
 augroup END
 
 augroup ft_json
