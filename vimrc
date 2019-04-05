@@ -474,8 +474,9 @@ endfunction
 
 
 " JSON formating is generally useful, jq leaves order and is fast, py is slow and sorts the keys
-vnoremap <leader>j :!jq '.'<cr>
-vnoremap <leader>J :!python -mjson.tool<cr>
+vnoremap <leader>jq :!jq '.'<cr>
+vnoremap <leader>jr :!jq -r '.'<cr>
+vnoremap <leader>jp :!python -mjson.tool<cr>
 
 augroup ft_text
 	au!
@@ -775,7 +776,7 @@ else
 		call ColorNord()
 	else
 		set background=light
-		if has("gui_macvim")
+		if has("gui_running")
 			call ColorSolarized()
 		else
 			color PaperColor
@@ -783,7 +784,7 @@ else
 	endif
 endif
 
-if has("gui_macvim")
+if has("gui")
 	set guifont=SF\ Mono:h10
 	"set guifont=IBM\ Plex\ Mono:h11
 
