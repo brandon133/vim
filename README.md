@@ -10,7 +10,7 @@ Your ~/.vimrc should look something like:
 
     scriptencoding utf-8
     source ~/.vim/vimrc
-    " local overrides:
+    " --- overrides:
 
 Then:
 

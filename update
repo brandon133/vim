@@ -100,5 +100,5 @@ popd >/dev/null
 
 # regenerate helptags
 if [ -n "$gt0" ]; then
-	vim -N -c 'helptags ALL|q'
+	vim -N -c 'silent! helptags ALL|q'
 fi

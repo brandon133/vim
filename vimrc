@@ -23,6 +23,14 @@ let maplocalleader=","
 " base options, other options are (re)set below
 source $HOME/.vim/vimrc.opts
 
+if !exists("g:os")
+	if has("win64") || has("win32") || has("win16")
+		let g:os = "Windows"
+	else
+		let g:os = substitute(system('uname'), '\n', '', '')
+	endif
+endif
+
 " behavior ---------------------------------------------------------------------
 
 " make sure vim returns to the same line when you reopen a file
@@ -162,12 +170,6 @@ noremap ]q :cnext<cr>
 noremap [q :cprev<cr>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
-
-" easy window navigation, save current buffer
-noremap <silent> <C-h> <C-w>h:call PulseCursorLine()<cr>
-noremap <silent> <C-j> <C-w>j:call PulseCursorLine()<cr>
-noremap <silent> <C-k> <C-w>k:call PulseCursorLine()<cr>
-noremap <silent> <C-l> <C-w>l:call PulseCursorLine()<cr>
 
 " buffer nav, fzf
 nnoremap <Leader><Space> <C-^>
@@ -324,9 +326,8 @@ inoremap <C-]> <C-x><C-]>
 " http://tilvim.com/2016/01/06/fzf.html
 imap <C-l> <Plug>(fzf-complete-line)
 
-" disable ale/polyglot for java
-let g:ale_linters={'java': []}
-let g:polyglot_disabled=['java']
+" tmux
+let g:tmux_navigator_disable_when_zoomed = 1
 
 " supertab
 let g:SuperTabDefaultCompletionType="context"
@@ -425,6 +426,11 @@ let NERDTreeMapJumpFirstChild='gK'
 "let NERDChristmasTree=1
 
 " ale
+
+" disable ale/polyglot for java (using eclim)
+let g:ale_linters={'java': []}
+let g:polyglot_disabled=['java']
+
 "let g:ale_lint_on_save=1
 "let g:ale_lint_on_text_changed=0
 "let g:ale_lint_on_enter=0
@@ -584,6 +590,8 @@ augroup END
 
 augroup ft_xml
 	au!
+	au FileType xml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+
 	au FileType xml setlocal foldmethod=manual
 	" use <localleader>F to fold the current tag
 	au FileType xml nnoremap <buffer> <localleader>F Vatzf
@@ -686,8 +694,6 @@ endfunction
 " ui/colorscheme ---------------------------------------------------------------
 " note, other config/plugins can change the colors
 
-set mouse=a
-
 " show trailing spaces in non-insert mode
 augroup trailing
 	au!
@@ -705,7 +711,17 @@ let g:lightline={
 
 " ----- colors/highlights/cursors
 
-set notermguicolors " not available for terminal.app :(
+"set notermguicolors " not available for terminal.app :(
+
+" tmux, see :h xterm-true-color
+let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+
+" italics
+" https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
+" https://apple.stackexchange.com/a/267261
+set t_ZH=[3m
+set t_ZR=[23m
 
 hi Comment gui=italic cterm=italic
 hi SpellBad cterm=undercurl,italic guifg=#d33682
@@ -716,6 +732,11 @@ autocmd InsertLeave * hi ColorColumn ctermbg=7 guibg=#eee8d5
 
 " colorscheme settings
 let ayucolor='light'
+let g:monokai_term_italic=1
+let g:monokai_gui_italic=1
+let g:nord_italic=1
+let g:sublimemonokai_term_italic=1
+let g:sublimemonokai_gui_italic=1
 
 function! ColorSet(...)
 	if a:0 > 0
@@ -766,15 +787,17 @@ endfunction
 
 if &diff
 	" better diff colorscheme
-	colorscheme nord
+	colorscheme iceberg
 else
 	if $TERM_PROFILE == 'Ocean'
 		set background=dark
 		call ColorToNBlue()
+
 	elseif $TERM_PROFILE == 'Silver_Aerogel'
 		set background=light
 		call ColorNord()
-	else
+
+	elseif !exists("g:colors_name")
 		set background=light
 		if has("gui_running")
 			call ColorSolarized()
@@ -784,34 +807,28 @@ else
 	endif
 endif
 
-if has("gui")
-	set guifont=SF\ Mono:h10
-	"set guifont=IBM\ Plex\ Mono:h11
+if has("gui_running")
+	set mouse=a
 
-	set blurradius=15
-	au FocusLost * :set transparency=15
-	au FocusGained * :set transparency=0
+	if g:os == "Darwin"
+		set guifont=SF\ Mono:h10
+		"set guifont=IBM\ Plex\ Mono:h11
+	elseif g:os == "Linux"
+		set guifont=Monospace\ 10
+		set clipboard=unnamedplus
+	endif
+
+	if has("transparency")
+		set blurradius=15
+		au FocusLost * :set transparency=15
+		au FocusGained * :set transparency=0
+	endif
 endif
 
 set guicursor=n-c:block-Cursor-blinkon0
 set guicursor+=v:block-blinkon0
 set guicursor+=i-ci:ver20
 set guioptions=egm
-
-" enable cursor change in tmux mode
-if exists('$TMUX')
-	let &t_SI="\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-	let &t_EI="\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-	let &t_SI="\<Esc>]50;CursorShape=1\x7"
-	let &t_EI="\<Esc>]50;CursorShape=0\x7"
-endif
-
-" italics
-" https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
-" https://apple.stackexchange.com/a/267261
-set t_ZH=[3m
-set t_ZR=[23m
 
 " http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
 " DECSCUSR 1/2, 3/4, 5/6 -> blinking/steady block, underline, bar

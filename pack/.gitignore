@@ -3,15 +3,19 @@ plugins-color/start/ayu
 plugins-color/start/iceberg
 plugins-color/start/molokai
 plugins-color/start/monochrome
+plugins-color/start/monokai
 plugins-color/start/nord
 plugins-color/start/papercolor-theme
 plugins-color/start/solarized
 plugins-color/start/solarized8
+plugins-color/start/sublime-monokai
 plugins-color/start/tender
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table
 ## ----- ui
 plugins-ui/start/lightline
+plugins-ui/start/tmux-navigator
+plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
 plugins-syn/start/autotag
@@ -32,7 +36,7 @@ plugins-util/start/fzf
 plugins-util/start/kwbd
 plugins-util/start/matchit
 plugins-util/start/nerdtree
-## ----- tpope
+## ----- tpope in syn and util
 plugins-syn/start/commentary
 plugins-syn/start/endwise
 plugins-util/start/abolish
