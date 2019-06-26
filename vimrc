@@ -20,8 +20,109 @@ syntax on
 let mapleader=","
 let maplocalleader=","
 
-" base options, other options are (re)set below
-source $HOME/.vim/vimrc.opts
+" base options, see `:options {{{
+"  1 important
+set nocompatible
+"  2 moving around, searching and patterns
+set wrap
+set incsearch
+set ignorecase
+set smartcase
+"  3 tags
+set tags+=tags;/
+"  4 displaying text
+set scrolloff=5
+set nolinebreak
+set showbreak=←
+set sidescroll=1
+set sidescrolloff=10
+set lazyredraw
+set list
+set listchars=tab:\ \ ,trail:⌴,precedes:❮,extends:❯
+set listchars+=tab:⋮\ 
+set nonumber
+set norelativenumber
+"  5 syntax, highlighting and spelling
+set synmaxcol=333
+set hlsearch
+set colorcolumn=+1
+set spellfile=~/.vim/dict.utf-8.add,.dict.utf-8.add " spelling, dict-local.utf-8.add is gitignore'd
+"  6 multiple windows
+set laststatus=2
+set hidden " buffers hidden when abandoned
+set splitbelow
+set splitright
+"  7 multiple tab pages
+"  8 terminal
+set ttyfast
+set title
+"  9 using the mouse
+" 10 GUI
+" 11 printing
+" 12 messages and info
+set showcmd
+set noshowmode " lightline makes this redundant
+set ruler
+set visualbell
+" 13 selecting text
+set clipboard=unnamed
+" 14 editing text
+set undofile
+set undodir=~/.tmp/undo/
+set undoreload=20000 " save the reload unless > #lines
+set textwidth=100
+set backspace=indent,eol,start
+set formatoptions=cqrn1j
+set dictionary=/usr/share/dict/words
+set showmatch
+set matchtime=3
+" 15 tabs and indenting
+set tabstop=8
+set shiftwidth=8
+set softtabstop=8
+set shiftround
+set noexpandtab
+set autoindent
+" 16 folding
+set foldmethod=marker
+set foldmarker={{{,}}}
+" 17 diff mode
+" 18 mapping
+" time out on key codes but not mappings
+set notimeout
+set ttimeout
+set ttimeoutlen=10
+" 19 reading and writing files
+set modelines=2
+set backup
+set backupskip=/tmp/*,/private/tmp/*,~/.tmp/*
+set backupdir=~/.tmp/backup/
+set autowriteall
+set noautoread
+" 20 the swap file
+set directory=~/.tmp/swap/
+set swapfile
+" 21 command line editing
+set history=9999
+set wildmode=full
+set wildignore+=.hg,.git,.svn
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg
+set wildignore+=*.class,*.jar,*.war
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest
+set wildignore+=*.spl
+set wildignore+=*.sw?
+set wildignore+=*.DS_Store
+set wildignore+=*.pyc
+set wildmenu
+" 22 executing external commands
+" 23 running make and jumping to errors
+" 24 language specific
+" 25 multi-byte characters
+" 26 various
+set virtualedit+=block
+set gdefault
+set viminfo=%,'999,/99,:999
+" }}}
 
 if !exists("g:os")
 	if has("win64") || has("win32") || has("win16")
@@ -809,20 +910,20 @@ endif
 
 if has("gui_running")
 	set mouse=a
+endif
 
-	if g:os == "Darwin"
-		set guifont=SF\ Mono:h10
-		"set guifont=IBM\ Plex\ Mono:h11
-	elseif g:os == "Linux"
-		set guifont=Monospace\ 10
-		set clipboard=unnamedplus
-	endif
+if has("transparency")
+	set blurradius=15
+	au FocusLost * :set transparency=15
+	au FocusGained * :set transparency=0
+endif
 
-	if has("transparency")
-		set blurradius=15
-		au FocusLost * :set transparency=15
-		au FocusGained * :set transparency=0
-	endif
+if g:os == "Darwin"
+	set guifont=SF\ Mono:h10
+	"set guifont=IBM\ Plex\ Mono:h11
+elseif g:os == "Linux"
+	set guifont=Monospace\ 9
+	set clipboard=unnamedplus
 endif
 
 set guicursor=n-c:block-Cursor-blinkon0

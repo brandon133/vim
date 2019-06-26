@@ -1,10 +1,7 @@
- 2019-03-13"
+" 2019-06-05
 " .vimrc
 " Author: Steve Losh <steve@stevelosh.com>
 " Source: http://bitbucket.org/sjl/dotfiles/src/tip/vim/
-"
-" This file changes a lot.  I'll try to document pieces of it whenever I have
-" a few minutes to kill.
 
 " Preamble ---------------------------------------------------------------- {{{
 "
@@ -258,6 +255,7 @@ iabbrev spf set -euo pipefail
 silent! digr -. 8230 "U+2026=…    HORIZONTAL ELLIPSIS
 silent! digr !, 8816 "U+2270=≰    NEITHER LESS-THAN NOR EQUAL TO
 silent! digr !. 8817 "U+2271=≱    NEITHER GREATER-THAN NOR EQUAL TO
+silent! digr es 8337 "U+2091=ₑ    SUBSCRIPT E
 silent! digr xs 8339 "U+2093=ₓ    SUBSCRIPT X
 silent! digr ls 8343 "U+2097=ₗ    SUBSCRIPT L
 silent! digr ms 8344 "U+2098=ₗ    SUBSCRIPT M
@@ -268,6 +266,13 @@ silent! digr ts 8348 "U+209C=ₜ    SUBSCRIPT T
 silent! digr >< 8652 "U+21cc=⇌    EQUILIBRIUM
 silent! digr o+ 8853 "U+2295=⊕    CIRCLED PLUS
 silent! digr -^ 8593 "U+2191=↑    UPWARDS ARROW
+
+silent! digr -- 8212 "U+2014=—    EM DASH
+
+silent! digr // 9585 "U+2571=╱    BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT
+silent! digr \\ 9586 "U+2572=╲    BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT
+
+silent! digr \|\| 8214 "U+2016=‖    DOUBLE VERTICAL LINE
 
 " }}}
 " Convenience mappings ---------------------------------------------------- {{{
@@ -926,10 +931,16 @@ function! InitializeLispRepl() "{{{
     call HighlightLispRepl()
 endfunction "}}}
 
+function! OpenLispReplMakerlisp() "{{{
+    NeoRepl makerlisp
+endfunction "}}}
+function! OpenLispReplMakerlispRaw() "{{{
+    NeoRepl makerlisp-raw
+endfunction "}}}
+
 function! OpenLispReplSBCL() "{{{
     NeoRepl sbcl-vlime
 endfunction "}}}
-
 function! OpenLispReplSBCLRaw() "{{{
     NeoRepl sbcl-vlime-raw
 endfunction "}}}
@@ -1408,22 +1419,76 @@ augroup END
 function! GetGoFold(lnum)
     let line = getline(a:lnum)
     let prev = getline(a:lnum-1)
+    let next = getline(a:lnum+1)
 
+    " Toplevel folds.
     if line =~# '\v^//'
+        " Toplevel comments.
         if prev =~# '\v^//'
             return '1'
         else
             return '>1'
         endif
     elseif line =~# '\v^\S.*[{(]$'
+        " Things that open a toplevel block, e.g.:
+        "     func foo () {
         return '>1'
     elseif line =~#'\v^[})]$'
+        " The close of a toplevel block, e.g.:
+        "     }
+        " This doesn't close the fold because we want to fold the space after it
+        " later.
         return '1'
+    elseif line == "" && next =~#'\v^//'
+        " Blank line before a comment.  If the previous line is a comment, fold
+        " it with that.  Otherwise don't fold it.  Example:
+        "
+        "     func x () {
+        "             …
+        "     }
+        "                                         don't fold this one
+        "     // foo ---------------------
+        "                                         but DO fold this one into the header comment
+        "     // some doc comment
+        "     // with lines
+        "     func y () …
+        if prev =~#'\v^//'
+            return '1'
+        else
+            return '0'
+        endif
     elseif line == "" && prev =~#'\v^[})]$'
+        " Blank line after the close of a toplevel block.  Fold it with the
+        " block.
         return '<1'
-    else
-        return '='
+    elseif line =~# '\v^\S'
+        " Some other toplevel line, e.g.:
+        "     import ...
+        return '0'
     endif
+
+    " Inner folds.
+    if line =~# '\v^\s+//'
+        " Inner comment.
+        let p = prev =~# '\v^\s+//'
+        let n = next =~# '\v^\s+//'
+        if !n && !p
+            " Single line comment, don't make a new fold.
+            return '='
+        elseif n && p
+            " Middle of a multi-line comment, fold.
+            return '2'
+        elseif !p
+            " Start of a multi-line comment.
+            return '>2'
+        elseif !n
+            " End of a multi-line comment.
+            return '<2'
+        endif
+    endif
+
+    " Otherwise fold with previous.
+    return '='
 endfunction
 
 augroup ft_go
@@ -1439,6 +1504,8 @@ augroup ft_go
 
     " this language is incredible
     au FileType go iabbrev <buffer> ernil if err != nil {<cr>return nil, err<esc>jA
+    au FileType go iabbrev <buffer> erstr if err != nil {<cr>return "", err<esc>jA
+    au FileType go iabbrev <buffer> ererr if err != nil {<cr>return err<esc>jA
     au FileType go iabbrev <buffer> erpan if err != nil {<cr>panic(err)<esc>jA
 augroup END
 
@@ -1563,6 +1630,65 @@ augroup ft_make
 augroup END
 
 " }}}
+" Makerlisp {{{
+
+function! HighlightMakerlispRepl() "{{{
+    setlocal nolist
+
+    " set syntax=lisp
+    syn match replPrompt /\v^\>/
+    syn match replComment /\v^;.*/
+
+    " syn match replResult /\v^#\<[^>]+\>$/
+    hi def link replResult Debug
+    hi def link replComment Comment
+endfunction "}}}
+
+function! SendEntireFile() "{{{
+    let view = winsaveview()
+
+    execute "normal! ggVG\<esc>"
+    call NeoReplSendSelection()
+
+    call winrestview(view)
+endfunction "}}}
+
+function! OpenLispReplMakerlispRaw() "{{{
+    NeoRepl makerlisp-raw
+    call HighlightMakerlispRepl()
+endfunction "}}}
+
+augroup ft_makerlisp " {{{
+    au!
+
+    au BufNewFile,BufRead *.l set filetype=makerlisp
+    au FileType makerlisp setlocal syntax=lisp sw=2
+
+    au FileType makerlisp nnoremap <buffer> U :syntax sync fromstart<cr>:redraw!<cr>:call TurnOnLispFolding()<cr>
+    au FileType makerlisp call SetLispWords()
+    au FileType makerlisp call EnableParedit()
+    au FileType makerlisp silent! call TurnOnLispFolding()
+    au FileType makerlisp RainbowParenthesesActivate
+    au FileType makerlisp setlocal iskeyword+=!,?,%,-
+    au FileType makerlisp setlocal lisp
+    au FileType makerlisp setlocal equalprg=lispindent
+
+    " Open REPL
+    au FileType makerlisp nnoremap <buffer> <silent> <localleader>Om :call OpenLispReplMakerlispRaw()<cr>
+
+    " Misc mappings
+    au FileType makerlisp nnoremap <buffer> gi :call IndentToplevelLispForm()<cr>
+    au FileType makerlisp nnoremap <buffer> [] :call DuplicateLispForm()<cr>
+    au FileType makerlisp nnoremap <buffer> <localleader>( :call PareditToggle()<cr>
+
+    au FileType makerlisp nnoremap <buffer> <localleader>e :call SendToplevelLispForm()<cr>
+    au FileType makerlisp nnoremap <buffer> <localleader>f :call SendEntireFile()<cr>
+    au FileType makerlisp nnoremap <buffer> <localleader>c :call NeoReplSendRaw("(cls)")<cr>
+
+    ")
+augroup END " }}}
+
+" }}}
 " Markdown {{{
 
 augroup ft_markdown
@@ -1657,6 +1783,7 @@ augroup ft_plan
 
     " au BufNewFile,BufRead ~/.plan/README.markdown nnoremap <buffer> <localleader>l :call PlanLinkPaste()<cr>
     au BufNewFile,BufRead ~/.plan/README.markdown nnoremap <buffer> <localleader>d o##<esc>:r!date +\%Y-\%m-\%d<cr>kJ
+    au BufNewFile,BufRead ~/.personal-plan/README.markdown nnoremap <buffer> <localleader>d o##<esc>:r!date +\%Y-\%m-\%d<cr>kJ
 augroup END
 
 " }}}
@@ -2124,6 +2251,19 @@ nnoremap <leader>a :Ack!<space>
 let g:ackprg = 'ag --smart-case --nogroup --nocolor --column'
 
 " }}}
+" Boxdraw {{{
+
+vmap <space> +O
+vmap -. +>
+vmap -, +<
+vmap -6 +^
+vmap -v +v
+vmap -> ++>
+vmap -< ++<
+vmap -^ ++^
+vmap -V ++v
+
+" }}}
 " Clam {{{
 
 nnoremap ! :Clam<space>
@@ -2143,6 +2283,7 @@ augroup plugin_commentary
     au FileType htmldjango setlocal commentstring={#\ %s\ #}
     au FileType clojurescript setlocal commentstring=;\ %s
     au FileType lisp setlocal commentstring=;;\ %s
+    au FileType makerlisp setlocal commentstring=;;\ %s
     au FileType puppet setlocal commentstring=#\ %s
     au FileType fish setlocal commentstring=#\ %s
     au FileType gnuplot setlocal commentstring=#\ %s
@@ -2165,6 +2306,7 @@ let g:ctrlp_extensions = ['tag']
 let g:ctrlp_map = '<leader>,'
 nnoremap <leader>. :CtrlPTag<cr>
 nnoremap <leader>b :CtrlPBuffer<cr>
+nnoremap <leader><lt> :CtrlP<space>
 
 let g:ctrlp_prompt_mappings = {
 \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<s-tab>'],
@@ -2180,14 +2322,14 @@ let g:ctrlp_user_command = my_ctrlp_ffind_command
 " }}}
 " DelimitMate {{{
 
-let delimitMate_excluded_ft = "clojure,lisp"
+let delimitMate_excluded_ft = "clojure,lisp,makerlisp"
 let delimitMate_expand_cr = 1
 
 " }}}
 " Fugitive {{{
 
 nnoremap <leader>gd :Gdiff<cr>
-nnoremap <leader>gs :Gstatus<cr>:15wincmd_<cr>
+nnoremap <leader>gs :Gstatus<cr>:15wincmd_<cr>:setlocal winfixheight<cr>
 nnoremap <leader>gw :Gwrite<cr>
 nnoremap <leader>ga :Gadd<cr>
 nnoremap <leader>gb :Gblame<cr>
@@ -3197,6 +3339,23 @@ if has('nvim')
     let g:terminal_scrollback_buffer_size = 10000
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
     set inccommand=nosplit
+
+    let g:terminal_color_0 = '#070807'
+    let g:terminal_color_1 = '#e93f40'
+    let g:terminal_color_2 = '#88dc02'
+    let g:terminal_color_3 = '#fb7d01'
+    let g:terminal_color_4 = '#0abcfe'
+    let g:terminal_color_5 = '#fe5691'
+    let g:terminal_color_6 = '#76dff3'
+    let g:terminal_color_7 = '#f4f4f4'
+    let g:terminal_color_8 = '#5d5d5d'
+    let g:terminal_color_9 = '#e93f40'
+    let g:terminal_color_10 = '#9df903'
+    let g:terminal_color_11 = '#fadf31'
+    let g:terminal_color_12 = '#40cdfe'
+    let g:terminal_color_13 = '#fe2b74'
+    let g:terminal_color_14 = '#09cef2'
+    let g:terminal_color_15 = '#fefffe'
 else
     set encoding=utf-8
 endif
