@@ -9,8 +9,8 @@
 " nice digraph help page:
 "  :help digraph-table
 "
-" ▶ ◀  ► ◄  ▸ ◂
-" 🔒  🔑  + ∄ ⎇  Ξ
+" ⯅ ⯆ ⯇ ⯈
+" 🔒  🔑  + ∄ Ξ
 
 filetype off
 "packloadall " normally done after loading vimrc, uncomment to load earlier
@@ -19,6 +19,17 @@ syntax on
 
 let mapleader=","
 let maplocalleader=","
+
+if !exists("g:os")
+	if has("win64") || has("win32") || has("win16")
+		let g:os="Windows"
+	else
+		let g:os=substitute(system('uname'), '\n', '', '')
+	endif
+endif
+if !exists("g:VimUserDir")
+	let g:VimUserDir=split(&rtp, ',')[0]
+endif
 
 " base options, see `:options {{{
 "  1 important
@@ -33,7 +44,7 @@ set tags+=tags;/
 "  4 displaying text
 set scrolloff=5
 set nolinebreak
-set showbreak=←
+set showbreak=↵
 set sidescroll=1
 set sidescrolloff=10
 set lazyredraw
@@ -46,7 +57,7 @@ set norelativenumber
 set synmaxcol=333
 set hlsearch
 set colorcolumn=+1
-set spellfile=~/.vim/dict.utf-8.add,.dict.utf-8.add " spelling, dict-local.utf-8.add is gitignore'd
+let &spellfile=g:VimUserDir . "/dict.utf-8.add,.dict.utf-8.add"
 "  6 multiple windows
 set laststatus=2
 set hidden " buffers hidden when abandoned
@@ -124,14 +135,6 @@ set gdefault
 set viminfo=%,'999,/99,:999
 " }}}
 
-if !exists("g:os")
-	if has("win64") || has("win32") || has("win16")
-		let g:os = "Windows"
-	else
-		let g:os = substitute(system('uname'), '\n', '', '')
-	endif
-endif
-
 " behavior ---------------------------------------------------------------------
 
 " make sure vim returns to the same line when you reopen a file
@@ -198,6 +201,9 @@ nnoremap <Leader>P :set paste!<cr>
 " natural move
 nnoremap <down> gj
 nnoremap <up> gk
+
+" redraw (<C-l> is mapped to <C-w>l by tmux-naviage)
+nnoremap <Esc>l :redraw!<cr>
 
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
@@ -308,8 +314,7 @@ endfunction
 
 hi CursorLine guibg=NONE ctermbg=NONE
 
-"if has("termguicolors") || has('gui_running')
-if has('gui_running')
+if has("termguicolors") || has('gui_running')
 	let g:PulseColorList=['#ff0000','#00ff00','#0000ff','#ff0000']
 	"let g:PulseColorList=['#2a2a2a','#333333','#3a3a3a','#444444','#4a4a4a' ]
 	let g:PulseColorattr='guibg'
@@ -428,7 +433,7 @@ inoremap <C-]> <C-x><C-]>
 imap <C-l> <Plug>(fzf-complete-line)
 
 " tmux
-let g:tmux_navigator_disable_when_zoomed = 1
+let g:tmux_navigator_disable_when_zoomed=1
 
 " supertab
 let g:SuperTabDefaultCompletionType="context"
@@ -437,7 +442,7 @@ let g:SuperTabMappingBackward='<C-p>'
 let g:SuperTabClosePreviewOnPopupClose=1
 
 " fzf
-set rtp+=~/bin/.fzf
+set rtp+=~/bin/.fzf/bin
 
 " ack
 let g:ackprg='rg --vimgrep --smart-case --no-heading'
@@ -459,8 +464,8 @@ nmap <Leader>q <Plug>Kwbd
 cabbr <expr> %% expand('%:p:h')
 
 " http://eclim.org/vim/core/eclim.html
-let g:EclimQuickfixSignText='▴'
-let g:EclimLoclistSignText='➞' " https://unicode-table.com/en/sets/arrows-symbols/
+let g:EclimQuickfixSignText='⯈'
+let g:EclimLoclistSignText='⯈'
 
 let g:EclimHighlightError='ErrorMsg'     " (Default: “Error”)
 let g:EclimHighlightWarning='WarningMsg' " (Default: “WarningMsg”)
@@ -538,8 +543,8 @@ let g:polyglot_disabled=['java']
 
 "let g:ale_sign_error='>>'
 "let g:ale_sign_warning='>'
-let g:ale_sign_error='•'
-let g:ale_sign_warning='•'
+let g:ale_sign_error='⦿'
+let g:ale_sign_warning='⦿'
 
 "let g:ale_echo_msg_error_str='E'
 "let g:ale_echo_msg_warning_str='W'
@@ -815,10 +820,10 @@ let g:lightline={
 "set notermguicolors " not available for terminal.app :(
 
 " tmux, see :h xterm-true-color
-let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+"let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+"let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 
-" italics
+" italics, check if your terminal supports italics: echo -e "\e[3mfoo\e[23m"
 " https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
 " https://apple.stackexchange.com/a/267261
 set t_ZH=[3m
@@ -839,6 +844,14 @@ let g:nord_italic=1
 let g:sublimemonokai_term_italic=1
 let g:sublimemonokai_gui_italic=1
 
+" gui options
+set guicursor=n-c:block-Cursor-blinkon0
+set guicursor+=v:block-blinkon0
+set guicursor+=i-ci:ver20
+" default windows (new term): n-v-c:block-Cursor/lCursor,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
+"set guioptions=e
+" default windows (new term): aegimrLtT
+
 function! ColorSet(...)
 	if a:0 > 0
 		execute 'colorscheme ' . a:1
@@ -854,7 +867,7 @@ function! ColorSolarized()
 	" for terminal.app, use https://github.com/tomislav/osx-terminal.app-colors-solarized
 	let g:solarized_contrast='normal' " normal/high/low
 	let g:solarized_visibility='low'  " normal/high/low
-	colorscheme solarized
+	colorscheme solarized8
 	hi Cursor guibg=#f92672
 	hi Search guifg=#f0c674
 	if &background == 'light'
@@ -864,7 +877,7 @@ function! ColorSolarized()
 	else
 		hi SpecialKey ctermfg=10 guifg=#586e75
 		hi NonText ctermfg=10 guifg=#4996a2
-		"hi SignColumn ctermbg=0 guibg=#073642
+		hi SignColumn ctermbg=0 guibg=#073642
 	endif
 	call ColorSet()
 endfunction
@@ -924,16 +937,15 @@ if g:os == "Darwin"
 elseif g:os == "Linux"
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
+elseif g:os == "Windows"
+	set guifont=monofur:h10
+	set guioptions+=a
 endif
-
-set guicursor=n-c:block-Cursor-blinkon0
-set guicursor+=v:block-blinkon0
-set guicursor+=i-ci:ver20
-set guioptions=egm
 
 " http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
 " DECSCUSR 1/2, 3/4, 5/6 -> blinking/steady block, underline, bar
 let &t_SI.="\e[5 q"
+"let &t_SR.="\e[4 q"
 let &t_EI.="\e[2 q"
 
 " http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim

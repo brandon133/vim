@@ -79,3 +79,9 @@ Try:
   background (solarized-light is my preferred.) With dark backgrounds (Tomorrow-Night-Blue, iceberg,
   nord), I need to increase the font size to 12pt. My other favorite font is IBM Plex Mono, it's
   beautiful for printing and browsers but at smaller sizes (10pt), the Mac fonts are more readable.
+
+
+Windows doesn't seem to render digraphs and special fonts correctly unless you do:
+(Put this in local _vimrc)
+
+    set renderoptions=type:directx

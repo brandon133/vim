@@ -88,8 +88,17 @@ fi
 
 # check links for colors
 pushd pack/plugins-color/start >/dev/null
-[ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
-[ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
+if [[ "$(< /proc/sys/kernel/osrelease)" == *Microsoft ]]; then
+	[ -L "tomorrow-theme-vim" ] && [ -L "vim-colors-solarized" ] || {
+		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
+		echo "***   cd $BASEDIR/pack/plugins-color-start, and run:"
+		echo "    mklink /D vim-colors-solarized .\solarized\vim-colors-solarized"
+		echo "    mklink /D tomorrow-theme-vim .\tomorrow-theme\vim"
+	}
+else
+	[ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
+	[ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
+fi
 popd >/dev/null
 
 #tmpfile=$(mktemp vimup.XXX)
