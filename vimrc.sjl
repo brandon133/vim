@@ -1,4 +1,4 @@
-" 2019-06-05
+" 2019-07-17
 " .vimrc
 " Author: Steve Losh <steve@stevelosh.com>
 " Source: http://bitbucket.org/sjl/dotfiles/src/tip/vim/
@@ -272,7 +272,9 @@ silent! digr -- 8212 "U+2014=—    EM DASH
 silent! digr // 9585 "U+2571=╱    BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT
 silent! digr \\ 9586 "U+2572=╲    BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT
 
-silent! digr \|\| 8214 "U+2016=‖    DOUBLE VERTICAL LINE
+silent! digr \|\| 8214 "U+2016=‖  DOUBLE VERTICAL LINE
+
+silent! digr ~~ 8967  "U+2307=⌇   WAVY LINE
 
 " }}}
 " Convenience mappings ---------------------------------------------------- {{{
@@ -1012,12 +1014,7 @@ function! SetLispWords() "{{{
 endfunction "}}}
 
 function! SendLispForm() "{{{
-    let view = winsaveview()
-
-    execute "normal! vab\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
+    call SelectAndSendToNeoRepl("vab")
 endfunction "}}}
 
 function! SelectToplevelLispForm() "{{{
@@ -1337,12 +1334,20 @@ augroup END
 " }}}
 " Fish {{{
 
+function! SendFishParagraph() "{{{
+    call SelectAndSendToNeoRepl("vip", 1)
+endfunction "}}}
+
 augroup ft_fish
     au!
 
     au BufNewFile,BufRead *.fish setlocal filetype=fish
 
     au FileType fish setlocal foldmethod=marker foldmarker={{{,}}}
+    au FileType fish nnoremap <buffer> <localleader>e :call NeoReplSendCurrentLine()<cr>
+    au FileType fish nnoremap <buffer> <localleader>E :call SendFishParagraph()<cr>
+    au FileType fish nnoremap <buffer> <localleader>F :call NeoReplSendEntireFile(1)<cr>
+    au FileType fish nnoremap <buffer> <localleader>c :call NeoReplSendRaw("clear")<cr>
 augroup END
 
 " }}}
@@ -1385,20 +1390,10 @@ function! OpenGnuplotRepl() "{{{
 endfunction "}}}
 
 function! SendGNUPlotParagraph() "{{{
-    let view = winsaveview()
-
-    execute "normal! ^vip\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
+    call SelectAndSendToNeoRepl("^vip")
 endfunction "}}}
 function! SendGNUPlotBuffer() "{{{
-    let view = winsaveview()
-
-    execute "normal! ggVG"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
+    call SelectAndSendToNeoRepl("ggVG")
 endfunction "}}}
 
 augroup ft_gnuplot
@@ -1429,11 +1424,11 @@ function! GetGoFold(lnum)
         else
             return '>1'
         endif
-    elseif line =~# '\v^\S.*[{(]$'
+    elseif line =~# '\v^\S.*[{(`]$'
         " Things that open a toplevel block, e.g.:
         "     func foo () {
         return '>1'
-    elseif line =~#'\v^[})]$'
+    elseif line =~#'\v^[})`]$'
         " The close of a toplevel block, e.g.:
         "     }
         " This doesn't close the fold because we want to fold the space after it
@@ -1644,15 +1639,6 @@ function! HighlightMakerlispRepl() "{{{
     hi def link replComment Comment
 endfunction "}}}
 
-function! SendEntireFile() "{{{
-    let view = winsaveview()
-
-    execute "normal! ggVG\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
-endfunction "}}}
-
 function! OpenLispReplMakerlispRaw() "{{{
     NeoRepl makerlisp-raw
     call HighlightMakerlispRepl()
@@ -1682,7 +1668,7 @@ augroup ft_makerlisp " {{{
     au FileType makerlisp nnoremap <buffer> <localleader>( :call PareditToggle()<cr>
 
     au FileType makerlisp nnoremap <buffer> <localleader>e :call SendToplevelLispForm()<cr>
-    au FileType makerlisp nnoremap <buffer> <localleader>f :call SendEntireFile()<cr>
+    au FileType makerlisp nnoremap <buffer> <localleader>f :call NeoReplSendEntireFile()<cr>
     au FileType makerlisp nnoremap <buffer> <localleader>c :call NeoReplSendRaw("(cls)")<cr>
 
     ")
@@ -1842,14 +1828,7 @@ function! OpenPythonRepl() "{{{
     "fucking kill me
     NeoRepl fish
 endfunction "}}}
-function! SendPythonLine() "{{{
-    let view = winsaveview()
 
-    execute "normal! ^vg_\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
-endfunction "}}}
 function! SendPythonParagraph() "{{{
     let view = winsaveview()
 
@@ -1916,7 +1895,7 @@ augroup ft_python
     au FileType python nnoremap <buffer> <silent> <localleader>o :call OpenPythonRepl()<cr>
 
     " Send the current line to the REPL
-    au FileType python nnoremap <buffer> <silent> <localleader>l :call SendPythonLine()<cr>
+    au FileType python nnoremap <buffer> <silent> <localleader>l :call NeoReplSendCurrentLine()<cr>
 
     " Send the current paragraph to the REPL
     au FileType python nnoremap <buffer> <silent> <localleader>p :call SendPythonParagraph()<cr>
@@ -1986,110 +1965,19 @@ augroup ft_scala
 augroup END
 
 " }}}
-" Scheme {{{
+" Sh {{{
 
-function! OpenSchemeRepl() "{{{
-    NeoRepl scheme
-    set syntax=scheme
-    syn match replPrompt /\v^\*/
-    syn match replPrompt /\v^[-_a-zA-Z]+\>/
-
-    syn match replResult /\v^#\<[^>]+\>$/
-    hi def link replResult Debug
-endfunction "}}}
-function! SendSchemeForm() "{{{
-    let view = winsaveview()
-
-    execute "normal! vab\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
-endfunction "}}}
-function! SendToplevelSchemeForm() "{{{
-    let view = winsaveview()
-
-    " If we're on the first char of the form, calling PareditFindDefunBck will
-    " move us to the previous form, which we don't want.  So instead we'll just
-    " always move a char to the right.
-    silent! normal! l
-
-    call PareditFindDefunBck()
-    execute "normal! vab\<esc>"
-    call NeoReplSendSelection()
-
-    call winrestview(view)
-endfunction "}}}
-function! SendSchemeBuffer() "{{{
-    call NeoReplSendRaw('(load "'. expand("%:p") . '")' . "\n")
-endfunction "}}}
-function! DescribeSchemeSymbol() "{{{
-    let old_z = @z
-
-    normal! "zyiw
-    call NeoReplSendRaw("(describe '" . @z . ")\n")
-
-    let @z = old_z
-endfunction "}}}
-function! DescribeSchemePrompt() "{{{
-    call NeoReplSendRaw("(describe '" . input("? ") . ")\n")
+function! SendShellParagraph() "{{{
+    call SelectAndSendToNeoRepl("vip", 1)
 endfunction "}}}
 
-augroup ft_scheme
+augroup ft_sh
     au!
 
-    " key  desc                   mnemonic
-    " \o - connect neorepl        [o]pen scheme
-    " \f - send current form      [f]orm
-    " \e - send top-level form    [e]val
-    " \r - send entire file       [r]eload file
-    " \c - send ctrl-l            [c]lear
-    " \d - describe symbol        [d]escribe
-    " \D - describe prompt        [d]escribe
-
-    au FileType scheme nnoremap <buffer> <silent> <localleader>o :call OpenSchemeRepl()<cr>
-
-    " Send the current form to the REPL
-    au FileType scheme nnoremap <buffer> <silent> <localleader>f :call SendSchemeForm()<cr>
-
-    " Send the current top-level form to the REPL
-    au FileType scheme nnoremap <buffer> <silent> <localleader>e :call SendToplevelSchemeForm()<cr>
-
-    " Send the entire buffer to the REPL ([r]eload)
-    au FileType scheme nnoremap <buffer> <silent> <localleader>r :call SendSchemeBuffer()<cr>
-
-    " Clear the REPL
-    au FileType scheme nnoremap <buffer> <silent> <localleader>c :call NeoReplSendRaw("")<cr>
-
-    " Describe symbol under the cursor
-    au FileType scheme nnoremap <buffer> <silent> <localleader>d :call DescribeSchemeSymbol()<cr>
-
-    " Describe the last thing we typed
-    au FileType scheme inoremap <buffer> <silent> <c-d> <esc>mzb:call DescribeSchemeSymbol()<cr>`za
-
-    " Describe prompt
-    au FileType scheme nnoremap <buffer> <silent> <localleader>D :call DescribeSchemePrompt()<cr>
-
-    au FileType scheme RainbowParenthesesActivate
-    au syntax scheme RainbowParenthesesLoadRound
-    au syntax scheme RainbowParenthesesLoadSquare
-    au syntax scheme RainbowParenthesesLoadBraces
-
-    au FileType scheme silent! call TurnOnLispFolding()
-
-    au FileType scheme call EnableParedit()
-
-    " Indent top-level form.
-    au FileType scheme nmap <buffer> gi mz:silent normal99[(<cr>v%='z
-    " ])
-
-    " au FileType lisp setlocal equalprg=LISP=sbcl\ lispindent
-
-    " Navigate trees of sexps with arrows
-    au FileType scheme call s:vim_sexp_mappings()
-    au FileType scheme noremap <buffer> <left> :<c-u>call SexpBack()<cr>
-    au FileType scheme noremap <buffer> <right> :<c-u>call SexpForward()<cr>
-    au FileType scheme noremap <buffer> <up> :<c-u>call SexpUp()<cr>
-    au FileType scheme noremap <buffer> <down> :<c-u>call SexpDown()<cr>
+    au FileType sh nnoremap <buffer> <localleader>e :call NeoReplSendCurrentLine()<cr>
+    au FileType sh nnoremap <buffer> <localleader>E :call SendShellParagraph()<cr>
+    au FileType sh nnoremap <buffer> <localleader>F :call NeoReplSendEntireFile(1)<cr>
+    au FileType sh nnoremap <buffer> <localleader>c :call NeoReplSendRaw("clear")<cr>
 augroup END
 
 " }}}
@@ -2100,68 +1988,6 @@ augroup ft_shaderlab " {{{
 
     au FileType shaderlab setlocal shiftwidth=4
     au FileType shaderlab setlocal expandtab
-augroup END " }}}
-
-" }}}
-" Shen {{{
-
-" Helper Functions {{{
-function! HighlightShenRepl() "{{{
-    syn match replPrompt /\v^\(\d+-\)/
-    " syn match replComment /\v^;.*/
-
-    " syn match replResult /\v^#\<[^>]+\>$/
-    hi def link replResult Debug
-    hi def link replComment Comment
-endfunction "}}}
-
-function! OpenShenRepl() "{{{
-    NeoRepl rlwrap ./shen
-    call HighlightShenRepl()
-endfunction "}}}
-
-function! SetShenLispWords() "{{{
-    if exists("b:did_set_lisp_words")
-        return
-    endif
-
-    let b:did_set_lisp_words = 1
-
-    " setlocal lispwords+=block
-endfunction "}}}
-" }}}
-
-augroup ft_shen " {{{
-    au!
-
-    " au FileType shen nnoremap <buffer> U :syntax sync fromstart<cr>:redraw!<cr>:call TurnOnLispFolding()<cr>
-
-    au FileType shen call SetShenLispWords()
-    au FileType shen call EnableParedit()
-    au FileType shen silent! call TurnOnLispFolding()
-
-    " au FileType shen RainbowParenthesesActivate
-    " au syntax shen RainbowParenthesesLoadRound
-
-    " au FileType shen setlocal equalprg=lispindent
-
-    " Handy stuff
-    au FileType shen nnoremap <buffer> [] :call DuplicateLispForm()<cr>
-
-    " [o]pen repl
-    " [s]end to repl
-    " [c]lear repl
-    au FileType shen nnoremap <buffer> <silent> <localleader>o :call OpenShenRepl()<cr>
-    au FileType shen nnoremap <buffer> <silent> <localleader>e :call SendToplevelLispForm()<cr>
-    au FileType shen nnoremap <buffer> <silent> <localleader>c :call NeoReplSendRaw("")<cr>
-    au FileType shen nnoremap <buffer> gi :call IndentToplevelLispForm()<cr>
-
-    " Navigate trees of sexps with arrows
-    au FileType shen call s:vim_sexp_mappings()
-    au FileType shen noremap <buffer> <left>  :<c-u>call SexpBack()<cr>
-    au FileType shen noremap <buffer> <right> :<c-u>call SexpForward()<cr>
-    au FileType shen noremap <buffer> <up>    :<c-u>call SexpUp()<cr>
-    au FileType shen noremap <buffer> <down>  :<c-u>call SexpDown()<cr>
 augroup END " }}}
 
 " }}}
@@ -2413,7 +2239,26 @@ nnoremap <f6> :Neoformat<cr>
 " }}}
 " NeoRepl {{{
 
-nnoremap <leader>S 0v$:call NeoReplSendSelection()<cr>
+function! SelectAndSendToNeoRepl(selectionString, ...) "{{{
+    let ignoreBlankLines = a:0 >= 1 ? a:1 : 0
+
+    let view = winsaveview()
+
+    execute "normal! " . a:selectionString . "\<esc>"
+    call NeoReplSendSelection(ignoreBlankLines)
+
+    call winrestview(view)
+endfunction "}}}
+
+function! NeoReplSendEntireFile(...) "{{{
+    let ignoreBlankLines = a:0 >= 1 ? a:1 : 0
+
+    call SelectAndSendToNeoRepl("ggVG", ignoreBlankLines)
+endfunction "}}}
+
+function! NeoReplSendCurrentLine() "{{{
+    call SelectAndSendToNeoRepl("^vg_")
+endfunction "}}}
 
 " }}}
 " NERD Tree {{{
@@ -2817,7 +2662,7 @@ augroup LocalVlime
     autocmd!
 
     " Settings
-    au FileType vlime_sldb setlocal nowrap
+    au FileType vlime_sldb setlocal nowrap foldmethod=indent shiftwidth=8 tabstop=8
     au FileType vlime_repl setlocal nowrap winfixheight
 
     " Keys for Lisp files
@@ -2827,8 +2672,8 @@ augroup LocalVlime
     au FileType lisp nnoremap <buffer> <localleader>i :call vlime#plugin#Inspect(vlime#ui#CurExprOrAtom())<cr>
     au FileType lisp nnoremap <buffer> <nowait> <localleader>I :call vlime#plugin#Inspect()<cr>
     au FileType lisp nnoremap <buffer> M :call vlime#plugin#DocumentationSymbol(vlime#ui#CurAtom())<cr>
-    au FileType lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
     au FileType lisp nnoremap <buffer> gi :call IndentToplevelLispForm()<cr>
+    au FileType lisp setlocal indentexpr=vlime#plugin#CalcCurIndent()
 
     " Keys for the REPL
     au FileType vlime_repl      nnoremap <buffer> i :call vlime#ui#repl#InspectCurREPLPresentation()<cr>

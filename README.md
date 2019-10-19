@@ -14,7 +14,7 @@ Your ~/.vimrc should look something like:
 
 Then:
 
-    ~$ cd ~/.vim/ && ./up.sh
+    ~$ cd ~/.vim/ && ./update
 
 To update plugins:
 
@@ -31,8 +31,7 @@ Based on
 
 * <http://bitbucket.org/sjl/dotfiles/src/tip/vim/>
 
-Other interesting vimrc's
-
+Other interesting vimrc's:
 
 * <https://github.com/bling/dotvim/blob/master/vimrc>
 * <https://github.com/spf13/spf13-vim>
@@ -75,13 +74,10 @@ Try:
 
 *  Do you need ZWS? Try: &amp;#8203; &amp;#x200b; <200b>, utf-8 is e2808b
 
-* My font setup: I'm on a MBP 15" 2015+ and use SF Mono 10pt. I can only do this on a light
-  background (solarized-light is my preferred.) With dark backgrounds (Tomorrow-Night-Blue, iceberg,
-  nord), I need to increase the font size to 12pt. My other favorite font is IBM Plex Mono, it's
-  beautiful for printing and browsers but at smaller sizes (10pt), the Mac fonts are more readable.
-
+* My font setup: I'm on a MBP 15" 2015+ and use SF Mono 10pt on Solarized Light.
 
 Windows doesn't seem to render digraphs and special fonts correctly unless you do:
 (Put this in local _vimrc)
 
     set renderoptions=type:directx
+

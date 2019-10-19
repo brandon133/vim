@@ -500,7 +500,7 @@ let g:dbext_default_prompt_for_parameters=0 " globally turn off input prompt
 let g:dbext_default_buffer_lines=27 " size of Result buffer window (default is 5)
 let g:dbext_default_history_file='$HOME/.tmp/.dbext_history'
 let g:dbext_default_type='PGSQL'
-let g:dbext_default_profile_pg='type=PGSQL:user=postgres:passwd='
+let g:dbext_default_profile_PG='type=PGSQL'
 
 " fugitive
 au BufNewFile,BufRead .git/index setlocal nolist
@@ -533,9 +533,11 @@ let NERDTreeMapJumpFirstChild='gK'
 
 " ale
 
-" disable ale/polyglot for java (using eclim)
+" using eclim for java
 let g:ale_linters={'java': []}
 let g:polyglot_disabled=['java']
+
+let g:ale_linters={'python': ['flake8', 'mypy']}
 
 "let g:ale_lint_on_save=1
 "let g:ale_lint_on_text_changed=0
@@ -627,9 +629,10 @@ augroup END
 
 augroup ft_python
 	au!
+	" pep8 settings (except tw=78)
 	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 	au FileType python setlocal nowrap
-	au FileType python setlocal define=^\s*\\(def\\\\|class\\)
+	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
 	au FileType python nnoremap <localleader>e :w<cr>:Clam python %:p<cr>
 	au FileType python nnoremap <localleader>E :w<cr>:Clam python <C-R>=expand("%:p")<cr>
@@ -820,8 +823,8 @@ let g:lightline={
 "set notermguicolors " not available for terminal.app :(
 
 " tmux, see :h xterm-true-color
-"let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-"let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 
 " italics, check if your terminal supports italics: echo -e "\e[3mfoo\e[23m"
 " https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
@@ -932,8 +935,8 @@ if has("transparency")
 endif
 
 if g:os == "Darwin"
-	set guifont=SF\ Mono:h10
-	"set guifont=IBM\ Plex\ Mono:h11
+	"set guifont=SF\ Mono:h10
+	set guifont=Monofur:h12
 elseif g:os == "Linux"
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
