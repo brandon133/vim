@@ -13,18 +13,18 @@ plugins-color/start/tender
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table
 ## ----- ui
-plugins-ui/start/FastFold
+plugins-ui/start/fastfold
 plugins-ui/start/lightline
 plugins-ui/start/tmux-navigator
 plugins-ui/start/vimux
 ## ----- syntax/languages
-plugins-syn/start/SimpylFold
 plugins-syn/start/ale
 plugins-syn/start/autotag
 plugins-syn/start/closer
 plugins-syn/start/indent-sh
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
+plugins-syn/start/simpylfold
 plugins-syn/start/supertab
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
