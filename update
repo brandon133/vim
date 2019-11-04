@@ -88,7 +88,7 @@ fi
 
 # check links for colors
 pushd pack/plugins-color/start >/dev/null
-if [[ "$(< /proc/sys/kernel/osrelease)" == *Microsoft ]]; then
+if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)" == *Microsoft ]]; then
 	[ -L "tomorrow-theme-vim" ] && [ -L "vim-colors-solarized" ] || {
 		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
 		echo "***   cd $BASEDIR/pack/plugins-color-start, and run:"

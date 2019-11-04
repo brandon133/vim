@@ -49,7 +49,8 @@ set sidescroll=1
 set sidescrolloff=10
 set lazyredraw
 set list
-set listchars=tab:\ \ ,trail:⌴,precedes:❮,extends:❯
+"set listchars=tab:\ \ ,trail:⌴,precedes:❮,extends:❯
+set listchars=tab:\ \ ,trail:_,precedes:❮,extends:❯
 set listchars+=tab:⋮\ 
 set nonumber
 set norelativenumber
@@ -211,8 +212,8 @@ nnoremap J mzJ`z
 nnoremap S i<cr><Esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
 
 " add to local dictionary
-nnoremap zg 2zg
-nnoremap zG 1zg
+"nnoremap zg 2zg
+"nnoremap zG 1zg
 
 " display the number of matches for the last search
 nmap <Leader>/ :%s:<C-R>/::gn<cr>
@@ -481,6 +482,17 @@ au FileType java nnoremap <silent> <Leader>jd :JavaDocSearch -x declarations<cr>
 au FileType java nnoremap <silent> <Leader>jh :JavaCallHierarchy<cr>
 au FileType java nnoremap <silent> <Leader>ji :JavaImport<cr>
 au FileType java nnoremap <silent> <Leader>jI :JavaImportOrganize<cr>
+
+" Customize compiler options and code assists of the server under your project folder.
+"  Modify the file `.settings/org.eclipse.jdt.core.prefs` with options presented at:
+"  https://help.eclipse.org/neon/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/JavaCore.html.
+"let g:ale_java_javalsp_executable=expand('~/bin/eclipse-jdtls')
+
+" ale-java-eclipselsp using eclipse.jdt.ls
+"let g:ale_java_eclipselsp_path=expand('~/bin/eclipse.jdt.ls')
+"let g:ale_java_eclipselsp_config_path=expand('~/bin/eclipse.jdt.ls/config_linux')
+"let g:ale_java_eclipselsp_workspace_path=expand('~/workspace')
+"let g:ale_disable_lsp=1
 
 " go
 let g:go_fmt_command="goimports"
@@ -806,8 +818,10 @@ endfunction
 " show trailing spaces in non-insert mode
 augroup trailing
 	au!
-	au InsertEnter * :set listchars-=trail:⌴
-	au InsertLeave * :set listchars+=trail:⌴
+	"au InsertEnter * :set listchars-=trail:⌴
+	"au InsertLeave * :set listchars+=trail:⌴
+	au InsertEnter * :set listchars-=trail:_
+	au InsertLeave * :set listchars+=trail:_
 augroup END
 
 " lightline
@@ -935,8 +949,7 @@ if has("transparency")
 endif
 
 if g:os == "Darwin"
-	"set guifont=SF\ Mono:h10
-	set guifont=Monofur:h12
+	set guifont=AnkaCoder-C87-r:h11
 elseif g:os == "Linux"
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
