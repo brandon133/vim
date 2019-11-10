@@ -203,9 +203,6 @@ nnoremap <Leader>P :set paste!<cr>
 nnoremap <down> gj
 nnoremap <up> gk
 
-" redraw (<C-l> is mapped to <C-w>l by tmux-naviage)
-nnoremap <Esc>l :redraw!<cr>
-
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
 " split line (sister to [J]oin lines)
@@ -433,8 +430,12 @@ inoremap <C-]> <C-x><C-]>
 " http://tilvim.com/2016/01/06/fzf.html
 imap <C-l> <Plug>(fzf-complete-line)
 
-" tmux
-let g:tmux_navigator_disable_when_zoomed=1
+" windows movements
+nmap <silent> <C-h> :wincmd h<cr>
+nmap <silent> <C-l> :wincmd l<cr>
+nmap <silent> <C-j> :wincmd j<cr>
+nmap <silent> <C-k> :wincmd k<cr>
+nnoremap <Esc>l :redraw!<cr> " remap default <C-l>
 
 " supertab
 let g:SuperTabDefaultCompletionType="context"

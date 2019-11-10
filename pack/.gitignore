@@ -15,7 +15,6 @@ plugins-color/start/xterm-color-table
 ## ----- ui
 plugins-ui/start/fastfold
 plugins-ui/start/lightline
-plugins-ui/start/tmux-navigator
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
