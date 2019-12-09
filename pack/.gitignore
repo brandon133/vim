@@ -1,5 +1,4 @@
 ## ----- colorscheme
-plugins-color/start/ayu
 plugins-color/start/iceberg
 plugins-color/start/molokai
 plugins-color/start/monochrome
@@ -8,18 +7,18 @@ plugins-color/start/nord
 plugins-color/start/papercolor-theme
 plugins-color/start/solarized
 plugins-color/start/solarized8
-plugins-color/start/sublime-monokai
 plugins-color/start/tender
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table
 ## ----- ui
-plugins-ui/start/fastfold
+plugins-ui/start/boxdraw
 plugins-ui/start/lightline
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
 plugins-syn/start/autotag
 plugins-syn/start/closer
+plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
 plugins-syn/start/polyglot
 plugins-syn/start/prettier

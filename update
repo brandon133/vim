@@ -1,6 +1,4 @@
 #!/bin/bash
-BASEDIR=`cd $(dirname $0); pwd`
-
 ## -----
 ## pack/.gitignore is the spec for the plugins we are using
 #  To remove an existing plugin:
@@ -13,7 +11,7 @@ BASEDIR=`cd $(dirname $0); pwd`
 #    3 if you didn't add the plugin, the script will automatically do this
 ## -----
 
-packdir="$BASEDIR/pack"
+packdir="${0%/*}/pack"
 gitignore=$packdir/.gitignore
 gitall=$packdir/gitall.sh
 
@@ -91,7 +89,7 @@ pushd pack/plugins-color/start >/dev/null
 if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)" == *Microsoft ]]; then
 	[ -L "tomorrow-theme-vim" ] && [ -L "vim-colors-solarized" ] || {
 		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
-		echo "***   cd $BASEDIR/pack/plugins-color-start, and run:"
+		echo "***   cd ${0%/*}/pack/plugins-color-start, and run:"
 		echo "    mklink /D vim-colors-solarized .\solarized\vim-colors-solarized"
 		echo "    mklink /D tomorrow-theme-vim .\tomorrow-theme\vim"
 	}

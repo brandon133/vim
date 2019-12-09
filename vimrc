@@ -546,11 +546,13 @@ let NERDTreeMapJumpFirstChild='gK'
 
 " ale
 
-" using eclim for java
-let g:ale_linters={'java': []}
 let g:polyglot_disabled=['java']
 
-let g:ale_linters={'python': ['flake8', 'mypy']}
+" using eclim for java
+let g:ale_linters={
+	\ 'java': [],
+	\ 'python': ['flake8', 'mypy']
+	\ }
 
 "let g:ale_lint_on_save=1
 "let g:ale_lint_on_text_changed=0
@@ -647,6 +649,10 @@ augroup ft_python
 	au FileType python setlocal nowrap
 	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
+	" simpylfold
+	let g:SimpylFold_fold_docstring=1
+	let g:SimpylFold_fold_import=1
+
 	au FileType python nnoremap <localleader>e :w<cr>:Clam python %:p<cr>
 	au FileType python nnoremap <localleader>E :w<cr>:Clam python <C-R>=expand("%:p")<cr>
 
@@ -656,6 +662,13 @@ augroup ft_python
 	au FileType python vnoremap <buffer> <localleader>p :!yapf<cr>
 
 	au FileType python call MakeSpacelessBufferIabbrev('pr.', "print(f'>>> {}')<left><left><left>")
+augroup END
+
+augroup ft_ipynb
+	au!
+	au FileType ipynb setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+
+	au Filetype ipynb nnoremap <buffer> <localleader>p :w<cr>:!gfm % \|bcat<cr>
 augroup END
 
 augroup ft_go
@@ -676,6 +689,8 @@ augroup ft_postgres
 	au FileType pgsql setlocal foldmarker={{{,}}}
 
 	au FileType pgsql setlocal commentstring=--\ %s comments=:--
+
+	au FileType pgsql setl formatprg=pg_format\ -
 
 	" send to tmux with localleader e
 	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<cr>vip"ry:call SendToTmux(@r)<cr>:call winrestview(psql_tslime_view)<cr>
@@ -950,7 +965,8 @@ if has("transparency")
 endif
 
 if g:os == "Darwin"
-	set guifont=AnkaCoder-C87-r:h11
+	"set guifont=AnkaCoder-C87-r:h11
+	set guifont=SometypeMono-Regular:h11
 elseif g:os == "Linux"
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
