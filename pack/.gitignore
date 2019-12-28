@@ -1,10 +1,23 @@
 ## ----- colorscheme
+plugins-color/start/ayu
+plugins-color/start/deus
+plugins-color/start/gotham
+plugins-color/start/gruvbox
+plugins-color/start/hybrid
+plugins-color/start/hybrid-material
 plugins-color/start/iceberg
+plugins-color/start/lightning
+plugins-color/start/lucid
 plugins-color/start/molokai
 plugins-color/start/monochrome
-plugins-color/start/monokai
 plugins-color/start/nord
+plugins-color/start/oceanic-next
+plugins-color/start/one
 plugins-color/start/papercolor-theme
+plugins-color/start/pink-moon
+plugins-color/start/pyte
+plugins-color/start/seoul256
+plugins-color/start/snow
 plugins-color/start/solarized
 plugins-color/start/solarized8
 plugins-color/start/tender
@@ -22,6 +35,7 @@ plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
+plugins-syn/start/repl
 plugins-syn/start/simpylfold
 plugins-syn/start/supertab
 ## ----- lisp/clojure
