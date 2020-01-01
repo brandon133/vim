@@ -9,6 +9,7 @@ Put all files in ~/.vim/
 Your ~/.vimrc should look something like:
 
     scriptencoding utf-8
+    set encoding=utf-8
     source ~/.vim/vimrc
     " --- overrides:
 
@@ -31,7 +32,12 @@ Based on
 
 * <http://bitbucket.org/sjl/dotfiles/src/tip/vim/>
 
-Other interesting vimrc's:
+Also:
+
+*  https://stevelosh.com/blog/2010/09/coming-home-to-vim/
+*  https://begriffs.com/posts/2012-09-10-bespoke-vim.html
+
+See links from above. Also:
 
 * <https://github.com/bling/dotvim/blob/master/vimrc>
 * <https://github.com/spf13/spf13-vim>
@@ -41,6 +47,13 @@ Other interesting vimrc's:
 * <http://dougblack.io/words/a-good-vimrc.html>
 * <https://github.com/grassdog/dotfiles/blob/master/files/.vim/vimrc>
 * <https://github.com/romainl/idiomatic-vimrc/blob/master/idiomatic-vimrc.vim>
+
+### Plugins
+
+* ALE
+* fzf
+* supertab
+* tpope
 
 ### Command line tricks
 
@@ -57,9 +70,9 @@ Try:
 
 ## Fonts
 
-**Some characters**:
+**Some interesting characters**:
 
-*  ⚡ ⠠⠵   ϟ
+*  ⚡ ϟ ↯ ⠠⠵
 
 **Collections**:
 
@@ -75,6 +88,7 @@ Try:
 *  Do you need ZWS? Try: &amp;#8203; &amp;#x200b; <200b>, utf-8 is e2808b
 
 * My font setup: I'm on a MBP 15" 2015+ and use SF Mono 10pt on Solarized Light.
+* Try https://app.programmingfonts.org/ for fonts
 
 Windows doesn't seem to render digraphs and special fonts correctly unless you do:
 (Put this in local _vimrc)

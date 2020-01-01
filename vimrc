@@ -5,6 +5,8 @@
 " tips:
 "  http://rayninfo.co.uk/vimtips.html (copied locally)
 "  https://github.com/romainl/idiomatic-vimrc/blob/master/idiomatic-vimrc.vim
+"  https://stevelosh.com/blog/2010/09/coming-home-to-vim/
+"  https://begriffs.com/posts/2012-09-10-bespoke-vim.html
 "
 " nice digraph help page:
 "  :help digraph-table
@@ -58,7 +60,7 @@ set norelativenumber
 set synmaxcol=333
 set hlsearch
 set colorcolumn=+1
-let &spellfile=g:VimUserDir . "/dict.utf-8.add,.dict.utf-8.add"
+let &spellfile="$HOME/.dict.utf-8.add,.dict.utf-8.add"
 "  6 multiple windows
 set laststatus=2
 set hidden " buffers hidden when abandoned
@@ -136,6 +138,7 @@ set gdefault
 set viminfo=%,'999,/99,:999
 " }}}
 
+
 " behavior ---------------------------------------------------------------------
 
 " make sure vim returns to the same line when you reopen a file
@@ -189,10 +192,10 @@ endfunction
 
 " mappings ---------------------------------------------------------------------
 
-" fuck you apple for taking away the physical ESC key
-" tried various mappings but haven't found a vim solution yet,
-"  so using karabiner w/ cmd key combos for now (in my dotfiles project)
-" note: this always works for escape in VIM: <c-[> and <c-c>
+" if you have a macbook w/o escape key, see karabiner solution (in specifict config)
+" briefly: grave_accent_and_tilde -> esc
+"          fn/ctl + grave_accent_and_tilde -> grave_accent_and_tilde
+" also, this always works for escape in VIM: <C-[> or <C-c>
 
 " toggle options
 nnoremap <Leader>S :setlocal spell!<cr>
@@ -208,9 +211,8 @@ nnoremap J mzJ`z
 " split line (sister to [J]oin lines)
 nnoremap S i<cr><Esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
 
-" add to local dictionary
-"nnoremap zg 2zg
-"nnoremap zG 1zg
+" add to local dictionary (see spellfile setting, the #2 is the local)
+nnoremap zG 2zg
 
 " display the number of matches for the last search
 nmap <Leader>/ :%s:<C-R>/::gn<cr>
@@ -268,11 +270,13 @@ nnoremap vv ^vg_
 vmap <Leader>C :w! ~/.tmp/.pbuf<cr>
 nmap <Leader>V :r ~/.tmp/.pbuf<cr>
 
-" quickfix
-noremap <Leader>co :copen<cr>zvzz
-noremap <Leader>cc :ccl<cr>zvzz
-noremap ]q :cnext<cr>
-noremap [q :cprev<cr>
+" quickfix/location list
+noremap ]q :cn<cr>
+noremap [q :cp<cr>
+noremap ]Q :cnew<cr>
+noremap [Q :col<cr>
+noremap ]l :ln<cr>
+noremap [l :lp<cr>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
 
@@ -338,11 +342,9 @@ function! PulseCursorLine()
 	set nocursorline
 endfunction
 
-
 function! <SID>SynStack()
 	echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
 endfunc
-
 
 function! RemoveFancyCharacters()
 	let typo={}
@@ -355,7 +357,6 @@ function! RemoveFancyCharacters()
 	let typo["…"]='...'
 	:exe ":%s/".join(keys(typo), '\|').'/\=typo[submatch(0)]/ge'
 endfunction
-
 
 " Highlight words temporarily
 " http://vim.wikia.com/wiki/Highlight_multiple_words
@@ -402,7 +403,6 @@ function! ClearInterestingWords()
 	silent! call matchdelete(86755)
 	silent! call matchdelete(86756)
 endfunction
-
 
 " abbrev helpers
 
@@ -456,8 +456,10 @@ nnoremap <Leader>G :Ack!<Space>""<left>
 xnoremap <Leader>G y:Ack!<Space>"<C-r>""
 xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<cr>
 
-" The directory for where bookmarks and history are saved (as .netrwbook and .netrwhist)
+"netrw
+" The directory for bookmarks and history (.netrwbook, .netrwhist)
 let g:netrw_home='$HOME/.tmp'
+let g:netrw_liststyle=3
 
 " Kwbd
 nmap <Leader>q <Plug>Kwbd
@@ -518,32 +520,6 @@ let g:dbext_default_profile_PG='type=PGSQL'
 " fugitive
 au BufNewFile,BufRead .git/index setlocal nolist
 
-" nerdtree
-noremap  <F2> :NERDTreeToggle<cr>
-inoremap <F2> <Esc>:NERDTreeToggle<cr>
-augroup ps_nerdtree
-	au!
-	au Filetype nerdtree setlocal nolist
-	au Filetype nerdtree nnoremap <buffer> H :vertical resize -10<cr>
-	au Filetype nerdtree nnoremap <buffer> L :vertical resize +10<cr>
-	"au Filetype nerdtree nnoremap <buffer> K :q<cr>
-augroup END
-let g:NERDTreeDirArrowExpandable='▸'
-let g:NERDTreeDirArrowCollapsible='▾'
-let NERDTreeHighlightCursorline=1
-let NERDTreeIgnore=[
-	\ '\~$',
-	\ '.*\.pyc$', 'pip-log\.txt$',
-	\ '.*.pid', 'monitor.py',
-	\ '.*\.o$', '.*\.pdf$', '.*\.idocx$',
-	\ '^tags$',
-	\ '.*\.class$']
-let NERDTreeMinimalUI=1
-let NERDTreeChDirMode=2
-let NERDTreeMapJumpFirstChild='gK'
-"let NERDTreeDirArrows=1
-"let NERDChristmasTree=1
-
 " ale
 
 let g:polyglot_disabled=['java']
@@ -600,7 +576,6 @@ function! DiffFoldLevel()
 		return '='
 	endif
 endfunction
-
 
 " JSON formating is generally useful, jq leaves order and is fast, py is slow and sorts the keys
 vnoremap <leader>jq :!jq '.'<cr>
@@ -934,7 +909,8 @@ endfunction
 
 if &diff
 	" better diff colorscheme
-	colorscheme iceberg
+	set background=dark
+	colorscheme gruvbox
 else
 	if $TERM_PROFILE == 'Ocean'
 		set background=dark

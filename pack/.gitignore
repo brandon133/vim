@@ -6,13 +6,13 @@ plugins-color/start/gruvbox
 plugins-color/start/hybrid
 plugins-color/start/hybrid-material
 plugins-color/start/iceberg
-plugins-color/start/lightning
 plugins-color/start/lucid
 plugins-color/start/molokai
 plugins-color/start/monochrome
 plugins-color/start/nord
 plugins-color/start/oceanic-next
 plugins-color/start/one
+plugins-color/start/onedark
 plugins-color/start/papercolor-theme
 plugins-color/start/pink-moon
 plugins-color/start/pyte
@@ -20,7 +20,7 @@ plugins-color/start/seoul256
 plugins-color/start/snow
 plugins-color/start/solarized
 plugins-color/start/solarized8
-plugins-color/start/tender
+plugins-color/start/summerfruit256
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table
 ## ----- ui
@@ -49,10 +49,10 @@ plugins-util/start/dirdiff
 plugins-util/start/fzf
 plugins-util/start/kwbd
 plugins-util/start/matchit
-plugins-util/start/nerdtree
 ## ----- tpope in syn and util
 plugins-syn/start/commentary
 plugins-syn/start/endwise
 plugins-util/start/abolish
 plugins-util/start/fugitive
 plugins-util/start/surround
+plugins-util/start/vinegar
