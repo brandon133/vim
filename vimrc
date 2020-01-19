@@ -33,6 +33,10 @@ if !exists("g:VimUserDir")
 	let g:VimUserDir=split(&rtp, ',')[0]
 endif
 
+" force py3, see https://robertbasic.com/blog/force-python-version-in-vim/
+if has('python3')
+endif
+
 " base options, see `:options {{{
 "  1 important
 set nocompatible
@@ -167,8 +171,8 @@ nnoremap <silent> * :let stay_star_view=winsaveview()<cr>*:call winrestview(stay
 " resize panes when window/terminal gets resize
 au VimResized * :wincmd =
 
-" folding is overrated imo
-set foldlevelstart=0
+" folding ambilvalence
+set foldlevelstart=1
 set foldtext=MyFoldText()
 " recursively open whatever fold we're in
 nnoremap zO zczO
@@ -271,6 +275,7 @@ vmap <Leader>C :w! ~/.tmp/.pbuf<cr>
 nmap <Leader>V :r ~/.tmp/.pbuf<cr>
 
 " quickfix/location list
+noremap <Leader>cc :ccl<cr>
 noremap ]q :cn<cr>
 noremap [q :cp<cr>
 noremap ]Q :cnew<cr>
@@ -288,6 +293,7 @@ nmap <Leader>F :Files<cr>
 nmap <Leader>g :Find<cr>
 nmap <Leader>t :BTags<cr>
 nmap <Leader>T :Tags<cr>
+nmap <Leader>C :Colors<cr>
 " https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
@@ -443,6 +449,12 @@ let g:SuperTabMappingForward='<C-n>'
 let g:SuperTabMappingBackward='<C-p>'
 let g:SuperTabClosePreviewOnPopupClose=1
 
+" ultisnips
+let g:UltiSnipsExpandTrigger='x'
+let g:UltiSnipsListSnippets='X'
+"let g:UltiSnipsJumpForwardTrigger='<C-j>'
+"let g:UltiSnipsJumpBackwardTrigger='<C-k>'
+
 " fzf
 set rtp+=~/bin/.fzf/bin
 
@@ -459,7 +471,7 @@ xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<cr>
 "netrw
 " The directory for bookmarks and history (.netrwbook, .netrwhist)
 let g:netrw_home='$HOME/.tmp'
-let g:netrw_liststyle=3
+let g:netrw_list_hide='\(^\|\s\s\)\zs\.\S\+'
 
 " Kwbd
 nmap <Leader>q <Plug>Kwbd
@@ -625,6 +637,7 @@ augroup ft_python
 	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
 	" simpylfold
+	let g:SimpylFold_docstring_preview=0
 	let g:SimpylFold_fold_docstring=1
 	let g:SimpylFold_fold_import=1
 
@@ -925,7 +938,7 @@ else
 		if has("gui_running")
 			call ColorSolarized()
 		else
-			color PaperColor
+			color ayu
 		endif
 	endif
 endif
@@ -947,7 +960,7 @@ elseif g:os == "Linux"
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
 elseif g:os == "Windows"
-	set guifont=monofur:h10
+	set guifont=monofur:h11
 	set guioptions+=a
 endif
 
