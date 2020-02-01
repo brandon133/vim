@@ -450,10 +450,8 @@ let g:SuperTabMappingBackward='<C-p>'
 let g:SuperTabClosePreviewOnPopupClose=1
 
 " ultisnips
-let g:UltiSnipsExpandTrigger='x'
-let g:UltiSnipsListSnippets='X'
-"let g:UltiSnipsJumpForwardTrigger='<C-j>'
-"let g:UltiSnipsJumpBackwardTrigger='<C-k>'
+let g:UltiSnipsExpandTrigger='<C-j>'
+let g:UltiSnipsListSnippets='<C-l>'
 
 " fzf
 set rtp+=~/bin/.fzf/bin
@@ -841,8 +839,8 @@ let g:lightline={
 "set notermguicolors " not available for terminal.app :(
 
 " tmux, see :h xterm-true-color
-let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+let &t_8f="\<Esc>[38:2:%lu:%lu:%lum"
+let &t_8b="\<Esc>[48:2:%lu:%lu:%lum"
 
 " italics, check if your terminal supports italics: echo -e "\e[3mfoo\e[23m"
 " https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
