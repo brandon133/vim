@@ -932,11 +932,12 @@ else
 		call ColorNord()
 
 	elseif !exists("g:colors_name")
+		" default color settings for gui and console
 		set background=light
 		if has("gui_running")
 			call ColorSolarized()
 		else
-			color ayu
+			color PaperColor
 		endif
 	endif
 endif
