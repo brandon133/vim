@@ -532,29 +532,44 @@ au BufNewFile,BufRead .git/index setlocal nolist
 
 " ale
 
-let g:polyglot_disabled=['java']
-
-" using eclim for java
-let g:ale_linters={
-	\ 'java': [],
-	\ 'python': ['flake8', 'mypy']
-	\ }
-
 "let g:ale_lint_on_save=1
-"let g:ale_lint_on_text_changed=0
 "let g:ale_lint_on_enter=0
+"let g:ale_lint_on_insert_leave=0
+"let g:ale_lint_on_text_changed='never'
 
-"let g:ale_sign_error='>>'
-"let g:ale_sign_warning='>'
 let g:ale_sign_error='⦿'
-let g:ale_sign_warning='⦿'
+let g:ale_sign_warning='•'
 
 "let g:ale_echo_msg_error_str='E'
 "let g:ale_echo_msg_warning_str='W'
-"let g:ale_echo_msg_format='[%linter%] %s [%severity%]'
+let g:ale_echo_msg_format='[%linter%] %s'
+
+" disable ale lsp
+let g:ale_linters={
+	\ 'java': [],
+	\ 'kotlin': ['kotlinc', 'ktlint'],
+	\ 'python': ['flake8', 'mypy']
+	\ }
+
+" ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
+"set omnifunc=ale#completion#OmniFunc
 
 "nmap <silent> <Leader>k <Plug>(ale_previous_wrap)
 "nmap <silent> <Leader>j <Plug>(ale_next_wrap)
+
+" youcompleteme
+
+let g:ycm_error_symbol='>>'
+let g:ycm_warning_symbol='->'
+
+let g:ycm_collect_identifiers_from_tags_files=1
+
+let g:ycm_language_server = [
+	\ { 'name': 'kotlin',
+	\   'filetypes': [ 'kotlin' ],
+	\   'cmdline': [ 'kotlin-language-server' ],
+	\ }
+\ ]
 
 
 " filetype/plugins -------------------------------------------------------------
