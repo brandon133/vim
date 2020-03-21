@@ -304,6 +304,8 @@ nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
 vnoremap <leader>e :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
 vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
 
+iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
+
 
 " functions --------------------------------------------------------------------
 
@@ -539,12 +541,9 @@ au BufNewFile,BufRead .git/index setlocal nolist
 
 let g:ale_sign_error='⦿'
 let g:ale_sign_warning='•'
-
-"let g:ale_echo_msg_error_str='E'
-"let g:ale_echo_msg_warning_str='W'
 let g:ale_echo_msg_format='[%linter%] %s'
 
-" disable ale lsp
+" disable ale lsp (using ycm lsp)
 let g:ale_linters={
 	\ 'java': [],
 	\ 'kotlin': ['kotlinc', 'ktlint'],
@@ -554,14 +553,12 @@ let g:ale_linters={
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 "set omnifunc=ale#completion#OmniFunc
 
-"nmap <silent> <Leader>k <Plug>(ale_previous_wrap)
-"nmap <silent> <Leader>j <Plug>(ale_next_wrap)
-
 " youcompleteme
 
-let g:ycm_error_symbol='>>'
-let g:ycm_warning_symbol='->'
-
+let g:ycm_error_symbol='->'
+let g:ycm_warning_symbol='>-'
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_collect_identifiers_from_tags_files=1
 
 let g:ycm_language_server = [
@@ -630,11 +627,11 @@ augroup ft_java
 
 	" abbreviations
 	au FileType java call MakeSpacelessBufferIabbrev('lm.', 'List<Map<>><left><left>')
-	au FileType java iabbrev <buffer> lmso. List<Map<String, Object>>
-	au FileType java iabbrev <buffer> mso. Map<String, Object>
-	au FileType java iabbrev <buffer> implog. import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
-	au FileType java iabbrev <buffer> imppre. import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
-	au FileType java iabbrev <buffer> tostr.  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
+	au FileType java iabbrev <buffer> :lmso: List<Map<String, Object>>
+	au FileType java iabbrev <buffer> :mso: Map<String, Object>
+	au FileType java iabbrev <buffer> :implog: import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
+	au FileType java iabbrev <buffer> :imppre: import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
+	au FileType java iabbrev <buffer> :tostr:  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
 augroup END
 
 augroup ft_javascript
@@ -870,14 +867,6 @@ hi SpellBad cterm=undercurl,italic guifg=#d33682
 autocmd InsertEnter * hi ColorColumn ctermbg=117 guibg=#87dfff
 autocmd InsertLeave * hi ColorColumn ctermbg=7 guibg=#eee8d5
 
-" colorscheme settings
-let ayucolor='light'
-let g:monokai_term_italic=1
-let g:monokai_gui_italic=1
-let g:nord_italic=1
-let g:sublimemonokai_term_italic=1
-let g:sublimemonokai_gui_italic=1
-
 " gui options
 set guicursor=n-c:block-Cursor-blinkon0
 set guicursor+=v:block-blinkon0
@@ -886,21 +875,27 @@ set guicursor+=i-ci:ver20
 "set guioptions=e
 " default windows (new term): aegimrLtT
 
-function! ColorSet(...)
-	if a:0 > 0
-		execute 'colorscheme ' . a:1
-	endif
+" colorscheme settings
+let ayucolor='light'
+let g:monokai_term_italic=1
+let g:monokai_gui_italic=1
+let g:nord_italic=1
 
-	" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
-	hi! link SignColumn LineNr
-	" ale
-	hi! link ALEErrorSign ErrorMsg
-	hi! link ALEWarningSign WarningMsg
-endfunction
-function! ColorSolarized()
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default.light': {
+  \       'override' : {
+  \         'linenumber_bg' : ['#E9E9E9', '15']
+  \       }
+  \     }
+  \   }
+  \ }
+
+let g:solarized_contrast='normal' " normal/high/low
+let g:solarized_visibility='low'  " normal/high/low
+
+function! ColorSolarized8()
 	" for terminal.app, use https://github.com/tomislav/osx-terminal.app-colors-solarized
-	let g:solarized_contrast='normal' " normal/high/low
-	let g:solarized_visibility='low'  " normal/high/low
 	colorscheme solarized8
 	hi Cursor guibg=#f92672
 	hi Search guifg=#f0c674
@@ -913,48 +908,39 @@ function! ColorSolarized()
 		hi NonText ctermfg=10 guifg=#4996a2
 		hi SignColumn ctermbg=0 guibg=#073642
 	endif
-	call ColorSet()
-endfunction
-function! ColorNord()
-	call ColorSet('nord')
-	hi! link SignColumn Folded
-endfunction
-function! ColorIceberg()
-	call ColorSet('iceberg')
-	" reverse ErrorMsg
-	hi ErrorMsg guibg=#e27878 guifg=#161821
-	hi SpecialKey guifg=#444b71
-	hi NonText guifg=#89b8c2
-endfunction
-function! ColorToNBlue()
-	call ColorSet('Tomorrow-Night-Blue')
-	hi SpecialKey ctermfg=67 guifg=#7285b7
-	hi NonText ctermfg=14 guifg=Yellow
-	hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
+	" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
+	hi! link SignColumn LineNr
 endfunction
 
+" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
+augroup my_colors
+	autocmd!
+	autocmd ColorScheme solarized8 call ColorSolarized8()
+	autocmd ColorScheme iceberg
+		\ | hi ErrorMsg guibg=#e27878 guifg=#161821
+		\ | hi SpecialKey guifg=#444b71
+		\ | hi NonText guifg=#89b8c2
+	autocmd ColorScheme Tomorrow-Night-Blue
+		\ | hi SpecialKey ctermfg=67 guifg=#7285b7
+		\ | hi NonText ctermfg=14 guifg=Yellow
+		\ | hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
+augroup END
+
+" -- set the initial color
+set background=light
+color PaperColor
+" override for certain profiles (mac)
+if $TERM_PROFILE == 'Ocean' |
+	set background=dark | color Tomorrow-Night-Blue
+
+elseif $TERM_PROFILE == 'Silver_Aerogel'
+	color nord
+endif
+" better diff colorscheme
 if &diff
-	" better diff colorscheme
-	set background=dark
-	colorscheme gruvbox
+	set background=dark | colorscheme gruvbox
 else
-	if $TERM_PROFILE == 'Ocean'
-		set background=dark
-		call ColorToNBlue()
 
-	elseif $TERM_PROFILE == 'Silver_Aerogel'
-		set background=light
-		call ColorNord()
-
-	elseif !exists("g:colors_name")
-		" default color settings for gui and console
-		set background=light
-		if has("gui_running")
-			call ColorSolarized()
-		else
-			color PaperColor
-		endif
-	endif
 endif
 
 if has("gui_running")
@@ -967,6 +953,7 @@ if has("transparency")
 	au FocusGained * :set transparency=0
 endif
 
+" -- set guifont for os I'm on
 if g:os == "Darwin"
 	"set guifont=AnkaCoder-C87-r:h11
 	set guifont=SometypeMono-Regular:h11
