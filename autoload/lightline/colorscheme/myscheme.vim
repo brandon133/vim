@@ -1,4 +1,5 @@
 " based on autoload/lightline/colorscheme/powerline.vim
+" diff ~/.vim/pack/plugins-ui/start/lightline/autoload/lightline/colorscheme/
 let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
 let s:p.normal.left = [ ['darkestgreen', 'brightgreen', 'bold'], ['white', 'gray4'] ]
 let s:p.normal.right = [ ['gray5', 'gray10'], ['gray9', 'gray4'], ['gray8', 'gray2'] ]
@@ -19,4 +20,4 @@ let s:p.tabline.right = [ [ 'gray9', 'gray3' ] ]
 let s:p.normal.error = [ [ 'gray9', 'brightestred' ] ]
 let s:p.normal.warning = [ [ 'gray1', 'yellow' ] ]
 
-let g:lightline#colorscheme#my#palette = lightline#colorscheme#fill(s:p)
+let g:lightline#colorscheme#myscheme#palette = lightline#colorscheme#fill(s:p)

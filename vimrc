@@ -304,7 +304,10 @@ nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
 vnoremap <leader>e :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
 vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
 
+" Insert Abbreviations
+
 iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
+iabbrev <buffer> :mdash: —
 
 
 " functions --------------------------------------------------------------------
@@ -443,7 +446,7 @@ nmap <silent> <C-h> :wincmd h<cr>
 nmap <silent> <C-l> :wincmd l<cr>
 nmap <silent> <C-j> :wincmd j<cr>
 nmap <silent> <C-k> :wincmd k<cr>
-nnoremap <Esc>l :redraw!<cr> " remap default <C-l>
+nnoremap <Leader>l :call popup_clear()<cr>:redraw!<cr>
 
 " supertab
 let g:SuperTabDefaultCompletionType="context"
@@ -474,7 +477,7 @@ let g:netrw_home='$HOME/.tmp'
 let g:netrw_list_hide='\(^\|\s\s\)\zs\.\S\+'
 
 " Kwbd
-nmap <Leader>q <Plug>Kwbd
+nmap <Leader>q :up<cr><Plug>Kwbd
 
 " `%%` is (command mode) abbrev for current directory
 cabbr <expr> %% expand('%:p:h')
@@ -531,6 +534,10 @@ let g:dbext_default_profile_PG='type=PGSQL'
 
 " fugitive
 au BufNewFile,BufRead .git/index setlocal nolist
+
+" polyglot
+
+let g:polyglot_disabled=[]
 
 " ale
 
@@ -599,7 +606,7 @@ function! DiffFoldLevel()
 	endif
 endfunction
 
-" JSON formating is generally useful, jq leaves order and is fast, py is slow and sorts the keys
+" JSON formating is generally useful, jq is fast and leaves key order, py is slower and sorts the keys
 vnoremap <leader>jq :!jq '.'<cr>
 vnoremap <leader>jr :!jq -r '.'<cr>
 vnoremap <leader>jp :!python -mjson.tool<cr>
@@ -634,6 +641,17 @@ augroup ft_java
 	au FileType java iabbrev <buffer> :tostr:  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
 augroup END
 
+augroup ft_kotlin
+	au!
+	au FileType kotlin set makeprg=gw\ build
+	au FileType kotlin set errorformat=
+		\ "%E%f:%l:%c: error: %m," .
+		\ "%W%f:%l:%c: warning: %m," .
+		\ "%Eerror: %m," .
+		\ "%Wwarning: %m," .
+		\ "%Iinfo: %m,"
+augroup END
+
 augroup ft_javascript
 	au!
 	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', "console.log(`>>> ${}`);<left><left><left><left>")
@@ -651,8 +669,8 @@ augroup ft_python
 	let g:SimpylFold_fold_docstring=1
 	let g:SimpylFold_fold_import=1
 
-	au FileType python nnoremap <localleader>e :w<cr>:Clam python %:p<cr>
-	au FileType python nnoremap <localleader>E :w<cr>:Clam python <C-R>=expand("%:p")<cr>
+	au FileType python nnoremap <localleader>e :up<cr>:Clam python %:p<cr>
+	au FileType python nnoremap <localleader>E :up<cr>:Clam python <C-R>=expand("%:p")<cr>
 
 	" yapf doesn't work w/ gq generally (only formats complete blocks)
 	let g:yapf_style="pep8"
@@ -665,8 +683,6 @@ augroup END
 augroup ft_ipynb
 	au!
 	au FileType ipynb setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-
-	au Filetype ipynb nnoremap <buffer> <localleader>p :w<cr>:!gfm % \|bcat<cr>
 augroup END
 
 augroup ft_go
@@ -700,9 +716,9 @@ augroup END
 augroup ft_html
 	au!
 	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html nnoremap <buffer> <localleader>p :w<cr>:!open %<cr>
+	au Filetype html nnoremap <buffer> <localleader>p :up<cr>:!open %<cr>
 	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html.mustache nnoremap <buffer> <localleader>p :w<cr>:!open %<cr>
+	au Filetype html.mustache nnoremap <buffer> <localleader>p :up<cr>:!open %<cr>
 augroup END
 
 augroup ft_markdown
@@ -713,7 +729,13 @@ augroup ft_markdown
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
-	au Filetype markdown nnoremap <buffer> <localleader>p :w<cr>:!gfm % \|bcat<cr>
+	if $SESSION_TYPE == "remote/ssh"
+		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:silent !gfm % >~/public_html/tmp.md.html<cr>
+			\ :silent redraw!<cr>
+			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<cr>
+	elseif g:os == "Darwin"
+		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:!gfm % \|bcat<cr>
+	endif
 augroup END
 
 augroup ft_json
@@ -841,7 +863,7 @@ augroup END
 " lightline
 
 let g:lightline={
-	\ 'colorscheme': 'my',
+	\ 'colorscheme': 'myscheme',
 	\ 'separator': { 'left': '', 'right': '' },
 	\ 'subseparator': { 'left': '│', 'right': '⋮' }
 	\ }
@@ -882,14 +904,19 @@ let g:monokai_gui_italic=1
 let g:nord_italic=1
 
 let g:PaperColor_Theme_Options = {
-  \   'theme': {
-  \     'default.light': {
-  \       'override' : {
-  \         'linenumber_bg' : ['#E9E9E9', '15']
-  \       }
-  \     }
-  \   }
-  \ }
+	\ 'theme': {
+	\   'default': {
+	\     'transparent_background': 0,
+	\     'allow_bold': 1,
+	\     'allow_italic': 1
+	\   },
+	\   'default.light': {
+	\     'override' : {
+	\       'linenumber_bg' : ['#E9E9E9', '15']
+	\     }
+	\   }
+	\ }
+\ }
 
 let g:solarized_contrast='normal' " normal/high/low
 let g:solarized_visibility='low'  " normal/high/low
@@ -929,6 +956,10 @@ augroup END
 " -- set the initial color
 set background=light
 color PaperColor
+" override for console (copy to ~/.vimrc and use the console scheme you want)
+if !has("gui_running")
+	color PaperColor
+endif
 " override for certain profiles (mac)
 if $TERM_PROFILE == 'Ocean' |
 	set background=dark | color Tomorrow-Night-Blue
@@ -939,12 +970,6 @@ endif
 " better diff colorscheme
 if &diff
 	set background=dark | colorscheme gruvbox
-else
-
-endif
-
-if has("gui_running")
-	set mouse=a
 endif
 
 if has("transparency")
@@ -953,7 +978,11 @@ if has("transparency")
 	au FocusGained * :set transparency=0
 endif
 
-" -- set guifont for os I'm on
+if has("gui_running")
+	set mouse=a
+endif
+
+" -- set guifont per os
 if g:os == "Darwin"
 	"set guifont=AnkaCoder-C87-r:h11
 	set guifont=SometypeMono-Regular:h11
@@ -966,7 +995,7 @@ elseif g:os == "Windows"
 endif
 
 " http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
-" DECSCUSR 1/2, 3/4, 5/6 -> blinking/steady block, underline, bar
+" DECSCUSR 1/2, 3/4, 5/6 -> blinking/steady: block, underline, bar
 let &t_SI.="\e[5 q"
 "let &t_SR.="\e[4 q"
 let &t_EI.="\e[2 q"

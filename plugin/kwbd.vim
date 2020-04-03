@@ -3,6 +3,12 @@
 "delete the buffer; keep windows; create a scratch buffer if no buffers left
 function s:Kwbd(kwbdStage)
   if(a:kwbdStage == 1)
+    if(&modified)
+      let answer = confirm("This buffer has been modified.  Are you sure you want to delete it?", "&Yes\n&No", 2)
+      if(answer != 1)
+        return
+      endif
+    endif
     if(!buflisted(winbufnr(0)))
       bd!
       return
