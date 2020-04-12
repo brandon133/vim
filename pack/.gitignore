@@ -31,13 +31,13 @@ plugins-syn/start/autotag
 plugins-syn/start/closer
 plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
+plugins-syn/start/languageclient
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
 plugins-syn/start/repl
 plugins-syn/start/simpylfold
 plugins-syn/start/ultisnips
 plugins-syn/start/snippets
-plugins-syn/start/youcompleteme
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
 plugins-clj/start/eastwood

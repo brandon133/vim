@@ -58,7 +58,7 @@ for d in $(ls -d $packdir/plugins-*/start); do
 			[[ $line =~ "url = " ]] && giturl=`echo $line|sed -e 's/^\s*url = //'`
 			[[ $line =~ "[submodule " ]] && has_submods=1 && break
 		done <$gconf
-		name=`echo $giturl|sed 's/.*\/\(.*\)/\1/'|sed 's/\.git$//'|sed 's/\.vim$//'|sed 's/\.zip$//'|sed 's/^vim-//'|sed 's/-vim$//'|tr '[:upper:]' '[:lower:]'`
+		name=`echo $giturl|sed 's/.*\/\(.*\)/\1/'|sed 's/\.git$//'|sed 's/[\.-]vim$//'|sed 's/\.zip$//'|sed 's/^vim-//'|sed 's/[\.-]neovim$//'tr '[:upper:]' '[:lower:]'`
 
 		echo "[ -d \"\$packdir/$subdir\" ] || { mkdir -p \"\$packdir/$subdir\" && cd \"\$packdir/$n/start\" && git clone --recursive $giturl $name; } ## $subdir" >>$gitall
 		if [ -z "$opt_noupdate" ]; then

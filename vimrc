@@ -11,7 +11,6 @@
 " nice digraph help page:
 "  :help digraph-table
 "
-" ⯅ ⯆ ⯇ ⯈
 " 🔒  🔑  + ∄ Ξ
 
 filetype off
@@ -78,6 +77,8 @@ set title
 " 10 GUI
 " 11 printing
 " 12 messages and info
+" don't give |ins-completion-menu| messages
+set shortmess+=c
 set showcmd
 set noshowmode " lightline makes this redundant
 set ruler
@@ -120,6 +121,8 @@ set noautoread
 " 20 the swap file
 set directory=~/.tmp/swap/
 set swapfile
+" default (4000ms) is too long and noticeable
+set updatetime=1000
 " 21 command line editing
 set history=9999
 set wildmode=full
@@ -477,29 +480,10 @@ let g:netrw_home='$HOME/.tmp'
 let g:netrw_list_hide='\(^\|\s\s\)\zs\.\S\+'
 
 " Kwbd
-nmap <Leader>q :up<cr><Plug>Kwbd
+nmap <Leader>Q :up<cr><Plug>Kwbd
 
 " `%%` is (command mode) abbrev for current directory
 cabbr <expr> %% expand('%:p:h')
-
-" http://eclim.org/vim/core/eclim.html
-let g:EclimQuickfixSignText='⯈'
-let g:EclimLoclistSignText='⯈'
-
-let g:EclimHighlightError='ErrorMsg'     " (Default: “Error”)
-let g:EclimHighlightWarning='WarningMsg' " (Default: “WarningMsg”)
-let g:EclimHighlightInfo='Statement'     " (Default: “Statement”)
-let g:EclimHighlightDebug='Normal'       " (Default: “Normal”)
-let g:EclimHighlightTrace='Normal'       " (Default: “Normal”)
-
-" eclim mappings
-au FileType java nnoremap <buffer> <silent> <Leader>v :silent! w<cr>:Validate<cr>
-au FileType java inoremap <buffer> <silent> <Leader>v <Esc>:silent! w<cr>:Validate<cr>
-au FileType java nnoremap <silent> <Leader>jc :JavaCorrect<cr>
-au FileType java nnoremap <silent> <Leader>jd :JavaDocSearch -x declarations<cr>
-au FileType java nnoremap <silent> <Leader>jh :JavaCallHierarchy<cr>
-au FileType java nnoremap <silent> <Leader>ji :JavaImport<cr>
-au FileType java nnoremap <silent> <Leader>jI :JavaImportOrganize<cr>
 
 " Customize compiler options and code assists of the server under your project folder.
 "  Modify the file `.settings/org.eclipse.jdt.core.prefs` with options presented at:
@@ -541,13 +525,8 @@ let g:polyglot_disabled=[]
 
 " ale
 
-"let g:ale_lint_on_save=1
-"let g:ale_lint_on_enter=0
-"let g:ale_lint_on_insert_leave=0
-"let g:ale_lint_on_text_changed='never'
-
-let g:ale_sign_error='⦿'
-let g:ale_sign_warning='•'
+let g:ale_sign_error='▶'
+let g:ale_sign_warning='▷'
 let g:ale_echo_msg_format='[%linter%] %s'
 
 " disable ale lsp (using ycm lsp)
@@ -560,21 +539,28 @@ let g:ale_linters={
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 "set omnifunc=ale#completion#OmniFunc
 
-" youcompleteme
+" LanguageClient-neovim
 
-let g:ycm_error_symbol='->'
-let g:ycm_warning_symbol='>-'
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_collect_identifiers_from_tags_files=1
+let g:LanguageClient_serverCommands = {
+    \ 'kotlin': ['kotlin-language-server'],
+    \ }
 
-let g:ycm_language_server = [
-	\ { 'name': 'kotlin',
-	\   'filetypes': [ 'kotlin' ],
-	\   'cmdline': [ 'kotlin-language-server' ],
-	\ }
-\ ]
+function LC_maps()
+	if has_key(g:LanguageClient_serverCommands, &filetype)
+		nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<cr>
+		nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<cr>
+		nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<cr>
+	endif
+endfunction
+autocmd FileType * call LC_maps()
 
+" If one is using deoplete/nvim-completion-manager at the same time, completion should
+" work out of the box. Otherwise, completion is available with 'C-X C-O' ('omnifunc').
+" Alternatively, set 'completefunc':
+set completefunc=LanguageClient#complete
+
+" To use the language server with Vim's formatting operator |gq|, set 'formatexpr':
+"set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
 
 " filetype/plugins -------------------------------------------------------------
 
@@ -606,10 +592,14 @@ function! DiffFoldLevel()
 	endif
 endfunction
 
-" JSON formating is generally useful, jq is fast and leaves key order, py is slower and sorts the keys
-vnoremap <leader>jq :!jq '.'<cr>
-vnoremap <leader>jr :!jq -r '.'<cr>
-vnoremap <leader>jp :!python -mjson.tool<cr>
+" JSON formating is generally useful: jq is fast and leaves key order, py is slower and sorts the keys
+" underscore is compact and has lots of options: https://github.com/ddopson/underscore-cli
+vnoremap <leader>fjq :!jq '.'<cr>
+vnoremap <leader>fjr :!jq -r '.'<cr>
+vnoremap <leader>fjp :!python -mjson.tool<cr>
+vnoremap <leader>fju :!underscore print<cr>
+" XML formatting is also generally useful:
+vnoremap <leader>fx :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
 
 augroup ft_text
 	au!
@@ -674,8 +664,8 @@ augroup ft_python
 
 	" yapf doesn't work w/ gq generally (only formats complete blocks)
 	let g:yapf_style="pep8"
-	au FileType python nnoremap <buffer> <localleader>p ^vg_:!yapf<cr>
-	au FileType python vnoremap <buffer> <localleader>p :!yapf<cr>
+	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<cr>
+	au FileType python vnoremap <buffer> <localleader>f :!yapf<cr>
 
 	au FileType python call MakeSpacelessBufferIabbrev('pr.', "print(f'>>> {}')<left><left><left>")
 augroup END
@@ -869,8 +859,9 @@ let g:lightline={
 	\ }
 
 " ----- colors/highlights/cursors
+" try: `:h sign`
 
-"set notermguicolors " not available for terminal.app :(
+"set notermguicolors " not available for mac terminal.app :(
 
 " tmux, see :h xterm-true-color
 let &t_8f="\<Esc>[38:2:%lu:%lu:%lum"
@@ -963,7 +954,6 @@ endif
 " override for certain profiles (mac)
 if $TERM_PROFILE == 'Ocean' |
 	set background=dark | color Tomorrow-Night-Blue
-
 elseif $TERM_PROFILE == 'Silver_Aerogel'
 	color nord
 endif
