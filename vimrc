@@ -11,7 +11,7 @@
 " nice digraph help page:
 "  :help digraph-table
 "
-" 🔒  🔑  + ∄ Ξ
+" 🔒 🔑
 
 filetype off
 "packloadall " normally done after loading vimrc, uncomment to load earlier
@@ -22,7 +22,7 @@ let mapleader=","
 let maplocalleader=","
 
 if !exists("g:os")
-	if has("win64") || has("win32") || has("win16")
+	if has('win64') || has('win32') || has('win16')
 		let g:os="Windows"
 	else
 		let g:os=substitute(system('uname'), '\n', '', '')
@@ -54,8 +54,8 @@ set sidescroll=1
 set sidescrolloff=10
 set lazyredraw
 set list
-"set listchars=tab:\ \ ,trail:⌴,precedes:❮,extends:❯
-set listchars=tab:\ \ ,trail:_,precedes:❮,extends:❯
+set listchars=tab:\ \ ,trail:⌴,precedes:❮,extends:❯
+"set listchars=tab:\ \ ,trail:_,precedes:❮,extends:❯
 set listchars+=tab:⋮\ 
 set nonumber
 set norelativenumber
@@ -144,6 +144,11 @@ set virtualedit+=block
 set gdefault
 set viminfo=%,'999,/99,:999
 " }}}
+
+if g:os != "Darwin"
+	" c'mon terminal.app, let's get with the program
+	set termguicolors
+endif
 
 
 " behavior ---------------------------------------------------------------------
@@ -278,11 +283,13 @@ vmap <Leader>C :w! ~/.tmp/.pbuf<cr>
 nmap <Leader>V :r ~/.tmp/.pbuf<cr>
 
 " quickfix/location list
-noremap <Leader>cc :ccl<cr>
+noremap <Leader>cq :ccl<cr>
 noremap ]q :cn<cr>
 noremap [q :cp<cr>
 noremap ]Q :cnew<cr>
-noremap [Q :col<cr>
+noremap [Q :cold<cr>
+
+noremap <Leader>cl :lcl<cr>
 noremap ]l :ln<cr>
 noremap [l :lp<cr>
 
@@ -304,13 +311,13 @@ command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-h
 nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
 
 " URL encode/decode selection
-vnoremap <leader>e :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
-vnoremap <leader>E :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
+vnoremap <Leader>fu :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
+vnoremap <Leader>fU :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
 
 " Insert Abbreviations
 
-iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 iabbrev <buffer> :mdash: —
+iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 
 
 " functions --------------------------------------------------------------------
@@ -330,7 +337,7 @@ endfunction
 
 hi CursorLine guibg=NONE ctermbg=NONE
 
-if has("termguicolors") || has('gui_running')
+if has('termguicolors') || has('gui_running')
 	let g:PulseColorList=['#ff0000','#00ff00','#0000ff','#ff0000']
 	"let g:PulseColorList=['#2a2a2a','#333333','#3a3a3a','#444444','#4a4a4a' ]
 	let g:PulseColorattr='guibg'
@@ -485,17 +492,6 @@ nmap <Leader>Q :up<cr><Plug>Kwbd
 " `%%` is (command mode) abbrev for current directory
 cabbr <expr> %% expand('%:p:h')
 
-" Customize compiler options and code assists of the server under your project folder.
-"  Modify the file `.settings/org.eclipse.jdt.core.prefs` with options presented at:
-"  https://help.eclipse.org/neon/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/JavaCore.html.
-"let g:ale_java_javalsp_executable=expand('~/bin/eclipse-jdtls')
-
-" ale-java-eclipselsp using eclipse.jdt.ls
-"let g:ale_java_eclipselsp_path=expand('~/bin/eclipse.jdt.ls')
-"let g:ale_java_eclipselsp_config_path=expand('~/bin/eclipse.jdt.ls/config_linux')
-"let g:ale_java_eclipselsp_workspace_path=expand('~/workspace')
-"let g:ale_disable_lsp=1
-
 " go
 let g:go_fmt_command="goimports"
 let g:go_fmt_experimental=1
@@ -512,9 +508,9 @@ vnoremap ! :ClamVisual<Space>
 " dbext
 let g:dbext_default_prompt_for_parameters=0 " globally turn off input prompt
 let g:dbext_default_buffer_lines=27 " size of Result buffer window (default is 5)
-let g:dbext_default_history_file='$HOME/.tmp/.dbext_history'
-let g:dbext_default_type='PGSQL'
-let g:dbext_default_profile_PG='type=PGSQL'
+let g:dbext_default_history_file="$HOME/.tmp/.dbext_history"
+let g:dbext_default_type="PGSQL"
+let g:dbext_default_profile_localhost="host=localhost:port=5432:user=$USER"
 
 " fugitive
 au BufNewFile,BufRead .git/index setlocal nolist
@@ -529,38 +525,37 @@ let g:ale_sign_error='▶'
 let g:ale_sign_warning='▷'
 let g:ale_echo_msg_format='[%linter%] %s'
 
-" disable ale lsp (using ycm lsp)
+" disable ale lsp (using lsp)
 let g:ale_linters={
 	\ 'java': [],
-	\ 'kotlin': ['kotlinc', 'ktlint'],
-	\ 'python': ['flake8', 'mypy']
+	\ 'kotlin': ['ktlint']
 	\ }
 
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 "set omnifunc=ale#completion#OmniFunc
 
-" LanguageClient-neovim
+" coc
 
-let g:LanguageClient_serverCommands = {
-    \ 'kotlin': ['kotlin-language-server'],
-    \ }
+"sign CocError text=×  linehl=CocErrorLine texthl=CocErrorSign
+"sign CocWarning text=⚠  linehl=CocWarningLine texthl=CocWarningSign
+"sign CocInfo text=ℹ  linehl=CocInfoLine texthl=CocInfoSign
+"sign CocHint text=•  linehl=CocHintLine texthl=CocHintSign
+"sign CocSelected text=*  linehl=CocSelectedLine texthl=CocSelectedText
 
-function LC_maps()
-	if has_key(g:LanguageClient_serverCommands, &filetype)
-		nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<cr>
-		nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<cr>
-		nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<cr>
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<cr>
+
+function! s:show_documentation()
+	if (index(['vim','help'], &filetype) >= 0)
+		execute 'h '.expand('<cword>')
+	else
+		call CocAction('doHover')
 	endif
 endfunction
-autocmd FileType * call LC_maps()
 
-" If one is using deoplete/nvim-completion-manager at the same time, completion should
-" work out of the box. Otherwise, completion is available with 'C-X C-O' ('omnifunc').
-" Alternatively, set 'completefunc':
-set completefunc=LanguageClient#complete
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" To use the language server with Vim's formatting operator |gq|, set 'formatexpr':
-"set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
 
 " filetype/plugins -------------------------------------------------------------
 
@@ -594,12 +589,12 @@ endfunction
 
 " JSON formating is generally useful: jq is fast and leaves key order, py is slower and sorts the keys
 " underscore is compact and has lots of options: https://github.com/ddopson/underscore-cli
-vnoremap <leader>fjq :!jq '.'<cr>
-vnoremap <leader>fjr :!jq -r '.'<cr>
-vnoremap <leader>fjp :!python -mjson.tool<cr>
-vnoremap <leader>fju :!underscore print<cr>
+vnoremap <Leader>fjq :!jq '.'<cr>
+vnoremap <Leader>fjr :!jq -r '.'<cr>
+vnoremap <Leader>fjp :!python -mjson.tool<cr>
+vnoremap <Leader>fju :!underscore print<cr>
 " XML formatting is also generally useful:
-vnoremap <leader>fx :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
+vnoremap <Leader>fx :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
 
 augroup ft_text
 	au!
@@ -813,9 +808,9 @@ function! EnableParedit()
 	nunmap <buffer> s
 
 	" Please just stop
-	nunmap <buffer> <leader>W
-	nunmap <buffer> <leader>O
-	nunmap <buffer> <leader>S
+	nunmap <buffer> <Leader>W
+	nunmap <buffer> <Leader>O
+	nunmap <buffer> <Leader>S
 
 	" Oh my god will you fuck off already
 	" nnoremap <buffer> dp :diffput<cr>
@@ -844,10 +839,10 @@ endfunction
 " show trailing spaces in non-insert mode
 augroup trailing
 	au!
-	"au InsertEnter * :set listchars-=trail:⌴
-	"au InsertLeave * :set listchars+=trail:⌴
-	au InsertEnter * :set listchars-=trail:_
-	au InsertLeave * :set listchars+=trail:_
+	au InsertEnter * :set listchars-=trail:⌴
+	au InsertLeave * :set listchars+=trail:⌴
+	"au InsertEnter * :set listchars-=trail:_
+	"au InsertLeave * :set listchars+=trail:_
 augroup END
 
 " lightline
@@ -864,8 +859,8 @@ let g:lightline={
 "set notermguicolors " not available for mac terminal.app :(
 
 " tmux, see :h xterm-true-color
-let &t_8f="\<Esc>[38:2:%lu:%lu:%lum"
-let &t_8b="\<Esc>[48:2:%lu:%lu:%lum"
+"let &t_8f="\<Esc>[38:2:%lu:%lu:%lum"
+"let &t_8b="\<Esc>[48:2:%lu:%lu:%lum"
 
 " italics, check if your terminal supports italics: echo -e "\e[3mfoo\e[23m"
 " https://www.reddit.com/r/vim/comments/24g8r8/italics_in_terminal_vim_and_tmux/
@@ -887,6 +882,7 @@ set guicursor+=i-ci:ver20
 " default windows (new term): n-v-c:block-Cursor/lCursor,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 "set guioptions=e
 " default windows (new term): aegimrLtT
+set guioptions=egm
 
 " colorscheme settings
 let ayucolor='light'
@@ -935,22 +931,26 @@ augroup my_colors
 	autocmd!
 	autocmd ColorScheme solarized8 call ColorSolarized8()
 	autocmd ColorScheme iceberg
-		\ | hi ErrorMsg guibg=#e27878 guifg=#161821
+		\   hi ErrorMsg guibg=#e27878 guifg=#161821
 		\ | hi SpecialKey guifg=#444b71
 		\ | hi NonText guifg=#89b8c2
 	autocmd ColorScheme Tomorrow-Night-Blue
-		\ | hi SpecialKey ctermfg=67 guifg=#7285b7
+		\   hi SpecialKey ctermfg=67 guifg=#7285b7
 		\ | hi NonText ctermfg=14 guifg=Yellow
 		\ | hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
+	autocmd ColorScheme selenized
+		\   hi! link SignColumn LineNr
+		\ | hi CocErrorSign guibg=#e9e4e0 guifg=Red
+		\ | hi CocWarningSign guibg=#e9e4e0 guifg=Blue
+		\ | hi ALEErrorSign guibg=#e9e4e0 guifg=Red
+		\ | hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
 augroup END
 
 " -- set the initial color
 set background=light
-color PaperColor
-" override for console (copy to ~/.vimrc and use the console scheme you want)
-if !has("gui_running")
-	color PaperColor
-endif
+" override for console in ~/.vimrc: if !has('gui_running') ..
+color selenized
+
 " override for certain profiles (mac)
 if $TERM_PROFILE == 'Ocean' |
 	set background=dark | color Tomorrow-Night-Blue
@@ -962,13 +962,13 @@ if &diff
 	set background=dark | colorscheme gruvbox
 endif
 
-if has("transparency")
+if has('transparency')
 	set blurradius=15
 	au FocusLost * :set transparency=15
 	au FocusGained * :set transparency=0
 endif
 
-if has("gui_running")
+if has('gui_running')
 	set mouse=a
 endif
 
@@ -985,10 +985,9 @@ elseif g:os == "Windows"
 endif
 
 " http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
-" DECSCUSR 1/2, 3/4, 5/6 -> blinking/steady: block, underline, bar
-let &t_SI.="\e[5 q"
-"let &t_SR.="\e[4 q"
-let &t_EI.="\e[2 q"
+" DECSCUSR 1/2 (block), 3/4 (underline), 5/6 (bar) [blinking/steady]
+let &t_SI="\e[5 q"
+let &t_EI="\e[2 q"
 
 " http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
 function! CtermColors()

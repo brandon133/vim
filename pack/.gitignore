@@ -1,6 +1,4 @@
 ## ----- colorscheme
-plugins-color/start/ayu
-plugins-color/start/deus
 plugins-color/start/gotham
 plugins-color/start/gruvbox
 plugins-color/start/hybrid
@@ -12,10 +10,8 @@ plugins-color/start/monochrome
 plugins-color/start/nord
 plugins-color/start/oceanic-next
 plugins-color/start/papercolor-theme
-plugins-color/start/pink-moon
 plugins-color/start/pyte
-plugins-color/start/seoul256
-plugins-color/start/snow
+plugins-color/start/selenized
 plugins-color/start/solarized
 plugins-color/start/solarized8
 plugins-color/start/summerfruit256
@@ -29,13 +25,12 @@ plugins-ui/start/vimux
 plugins-syn/start/ale
 plugins-syn/start/autotag
 plugins-syn/start/closer
+plugins-syn/start/coc
 plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
-plugins-syn/start/languageclient
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
 plugins-syn/start/repl
-plugins-syn/start/simpylfold
 plugins-syn/start/ultisnips
 plugins-syn/start/snippets
 ## ----- lisp/clojure
