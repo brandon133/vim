@@ -1,9 +1,11 @@
 {
   "coc.preferences.diagnostic.signOffset": 3000,
-  "coc.preferences.diagnostic.errorSign": "×",
-  "coc.preferences.diagnostic.warningSign": "⚠",
+  "coc.preferences.diagnostic.errorSign": "▶",
+  "coc.preferences.diagnostic.warningSign": "▷",
   "coc.preferences.diagnostic.infoSign": "ℹ",
   "coc.preferences.diagnostic.hintSign": "•",
+
+  "coc.preferences.hoverTarget": "float",
 
   "coc.preferences.useQuickfixForLocations": true,
 

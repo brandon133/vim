@@ -1,16 +1,10 @@
 ## ----- colorscheme
-plugins-color/start/gotham
 plugins-color/start/gruvbox
-plugins-color/start/hybrid
-plugins-color/start/hybrid-material
 plugins-color/start/iceberg
-plugins-color/start/lucid
 plugins-color/start/molokai
-plugins-color/start/monochrome
 plugins-color/start/nord
 plugins-color/start/oceanic-next
 plugins-color/start/papercolor-theme
-plugins-color/start/pyte
 plugins-color/start/selenized
 plugins-color/start/solarized
 plugins-color/start/solarized8

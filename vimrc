@@ -11,7 +11,7 @@
 " nice digraph help page:
 "  :help digraph-table
 "
-" 🔒 🔑
+" 🔒 🔑 ◄ ► ◅ ▻ ◀ ▶ ▲ ▼ ⯇ ⯈ ⯅ ⯆
 
 filetype off
 "packloadall " normally done after loading vimrc, uncomment to load earlier
@@ -854,6 +854,7 @@ let g:lightline={
 	\ }
 
 " ----- colors/highlights/cursors
+" color names: https://codeyarns.github.io/tech/2011-07-29-vim-chart-of-color-names.html
 " try: `:h sign`
 
 "set notermguicolors " not available for mac terminal.app :(
@@ -908,9 +909,9 @@ let g:PaperColor_Theme_Options = {
 let g:solarized_contrast='normal' " normal/high/low
 let g:solarized_visibility='low'  " normal/high/low
 
-function! ColorSolarized8()
+function! _hiSolarized8()
 	" for terminal.app, use https://github.com/tomislav/osx-terminal.app-colors-solarized
-	colorscheme solarized8
+	hi! link SignColumn LineNr
 	hi Cursor guibg=#f92672
 	hi Search guifg=#f0c674
 	if &background == 'light'
@@ -922,41 +923,53 @@ function! ColorSolarized8()
 		hi NonText ctermfg=10 guifg=#4996a2
 		hi SignColumn ctermbg=0 guibg=#073642
 	endif
-	" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
+endfunction
+
+function! _hiSelenized()
 	hi! link SignColumn LineNr
+	hi! CocUnderline cterm=underline gui=undercurl
+	if &background == 'light'
+		hi ALEErrorSign guibg=#e9e4e0
+		hi ALEWarningSign guibg=#e9e4e0
+		hi CocErrorSign guibg=#e9e4e0
+		hi CocWarningSign guibg=#e9e4e0
+		hi CocErrorFloat guifg=DeepPink
+		hi CocWarningFloat guifg=DodgerBlue2
+	else
+		hi ALEErrorSign guibg=#184956
+		hi ALEWarningSign guibg=#184956
+		hi CocErrorSign guibg=#184956
+		hi CocWarningSign guibg=#184956 guifg=Cyan
+	endif
 endfunction
 
 " https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
+" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
 augroup my_colors
 	autocmd!
-	autocmd ColorScheme solarized8 call ColorSolarized8()
+	autocmd ColorScheme solarized8 call _hiSolarized8()
+	autocmd ColorScheme selenized call _hiSelenized()
+
+	autocmd ColorScheme nord
+		\   hi LineNr guibg=#434c5e
+		\ | hi SignColumn guibg=#434c5e
+		\ | hi ALEErrorSign guibg=#434c5e
+		\ | hi ALEWarningSign guibg=#434c5e
 	autocmd ColorScheme iceberg
-		\   hi ErrorMsg guibg=#e27878 guifg=#161821
+		\   hi ErrorMsg guifg=#161821 guibg=#e27878
 		\ | hi SpecialKey guifg=#444b71
 		\ | hi NonText guifg=#89b8c2
 	autocmd ColorScheme Tomorrow-Night-Blue
 		\   hi SpecialKey ctermfg=67 guifg=#7285b7
 		\ | hi NonText ctermfg=14 guifg=Yellow
 		\ | hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
-	autocmd ColorScheme selenized
-		\   hi! link SignColumn LineNr
-		\ | hi CocErrorSign guibg=#e9e4e0 guifg=Red
-		\ | hi CocWarningSign guibg=#e9e4e0 guifg=Blue
-		\ | hi ALEErrorSign guibg=#e9e4e0 guifg=Red
-		\ | hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
 augroup END
 
-" -- set the initial color
+" -- set the initial color/background --
 set background=light
 " override for console in ~/.vimrc: if !has('gui_running') ..
 color selenized
 
-" override for certain profiles (mac)
-if $TERM_PROFILE == 'Ocean' |
-	set background=dark | color Tomorrow-Night-Blue
-elseif $TERM_PROFILE == 'Silver_Aerogel'
-	color nord
-endif
 " better diff colorscheme
 if &diff
 	set background=dark | colorscheme gruvbox

@@ -58,7 +58,7 @@ for d in $(ls -d $packdir/plugins-*/start); do
 			[[ $line =~ "url = " ]] && giturl=`echo $line|sed -e 's/^\s*url = //'`
 			[[ $line =~ "[submodule " ]] && has_submods=1 && break
 		done <$gconf
-		name=`echo $giturl|sed 's/.*\/\(.*\)/\1/'|sed 's/\.git$//'|sed 's/[\.-]n\?vim$//'|sed 's/\.zip$//'|sed 's/^n\?vim-//'|sed 's/[\.-]neovim$//'|tr '[:upper:]' '[:lower:]'`
+		name=`echo $giturl|sed 's/.*\/\(.*\)/\1/'|sed 's/\.git$//'|sed 's/[\.-]vim$//'|sed 's/[\.-]nvim$//'|sed 's/\.zip$//'|sed 's/^vim-//'|sed 's/^nvim-//'|sed 's/[\.-]neovim$//'|tr '[:upper:]' '[:lower:]'`
 
 		echo "[ -d \"\$packdir/$subdir\" ] || { mkdir -p \"\$packdir/$subdir\" && cd \"\$packdir/$n/start\" && git clone --recursive $giturl $name; } ## $subdir" >>$gitall
 		if [ -z "$opt_noupdate" ]; then
@@ -69,6 +69,13 @@ for d in $(ls -d $packdir/plugins-*/start); do
 				echo "$(tput bold)>>> UPDATE $subdir -----$(tput sgr0)"
 				git pull --recurse-submodules
 				#git submodule update --remote --recursive
+
+				if grep -q "https://github.com/neoclide/coc.nvim.git" .git/config; then
+					echo "Coc plugin was updated, to (re)install: (assumes yarn is installed, see https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)"
+					echo "	$ cd $packdir/$subdir"
+					echo "	$ git clean -xfd"
+					echo "	$ yarn install --frozen-lockfile"
+				fi
 			}
 			popd >/dev/null
 		fi
@@ -90,15 +97,18 @@ if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)"
 	[ -L "tomorrow-theme-vim" ] && [ -L "vim-colors-solarized" ] || {
 		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
 		echo "***   cd ${0%/*}/pack/plugins-color-start, and run:"
+		echo "    del selenized-vim"
+		echo "    del vim-colors-solarized"
+		echo "    del tomorrow-theme-vim"
 		echo "    mklink /D selenized-vim .\\selenized\\editors\\vim"
 		echo "    mklink /D vim-colors-solarized .\\solarized\\vim-colors-solarized"
 		echo "    mklink /D tomorrow-theme-vim .\\tomorrow-theme\\vim"
 	}
-# these are committed
-#else
-#	[ -L "selenized-vim" ] || ln -s ./selenized/editors/vim selenized-vim
-#	[ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
-#	[ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
+# on other platforms, these are committed:
+# else
+# [ -L "selenized-vim" ] || ln -s ./selenized/editors/vim selenized-vim
+# [ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
+# [ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
 fi
 popd >/dev/null
 
