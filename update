@@ -70,12 +70,7 @@ for d in $(ls -d $packdir/plugins-*/start); do
 				git pull --recurse-submodules
 				#git submodule update --remote --recursive
 
-				if grep -q "https://github.com/neoclide/coc.nvim.git" .git/config; then
-					echo "Coc plugin was updated, to (re)install: (assumes yarn is installed, see https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)"
-					echo "	$ cd $packdir/$subdir"
-					echo "	$ git clean -xfd"
-					echo "	$ yarn install --frozen-lockfile"
-				fi
+				grep -q "https://github.com/neoclide/coc.nvim.git" .git/config && gt0_coc="$packdir/$subdir"
 			}
 			popd >/dev/null
 		fi
@@ -117,6 +112,13 @@ popd >/dev/null
 #mv $tmpfile $gitignore
 #awk '!seen[$0]++' $gitall >$tmpfile
 #mv $tmpfile $gitall
+
+if [ -n "$gt0_coc" ]; then
+	echo "Coc plugin was updated, to (re)install: (assumes yarn is installed, see https://github.com/neoclide/coc.nvim/wiki/Install-coc.nvim)"
+	echo "	$ cd $gt0_coc"
+	echo "	$ git clean -xfd"
+	echo "	$ yarn install --frozen-lockfile"
+fi
 
 # regenerate helptags
 if [ -n "$gt0" ]; then
