@@ -533,11 +533,6 @@ let g:ale_linters={
 let g:ale_kotlin_languageserver_executable='kotlin-language-server'
 
 let g:ale_completion_enabled=1
-set ballooneval
-set balloonevalterm
-set mouse=a
-set ttymouse=sgr " also tried xterm
-let g:ale_set_balloons=1
 
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
@@ -919,11 +914,11 @@ endfunction
 function! _hiSelenized()
 	hi! link SignColumn LineNr
 	if &background == 'light'
-		hi ALEErrorSign guibg=#e9e4e0
-		hi ALEWarningSign guibg=#e9e4e0
+		hi ALEErrorSign guibg=#e9e4e0 guifg=Red
+		hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
 	else
-		hi ALEErrorSign guibg=#184956
-		hi ALEWarningSign guibg=#184956
+		hi ALEErrorSign guibg=#184956 guifg=Red
+		hi ALEWarningSign guibg=#184956 guifg=Blue
 	endif
 endfunction
 
@@ -937,8 +932,8 @@ augroup my_colors
 	autocmd ColorScheme nord
 		\   hi LineNr guibg=#434c5e
 		\ | hi SignColumn guibg=#434c5e
-		\ | hi ALEErrorSign guibg=#434c5e
-		\ | hi ALEWarningSign guibg=#434c5e
+		\ | hi ALEErrorSign guibg=#434c5e guifg=Red
+		\ | hi ALEWarningSign guibg=#434c5e guifg=Blue
 	autocmd ColorScheme iceberg
 		\   hi ErrorMsg guifg=#161821 guibg=#e27878
 		\ | hi SpecialKey guifg=#444b71
