@@ -19,7 +19,6 @@ plugins-ui/start/vimux
 plugins-syn/start/ale
 plugins-syn/start/autotag
 plugins-syn/start/closer
-plugins-syn/start/coc
 plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
 plugins-syn/start/polyglot

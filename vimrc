@@ -18,17 +18,17 @@ filetype off
 filetype plugin indent on
 syntax on
 
-let mapleader=","
-let maplocalleader=","
+let mapleader=','
+let maplocalleader=','
 
-if !exists("g:os")
+if !exists('g:os')
 	if has('win64') || has('win32') || has('win16')
-		let g:os="Windows"
+		let g:os='Windows'
 	else
 		let g:os=substitute(system('uname'), '\n', '', '')
 	endif
 endif
-if !exists("g:VimUserDir")
+if !exists('g:VimUserDir')
 	let g:VimUserDir=split(&rtp, ',')[0]
 endif
 
@@ -145,7 +145,7 @@ set gdefault
 set viminfo=%,'999,/99,:999
 " }}}
 
-if g:os != "Darwin"
+if g:os != 'Darwin'
 	" c'mon terminal.app, let's get with the program
 	set termguicolors
 endif
@@ -198,7 +198,7 @@ function! MyFoldText()
 
 	let line=strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
 	let fillcharcount=windowwidth - len(line) - len(foldedlinecount)
-	return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . '…' . ' '
+	return line . '…' . repeat(' ',fillcharcount) . foldedlinecount . '…' . ' '
 endfunction
 
 
@@ -256,10 +256,10 @@ command! RemoveFancyCharacters :call RemoveFancyCharacters()
 " show syntax group(s)
 nmap <Leader>ss :call <SID>SynStack()<cr>
 " show highlight group(s)
-nnoremap <Leader>syn :echo "hi<"
-	\ . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-	\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-	\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
+nnoremap <Leader>syn :echo 'hi<'
+	\ . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<'
+	\ . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<'
+	\ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<cr>
 
 nnoremap <silent> <Leader>h0 :call ClearInterestingWords()<cr>
 nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<cr>
@@ -328,7 +328,7 @@ iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 function! FocusLine()
 	let oldscrolloff=&scrolloff
 	set scrolloff=0
-	execute "keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<cr>"
+	execute 'keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<cr>'
 	let &scrolloff=oldscrolloff
 endfunction
 
@@ -369,13 +369,13 @@ endfunc
 
 function! RemoveFancyCharacters()
 	let typo={}
-	let typo["“"]='"'
-	let typo["”"]='"'
-	let typo["‘"]="'"
-	let typo["’"]="'"
-	let typo["–"]='--'
-	let typo["—"]='---'
-	let typo["…"]='...'
+	let typo['“"]='"'
+	let typo['”']='"'
+	let typo['‘']="'"
+	let typo['’']="'"
+	let typo['–']='--'
+	let typo['—']='---'
+	let typo["…']='...'
 	:exe ":%s/".join(keys(typo), '\|').'/\=typo[submatch(0)]/ge'
 endfunction
 
@@ -410,7 +410,7 @@ function! HiInterestingWord(n)
 	let pat='\V\<' . escape(@z, '\') . '\>'
 
 	" Actually match the words.
-	call matchadd("InterestingWord" . a:n, pat, 1, mid)
+	call matchadd('InterestingWord' . a:n, pat, 1, mid)
 
 	" Move back to our original location.
 	normal! `z
@@ -459,7 +459,7 @@ nmap <silent> <C-k> :wincmd k<cr>
 nnoremap <Leader>l :call popup_clear()<cr>:redraw!<cr>
 
 " supertab
-let g:SuperTabDefaultCompletionType="context"
+let g:SuperTabDefaultCompletionType='context'
 let g:SuperTabMappingForward='<C-n>'
 let g:SuperTabMappingBackward='<C-p>'
 let g:SuperTabClosePreviewOnPopupClose=1
@@ -493,7 +493,7 @@ nmap <Leader>Q :up<cr><Plug>Kwbd
 cabbr <expr> %% expand('%:p:h')
 
 " go
-let g:go_fmt_command="goimports"
+let g:go_fmt_command='goimports'
 let g:go_fmt_experimental=1
 let g:go_doc_keywordprg_enabled=0
 
@@ -509,7 +509,7 @@ vnoremap ! :ClamVisual<Space>
 let g:dbext_default_prompt_for_parameters=0 " globally turn off input prompt
 let g:dbext_default_buffer_lines=27 " size of Result buffer window (default is 5)
 let g:dbext_default_history_file="$HOME/.tmp/.dbext_history"
-let g:dbext_default_type="PGSQL"
+let g:dbext_default_type='PGSQL'
 let g:dbext_default_profile_localhost="host=localhost:port=5432:user=$USER"
 
 " fugitive
@@ -519,42 +519,33 @@ au BufNewFile,BufRead .git/index setlocal nolist
 
 let g:polyglot_disabled=[]
 
-" ale
+" ALE
 
 let g:ale_sign_error='▶'
 let g:ale_sign_warning='▷'
 let g:ale_echo_msg_format='[%linter%] %s'
 
-" disable ale lsp (using lsp)
+" disable kotlinc
 let g:ale_linters={
-	\ 'java': [],
-	\ 'kotlin': ['ktlint']
+	\ 'kotlin': ['ktlint', 'languageserver']
 	\ }
 
+let g:ale_kotlin_languageserver_executable='kotlin-language-server'
+
+let g:ale_completion_enabled=1
+set ballooneval
+set balloonevalterm
+set mouse=a
+set ttymouse=sgr " also tried xterm
+let g:ale_set_balloons=1
+
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
-"set omnifunc=ale#completion#OmniFunc
+set omnifunc=ale#completion#OmniFunc
 
-" coc
-
-"sign CocError text=×  linehl=CocErrorLine texthl=CocErrorSign
-"sign CocWarning text=⚠  linehl=CocWarningLine texthl=CocWarningSign
-"sign CocInfo text=ℹ  linehl=CocInfoLine texthl=CocInfoSign
-"sign CocHint text=•  linehl=CocHintLine texthl=CocHintSign
-"sign CocSelected text=*  linehl=CocSelectedLine texthl=CocSelectedText
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<cr>
-
-function! s:show_documentation()
-	if (index(['vim','help'], &filetype) >= 0)
-		execute 'h '.expand('<cword>')
-	else
-		call CocAction('doHover')
-	endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" https://www.vimfromscratch.com/articles/vim-and-language-server-protocol/
+nmap gd :ALEGoToDefinition<cr>
+nmap gr :ALEFindReferences<cr>
+nmap K :ALEHover<cr>
 
 
 " filetype/plugins -------------------------------------------------------------
@@ -639,7 +630,7 @@ augroup END
 
 augroup ft_javascript
 	au!
-	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', "console.log(`>>> ${}`);<left><left><left><left>")
+	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', 'console.log(`>>> ${}`);<left><left><left><left>')
 augroup END
 
 augroup ft_python
@@ -662,7 +653,7 @@ augroup ft_python
 	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<cr>
 	au FileType python vnoremap <buffer> <localleader>f :!yapf<cr>
 
-	au FileType python call MakeSpacelessBufferIabbrev('pr.', "print(f'>>> {}')<left><left><left>")
+	au FileType python call MakeSpacelessBufferIabbrev('pr.', 'print(f">>> {}")<left><left><left>')
 augroup END
 
 augroup ft_ipynb
@@ -714,11 +705,11 @@ augroup ft_markdown
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
-	if $SESSION_TYPE == "remote/ssh"
+	if $SESSION_TYPE == 'remote/ssh'
 		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:silent !gfm % >~/public_html/tmp.md.html<cr>
 			\ :silent redraw!<cr>
 			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<cr>
-	elseif g:os == "Darwin"
+	elseif g:os == 'Darwin'
 		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:!gfm % \|bcat<cr>
 	endif
 augroup END
@@ -821,7 +812,7 @@ function! EnableParedit()
 	nunmap <buffer> ]]
 
 	" Better mappings
-	noremap <buffer> () :<c-u>call PareditWrap("(", ")")<cr>
+	noremap <buffer> () :<c-u>call PareditWrap('(', ')')<cr>
 	noremap <buffer> )( :<c-u>call PareditSplice()<cr>
 	noremap <buffer> (( :<c-u>call PareditMoveLeft()<cr>
 	noremap <buffer> )) :<c-u>call PareditMoveRight()<cr>
@@ -927,19 +918,12 @@ endfunction
 
 function! _hiSelenized()
 	hi! link SignColumn LineNr
-	hi! CocUnderline cterm=underline gui=undercurl
 	if &background == 'light'
 		hi ALEErrorSign guibg=#e9e4e0
 		hi ALEWarningSign guibg=#e9e4e0
-		hi CocErrorSign guibg=#e9e4e0
-		hi CocWarningSign guibg=#e9e4e0
-		hi CocErrorFloat guifg=DeepPink
-		hi CocWarningFloat guifg=DodgerBlue2
 	else
 		hi ALEErrorSign guibg=#184956
 		hi ALEWarningSign guibg=#184956
-		hi CocErrorSign guibg=#184956
-		hi CocWarningSign guibg=#184956 guifg=Cyan
 	endif
 endfunction
 
@@ -986,13 +970,13 @@ if has('gui_running')
 endif
 
 " -- set guifont per os
-if g:os == "Darwin"
+if g:os == 'Darwin'
 	"set guifont=AnkaCoder-C87-r:h11
 	set guifont=SometypeMono-Regular:h11
-elseif g:os == "Linux"
+elseif g:os == 'Linux'
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
-elseif g:os == "Windows"
+elseif g:os == 'Windows'
 	set guifont=monofur:h11
 	set guioptions+=a
 endif
