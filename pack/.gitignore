@@ -17,7 +17,7 @@ plugins-ui/start/lightline
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
-plugins-syn/start/autotag
+plugins-syn/start/asyncomplete
 plugins-syn/start/closer
 plugins-syn/start/fastfold
 plugins-syn/start/indent-sh

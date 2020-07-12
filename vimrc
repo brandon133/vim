@@ -304,18 +304,28 @@ nmap <Leader>g :Find<cr>
 nmap <Leader>t :BTags<cr>
 nmap <Leader>T :Tags<cr>
 nmap <Leader>C :Colors<cr>
-" https://medium.com/@crashybang/supercharge-vim-with-fzf-and-ripgrep-d4661fc853d2
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
 
+" encodings
+
 " URL encode/decode selection
-vnoremap <Leader>fu :!python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())'<cr>
-vnoremap <Leader>fU :!python -c 'import sys,urllib;print urllib.unquote(sys.stdin.read().strip())'<cr>
+vnoremap <Leader>eu :!python -c 'import sys,urllib;print(urllib.quote(sys.stdin.read().strip()))'<cr>
+vnoremap <Leader>eU :!python -c 'import sys,urllib;print(urllib.unquote(sys.stdin.read().strip()))'<cr>
+" HTML encode/decode selection
+vnoremap <Leader>eh :!python -c 'import sys,html;print(html.escape(sys.stdin.read().strip()))'<cr>
+vnoremap <Leader>eH :!python -c 'import sys,html;print(html.unescape(sys.stdin.read().strip()))'<cr>
+" JSON formating: jq is fast and leaves key order, py is slower and sorts the keys
+" underscore is compact and has lots of options: https://github.com/ddopson/underscore-cli
+vnoremap <Leader>ejq :!jq '.'<cr>
+vnoremap <Leader>ejr :!jq -r '.'<cr>
+vnoremap <Leader>ejp :!python -mjson.tool<cr>
+vnoremap <Leader>eju :!underscore print<cr>
+" XML formatting:
+vnoremap <Leader>ex :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
 
 " Insert Abbreviations
-
 iabbrev <buffer> :mdash: —
 iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 
@@ -441,6 +451,19 @@ function! MakeSpacelessBufferIabbrev(from, to) " buffer local
 endfunction
 
 
+" https://stackoverflow.com/a/5519588
+function! DiffLineWithNext()
+    let f1=tempname()
+    let f2=tempname()
+
+    exec ".write " . f1
+    exec ".+1write " . f2
+
+    exec "tabedit " . f1
+    exec "vert diffsplit " . f2
+endfunction
+
+
 " settings/plugins -------------------------------------------------------------
 
 set complete=.,w,b,u,t,i
@@ -532,8 +555,6 @@ let g:ale_linters={
 
 let g:ale_kotlin_languageserver_executable='kotlin-language-server'
 
-let g:ale_completion_enabled=1
-
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
 
@@ -541,6 +562,11 @@ set omnifunc=ale#completion#OmniFunc
 nmap gd :ALEGoToDefinition<cr>
 nmap gr :ALEFindReferences<cr>
 nmap K :ALEHover<cr>
+
+" Use ALE's function for asyncomplete defaults
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#ale#get_source_options({
+	\ 'priority': 10,
+	\ }))
 
 
 " filetype/plugins -------------------------------------------------------------
@@ -573,15 +599,6 @@ function! DiffFoldLevel()
 	endif
 endfunction
 
-" JSON formating is generally useful: jq is fast and leaves key order, py is slower and sorts the keys
-" underscore is compact and has lots of options: https://github.com/ddopson/underscore-cli
-vnoremap <Leader>fjq :!jq '.'<cr>
-vnoremap <Leader>fjr :!jq -r '.'<cr>
-vnoremap <Leader>fjp :!python -mjson.tool<cr>
-vnoremap <Leader>fju :!underscore print<cr>
-" XML formatting is also generally useful:
-vnoremap <Leader>fx :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
-
 augroup ft_text
 	au!
 	au Filetype text setlocal spell
@@ -597,16 +614,12 @@ augroup ft_java
 	au FileType java setlocal foldmethod=marker
 	au FileType java setlocal foldmarker={{{,}}}
 
-	au FileType java call MakeSpacelessBufferIabbrev('LOG.', 'private static final Logger LOG = LogManager.getLogger();<left><left>')
-
-	au FileType java call MakeSpacelessBufferIabbrev('pr.', 'org.apache.logging.log4j.LogManager.getLogger(this.getClass()).info(">>> {}", );<left><left>')
-	au FileType java call MakeSpacelessBufferIabbrev('slf.', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
-	au FileType java call MakeSpacelessBufferIabbrev('sb.', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
+	au FileType java call MakeSpacelessBufferIabbrev(':log:', 'private static final Logger LOG = LogManager.getLogger();<left><left>')
+	au FileType java call MakeSpacelessBufferIabbrev(':pr:', 'org.apache.logging.log4j.LogManager.getLogger(this.getClass()).info(">>> {}", );<left><left>')
+	au FileType java call MakeSpacelessBufferIabbrev(':slf:', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
+	au FileType java call MakeSpacelessBufferIabbrev(':sb:', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
 
 	" abbreviations
-	au FileType java call MakeSpacelessBufferIabbrev('lm.', 'List<Map<>><left><left>')
-	au FileType java iabbrev <buffer> :lmso: List<Map<String, Object>>
-	au FileType java iabbrev <buffer> :mso: Map<String, Object>
 	au FileType java iabbrev <buffer> :implog: import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
 	au FileType java iabbrev <buffer> :imppre: import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
 	au FileType java iabbrev <buffer> :tostr:  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
@@ -625,7 +638,7 @@ augroup END
 
 augroup ft_javascript
 	au!
-	au FileType javascript call MakeSpacelessBufferIabbrev('pr.', 'console.log(`>>> ${}`);<left><left><left><left>')
+	au FileType javascript call MakeSpacelessBufferIabbrev(':pr:', 'console.log(`>>> ${}`);<left><left><left><left>')
 augroup END
 
 augroup ft_python
@@ -648,7 +661,7 @@ augroup ft_python
 	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<cr>
 	au FileType python vnoremap <buffer> <localleader>f :!yapf<cr>
 
-	au FileType python call MakeSpacelessBufferIabbrev('pr.', 'print(f">>> {}")<left><left><left>')
+	au FileType python call MakeSpacelessBufferIabbrev(':pr:', 'print(f">>> {}")<left><left><left>')
 augroup END
 
 augroup ft_ipynb
@@ -827,8 +840,6 @@ augroup trailing
 	au!
 	au InsertEnter * :set listchars-=trail:⌴
 	au InsertLeave * :set listchars+=trail:⌴
-	"au InsertEnter * :set listchars-=trail:_
-	"au InsertLeave * :set listchars+=trail:_
 augroup END
 
 " lightline
@@ -913,6 +924,7 @@ endfunction
 
 function! _hiSelenized()
 	hi! link SignColumn LineNr
+	hi! link AleWarning SpellRare
 	if &background == 'light'
 		hi ALEErrorSign guibg=#e9e4e0 guifg=Red
 		hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
@@ -972,7 +984,7 @@ elseif g:os == 'Linux'
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
 elseif g:os == 'Windows'
-	set guifont=monofur:h11
+	set guifont=JetBrains_Mono:h9
 	set guioptions+=a
 endif
 
