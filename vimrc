@@ -487,10 +487,6 @@ let g:SuperTabMappingForward='<C-n>'
 let g:SuperTabMappingBackward='<C-p>'
 let g:SuperTabClosePreviewOnPopupClose=1
 
-" ultisnips
-let g:UltiSnipsExpandTrigger='<C-j>'
-let g:UltiSnipsListSnippets='<C-l>'
-
 " fzf
 set rtp+=~/bin/.fzf/bin
 
@@ -563,10 +559,7 @@ nmap gd :ALEGoToDefinition<cr>
 nmap gr :ALEFindReferences<cr>
 nmap K :ALEHover<cr>
 
-" Use ALE's function for asyncomplete defaults
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#ale#get_source_options({
-	\ 'priority': 10,
-	\ }))
+" mucomplete
 
 
 " filetype/plugins -------------------------------------------------------------
@@ -627,6 +620,7 @@ augroup END
 
 augroup ft_kotlin
 	au!
+	au FileType kotlin set tw=120
 	au FileType kotlin set makeprg=gw\ build
 	au FileType kotlin set errorformat=
 		\ "%E%f:%l:%c: error: %m," .

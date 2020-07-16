@@ -17,14 +17,13 @@ plugins-ui/start/lightline
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
-plugins-syn/start/asyncomplete
-plugins-syn/start/closer
+plugins-syn/start/auto-pairs
 plugins-syn/start/fastfold
 plugins-syn/start/indent-sh
+plugins-syn/start/mucomplete
 plugins-syn/start/polyglot
 plugins-syn/start/prettier
 plugins-syn/start/repl
-plugins-syn/start/ultisnips
 plugins-syn/start/snippets
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
@@ -39,7 +38,6 @@ plugins-util/start/kwbd
 plugins-util/start/matchit
 ## ----- tpope in syn and util
 plugins-syn/start/commentary
-plugins-syn/start/endwise
 plugins-util/start/abolish
 plugins-util/start/fugitive
 plugins-util/start/surround
