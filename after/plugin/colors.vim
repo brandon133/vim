@@ -12,4 +12,3 @@ autocmd ColorScheme PaperColor
 	\ | hi SignColumn guibg=#FFD7FF ctermbg=15
 	\ | hi ALEWarningSign term=standout cterm=bold gui=bold guibg=#FFD7FF ctermbg=15 guifg=#00af5f ctermfg=5
 	\ | hi ALEErrorSign term=standout cterm=bold gui=bold guibg=#FFD7FF ctermbg=15 guifg=Red ctermfg=9
-

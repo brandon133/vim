@@ -169,19 +169,19 @@ au FocusLost * :silent! wa
 au StdinReadPost * :set buftype=nofile
 
 " the . to execute once for each line of a visual selection
-vnoremap . :normal .<cr>
+vnoremap . :normal .<CR>
 " and same for macros
 vnoremap <Leader>@ :normal @
 
 " don't move on first *
-nnoremap <silent> * :let stay_star_view=winsaveview()<cr>*:call winrestview(stay_star_view)<cr>
+nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay_star_view)<CR>
 
 " resize panes when window/terminal gets resize
 au VimResized * :wincmd =
 
 " folding ambilvalence
 set foldlevelstart=1
-set foldtext=MyFoldText()
+"set foldtext=MyFoldText()
 " recursively open whatever fold we're in
 nnoremap zO zczO
 
@@ -210,9 +210,9 @@ endfunction
 " also, this always works for escape in VIM: <C-[> or <C-c>
 
 " toggle options
-nnoremap <Leader>S :setlocal spell!<cr>
-nnoremap <Leader>N :setlocal number!<cr>
-nnoremap <Leader>P :set paste!<cr>
+nnoremap <Leader>S :setlocal spell!<CR>
+nnoremap <Leader>N :setlocal number!<CR>
+nnoremap <Leader>P :set paste!<CR>
 
 " natural move
 nnoremap <down> gj
@@ -221,26 +221,26 @@ nnoremap <up> gk
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
 " split line (sister to [J]oin lines)
-nnoremap S i<cr><Esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
+nnoremap S i<CR><Esc>^mwgk:silent! s/\v +$//<CR>:noh<CR>`w
 
 " add to local dictionary (see spellfile setting, the #2 is the local)
 nnoremap zG 2zg
 
 " display the number of matches for the last search
-nmap <Leader>/ :%s:<C-R>/::gn<cr>
+nmap <Leader>/ :%s:<C-R>/::gn<CR>
 
-nnoremap <Leader>L :call FocusLine()<cr>
+nnoremap <Leader>L :call FocusLine()<CR>
 
 " half/double spaces, clear trailing spaces
-noremap <Leader>W1 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
-noremap <Leader>W2 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))*2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
-noremap <Leader>W0 mz:set ts=4 sts=4 et<cr>:retab<cr>:set ts=8 sts=2 noet<cr>:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<cr>:%s/\s\+$//<cr>:let @/=''<cr>`z
+noremap <Leader>W1 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
+noremap <Leader>W2 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))*2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
+noremap <Leader>W0 mz:set ts=4 sts=4 et<CR>:retab<CR>:set ts=8 sts=2 noet<CR>:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
 
 " clean trailing whitespace in entire file
-nnoremap <Leader>WW mz:%s/\s\+$//<cr>:let @/=''<cr>`z
+nnoremap <Leader>WW mz:%s/\s\+$//<CR>:let @/=''<CR>`z
 
 " zip right, this should preserve your last yank/delete as well
-nnoremap zl :let @z=@"<cr>x$p:let @"=@z<cr>
+nnoremap zl :let @z=@"<CR>x$p:let @"=@z<CR>
 
 " underline the current line
 nnoremap <Leader>1 yypVr=
@@ -254,76 +254,76 @@ nnoremap <F9> mzggg?G`z
 command! RemoveFancyCharacters :call RemoveFancyCharacters()
 
 " show syntax group(s)
-nmap <Leader>ss :call <SID>SynStack()<cr>
+nmap <Leader>ss :call <SID>SynStack()<CR>
 " show highlight group(s)
 nnoremap <Leader>syn :echo 'hi<'
 	\ . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<'
 	\ . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<'
-	\ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<cr>
+	\ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'<CR>
 
-nnoremap <silent> <Leader>h0 :call ClearInterestingWords()<cr>
-nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<cr>
-nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<cr>
-nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<cr>
-nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<cr>
-nnoremap <silent> <Leader>h5 :call HiInterestingWord(5)<cr>
-nnoremap <silent> <Leader>h6 :call HiInterestingWord(6)<cr>
+nnoremap <silent> <Leader>h0 :call ClearInterestingWords()<CR>
+nnoremap <silent> <Leader>h1 :call HiInterestingWord(1)<CR>
+nnoremap <silent> <Leader>h2 :call HiInterestingWord(2)<CR>
+nnoremap <silent> <Leader>h3 :call HiInterestingWord(3)<CR>
+nnoremap <silent> <Leader>h4 :call HiInterestingWord(4)<CR>
+nnoremap <silent> <Leader>h5 :call HiInterestingWord(5)<CR>
+nnoremap <silent> <Leader>h6 :call HiInterestingWord(6)<CR>
 
 " listchars
-nnoremap <Leader>I :set listchars+=tab:⋮\ <cr>
-nnoremap <Leader>i :set listchars-=tab:⋮\ <cr>
-"nnoremap <Leader>I :set listchars+=tab:▸‧<cr>
-"nnoremap <Leader>i :set listchars-=tab:▸‧<cr>
+nnoremap <Leader>I :set listchars+=tab:⋮\ <CR>
+nnoremap <Leader>i :set listchars-=tab:⋮\ <CR>
+"nnoremap <Leader>I :set listchars+=tab:▸‧<CR>
+"nnoremap <Leader>i :set listchars-=tab:▸‧<CR>
 
 " select (charwise) the contents of the current line, excluding indentation.
 nnoremap vv ^vg_
 
 " custom copy/paste using tmp file
-vmap <Leader>C :w! ~/.tmp/.pbuf<cr>
-nmap <Leader>V :r ~/.tmp/.pbuf<cr>
+vmap <Leader>C :w! ~/.tmp/.pbuf<CR>
+nmap <Leader>V :r ~/.tmp/.pbuf<CR>
 
 " quickfix/location list
-noremap <Leader>cq :ccl<cr>
-noremap ]q :cn<cr>
-noremap [q :cp<cr>
-noremap ]Q :cnew<cr>
-noremap [Q :cold<cr>
+noremap <Leader>cq :ccl<CR>
+noremap ]q :cn<CR>
+noremap [q :cp<CR>
+noremap ]Q :cnew<CR>
+noremap [Q :cold<CR>
 
-noremap <Leader>cl :lcl<cr>
-noremap ]l :ln<cr>
-noremap [l :lp<cr>
+noremap <Leader>cl :lcl<CR>
+noremap ]l :ln<CR>
+noremap [l :lp<CR>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
 
 " buffer nav, fzf
 nnoremap <Leader><Space> <C-^>
-nmap <Leader>, :Buffers<cr>
-nmap <Leader>f :GFiles<cr>
-nmap <Leader>F :Files<cr>
-nmap <Leader>g :Find<cr>
-nmap <Leader>t :BTags<cr>
-nmap <Leader>T :Tags<cr>
-nmap <Leader>C :Colors<cr>
+nmap <Leader>, :Buffers<CR>
+nmap <Leader>f :GFiles<CR>
+nmap <Leader>F :Files<CR>
+nmap <Leader>g :Find<CR>
+nmap <Leader>t :BTags<CR>
+nmap <Leader>T :Tags<CR>
+nmap <Leader>C :Colors<CR>
 
 " mkdir dir(s) that contains the file in the current buffer
-nnoremap <Leader>MD :!mkdir -p %:p:h<cr>
+nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
 
 " encodings
 
 " URL encode/decode selection
-vnoremap <Leader>eu :!python -c 'import sys,urllib;print(urllib.quote(sys.stdin.read().strip()))'<cr>
-vnoremap <Leader>eU :!python -c 'import sys,urllib;print(urllib.unquote(sys.stdin.read().strip()))'<cr>
+vnoremap <Leader>eu :!python -c 'import sys,urllib;print(urllib.quote(sys.stdin.read().strip()))'<CR>
+vnoremap <Leader>eU :!python -c 'import sys,urllib;print(urllib.unquote(sys.stdin.read().strip()))'<CR>
 " HTML encode/decode selection
-vnoremap <Leader>eh :!python -c 'import sys,html;print(html.escape(sys.stdin.read().strip()))'<cr>
-vnoremap <Leader>eH :!python -c 'import sys,html;print(html.unescape(sys.stdin.read().strip()))'<cr>
+vnoremap <Leader>eh :!python -c 'import sys,html;print(html.escape(sys.stdin.read().strip()))'<CR>
+vnoremap <Leader>eH :!python -c 'import sys,html;print(html.unescape(sys.stdin.read().strip()))'<CR>
 " JSON formating: jq is fast and leaves key order, py is slower and sorts the keys
 " underscore is compact and has lots of options: https://github.com/ddopson/underscore-cli
-vnoremap <Leader>ejq :!jq '.'<cr>
-vnoremap <Leader>ejr :!jq -r '.'<cr>
-vnoremap <Leader>ejp :!python -mjson.tool<cr>
-vnoremap <Leader>eju :!underscore print<cr>
+vnoremap <Leader>ejq :!jq '.'<CR>
+vnoremap <Leader>ejr :!jq -r '.'<CR>
+vnoremap <Leader>ejp :!python -mjson.tool<CR>
+vnoremap <Leader>eju :!underscore print<CR>
 " XML formatting:
-vnoremap <Leader>ex :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<cr>
+vnoremap <Leader>ex :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<CR>
 
 " Insert Abbreviations
 iabbrev <buffer> :mdash: —
@@ -338,7 +338,7 @@ iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 function! FocusLine()
 	let oldscrolloff=&scrolloff
 	set scrolloff=0
-	execute 'keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<cr>'
+	execute 'keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<CR>'
 	let &scrolloff=oldscrolloff
 endfunction
 
@@ -349,26 +349,18 @@ hi CursorLine guibg=NONE ctermbg=NONE
 
 if has('termguicolors') || has('gui_running')
 	let g:PulseColorList=['#ff0000','#00ff00','#0000ff','#ff0000']
-	"let g:PulseColorList=['#2a2a2a','#333333','#3a3a3a','#444444','#4a4a4a' ]
 	let g:PulseColorattr='guibg'
 else
 	let g:PulseColorList=['160','40','123','160']
-	"let g:PulseColorList=['233','234','235','236','237']
 	let g:PulseColorattr='ctermbg'
 endif
-
 function! PulseCursorLine()
 	set cursorline
 	for pulse in g:PulseColorList
 		execute 'hi CursorLine ' . g:PulseColorattr . '=' . pulse
 		redraw
-		sleep 12m
+		sleep 20m
 	endfor
-	"for pulse in reverse(copy(g:PulseColorList))
-	"	execute 'hi CursorLine ' . g:PulseColorattr . '=' . pulse
-	"	redraw
-	"	sleep 9m
-	"endfor
 	execute 'hi CursorLine ' . g:PulseColorattr . '=NONE'
 	set nocursorline
 endfunction
@@ -444,10 +436,10 @@ endfunction
 
 " delete the space after, so: abbrev<space> -> expansion
 function! MakeSpacelessIabbrev(from, to) " global
-	execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<cr>"
+	execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
 endfunction
 function! MakeSpacelessBufferIabbrev(from, to) " buffer local
-	execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<cr>"
+	execute "iabbrev <silent> <buffer> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
 endfunction
 
 
@@ -475,17 +467,12 @@ inoremap <C-]> <C-x><C-]>
 imap <C-l> <Plug>(fzf-complete-line)
 
 " windows movements
-nmap <silent> <C-h> :wincmd h<cr>
-nmap <silent> <C-l> :wincmd l<cr>
-nmap <silent> <C-j> :wincmd j<cr>
-nmap <silent> <C-k> :wincmd k<cr>
-nnoremap <Leader>l :call popup_clear()<cr>:redraw!<cr>
-
-" supertab
-let g:SuperTabDefaultCompletionType='context'
-let g:SuperTabMappingForward='<C-n>'
-let g:SuperTabMappingBackward='<C-p>'
-let g:SuperTabClosePreviewOnPopupClose=1
+nnoremap <silent> <Space> :call PulseCursorLine()<CR>
+nmap <silent> <C-h> :wincmd h<CR>
+nmap <silent> <C-l> :wincmd l<CR>
+nmap <silent> <C-j> :wincmd j<CR>
+nmap <silent> <C-k> :wincmd k<CR>
+nnoremap <silent> <C-l> :call popup_clear()<CR>:redraw!<CR>
 
 " fzf
 set rtp+=~/bin/.fzf/bin
@@ -498,7 +485,7 @@ let g:ackhighlight=1
 
 nnoremap <Leader>G :Ack!<Space>""<left>
 xnoremap <Leader>G y:Ack!<Space>"<C-r>""
-xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<cr>
+xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<CR>
 
 "netrw
 " The directory for bookmarks and history (.netrwbook, .netrwhist)
@@ -506,7 +493,7 @@ let g:netrw_home='$HOME/.tmp'
 let g:netrw_list_hide='\(^\|\s\s\)\zs\.\S\+'
 
 " Kwbd
-nmap <Leader>Q :up<cr><Plug>Kwbd
+nmap <Leader>Q :up<CR><Plug>Kwbd
 
 " `%%` is (command mode) abbrev for current directory
 cabbr <expr> %% expand('%:p:h')
@@ -555,9 +542,9 @@ let g:ale_kotlin_languageserver_executable='kotlin-language-server'
 set omnifunc=ale#completion#OmniFunc
 
 " https://www.vimfromscratch.com/articles/vim-and-language-server-protocol/
-nmap gd :ALEGoToDefinition<cr>
-nmap gr :ALEFindReferences<cr>
-nmap K :ALEHover<cr>
+nmap gd :ALEGoToDefinition<CR>
+nmap gr :ALEFindReferences<CR>
+nmap K :ALEHover<CR>
 
 " mucomplete
 
@@ -647,13 +634,13 @@ augroup ft_python
 	let g:SimpylFold_fold_docstring=1
 	let g:SimpylFold_fold_import=1
 
-	au FileType python nnoremap <localleader>e :up<cr>:Clam python %:p<cr>
-	au FileType python nnoremap <localleader>E :up<cr>:Clam python <C-R>=expand("%:p")<cr>
+	au FileType python nnoremap <localleader>e :up<CR>:Clam python %:p<CR>
+	au FileType python nnoremap <localleader>E :up<CR>:Clam python <C-R>=expand("%:p")<CR>
 
 	" yapf doesn't work w/ gq generally (only formats complete blocks)
 	let g:yapf_style="pep8"
-	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<cr>
-	au FileType python vnoremap <buffer> <localleader>f :!yapf<cr>
+	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<CR>
+	au FileType python vnoremap <buffer> <localleader>f :!yapf<CR>
 
 	au FileType python call MakeSpacelessBufferIabbrev(':pr:', 'print(f">>> {}")<left><left><left>')
 augroup END
@@ -666,9 +653,9 @@ augroup END
 augroup ft_go
 	au!
 	au FileType go setlocal foldmethod=syntax
-	au FileType go nnoremap <buffer> <silent> M :GoDoc<cr>
+	au FileType go nnoremap <buffer> <silent> M :GoDoc<CR>
 	" this language is incredible
-	au FileType go iabbrev <buffer> ernil if err != nil {<cr>return nil, err<esc>jA
+	au FileType go iabbrev <buffer> ernil if err != nil {<CR>return nil, err<esc>jA
 	" }
 augroup END
 
@@ -685,18 +672,18 @@ augroup ft_postgres
 	au FileType pgsql setl formatprg=pg_format\ -
 
 	" send to tmux with localleader e
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<cr>vip"ry:call SendToTmux(@r)<cr>:call winrestview(psql_tslime_view)<cr>
+	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<CR>vip"ry:call SendToTmux(@r)<CR>:call winrestview(psql_tslime_view)<CR>
 
 	" kill pager with q
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>q :call SendToTmuxRaw("q")<cr>
+	"au FileType pgsql nnoremap <buffer> <silent> <localleader>q :call SendToTmuxRaw("q")<CR>
 augroup END
 
 augroup ft_html
 	au!
 	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html nnoremap <buffer> <localleader>p :up<cr>:!open %<cr>
+	au Filetype html nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
 	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-	au Filetype html.mustache nnoremap <buffer> <localleader>p :up<cr>:!open %<cr>
+	au Filetype html.mustache nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
 augroup END
 
 augroup ft_markdown
@@ -708,11 +695,11 @@ augroup ft_markdown
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
 	if $SESSION_TYPE == 'remote/ssh'
-		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:silent !gfm % >~/public_html/tmp.md.html<cr>
-			\ :silent redraw!<cr>
-			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<cr>
+		au Filetype markdown nnoremap <buffer> <localleader>p :up<CR>:silent !gfm % >~/public_html/tmp.md.html<CR>
+			\ :silent redraw!<CR>
+			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<CR>
 	elseif g:os == 'Darwin'
-		au Filetype markdown nnoremap <buffer> <localleader>p :up<cr>:!gfm % \|bcat<cr>
+		au Filetype markdown nnoremap <buffer> <localleader>p :up<CR>:!gfm % \|bcat<CR>
 	endif
 augroup END
 
@@ -781,11 +768,11 @@ augroup ft_clojure
 
 	" Paredit
 	au FileType clojure call EnableParedit()
-	au FileType clojure nnoremap <buffer> <localleader>( :call PareditToggle()<cr>
+	au FileType clojure nnoremap <buffer> <localleader>( :call PareditToggle()<CR>
 	" )
 
 	" Duplicate
-	au FileType clojure nnoremap <buffer> [] :call DuplicateLispForm()<cr>
+	au FileType clojure nnoremap <buffer> [] :call DuplicateLispForm()<CR>
 
 	" Indent top-level form.
 	au FileType clojure nmap <buffer> gi mz99[(v%='z
@@ -806,22 +793,22 @@ function! EnableParedit()
 	nunmap <buffer> <Leader>S
 
 	" Oh my god will you fuck off already
-	" nnoremap <buffer> dp :diffput<cr>
-	" nnoremap <buffer> do :diffobtain<cr>
+	" nnoremap <buffer> dp :diffput<CR>
+	" nnoremap <buffer> do :diffobtain<CR>
 
 	" Eat shit
 	nunmap <buffer> [[
 	nunmap <buffer> ]]
 
 	" Better mappings
-	noremap <buffer> () :<c-u>call PareditWrap('(', ')')<cr>
-	noremap <buffer> )( :<c-u>call PareditSplice()<cr>
-	noremap <buffer> (( :<c-u>call PareditMoveLeft()<cr>
-	noremap <buffer> )) :<c-u>call PareditMoveRight()<cr>
-	noremap <buffer> (j :<c-u>call PareditJoin()<cr>
-	noremap <buffer> (s :<c-u>call PareditSplit()<cr>
-	noremap <buffer> )j :<c-u>call PareditJoin()<cr>
-	noremap <buffer> )s :<c-u>call PareditSplit()<cr>
+	noremap <buffer> () :<c-u>call PareditWrap('(', ')')<CR>
+	noremap <buffer> )( :<c-u>call PareditSplice()<CR>
+	noremap <buffer> (( :<c-u>call PareditMoveLeft()<CR>
+	noremap <buffer> )) :<c-u>call PareditMoveRight()<CR>
+	noremap <buffer> (j :<c-u>call PareditJoin()<CR>
+	noremap <buffer> (s :<c-u>call PareditSplit()<CR>
+	noremap <buffer> )j :<c-u>call PareditJoin()<CR>
+	noremap <buffer> )s :<c-u>call PareditSplit()<CR>
 	" ))
 endfunction
 
@@ -953,11 +940,12 @@ augroup END
 " -- set the initial color/background --
 set background=light
 " override for console in ~/.vimrc: if !has('gui_running') ..
-color selenized
+color PaperColor
 
 " better diff colorscheme
 if &diff
-	set background=dark | colorscheme gruvbox
+	"set background=dark | colorscheme gruvbox
+	set background=dark
 endif
 
 if has('transparency')
