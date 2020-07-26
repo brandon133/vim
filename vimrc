@@ -229,8 +229,6 @@ nnoremap zG 2zg
 " display the number of matches for the last search
 nmap <Leader>/ :%s:<C-R>/::gn<CR>
 
-nnoremap <Leader>L :call FocusLine()<CR>
-
 " half/double spaces, clear trailing spaces
 noremap <Leader>W1 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))/2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
 noremap <Leader>W2 mz:%s;^\(\s\+\);\=repeat('	', len(submatch(0))*2);<CR>:%s/\s\+$//<CR>:let @/=''<CR>`z
@@ -467,12 +465,15 @@ inoremap <C-]> <C-x><C-]>
 imap <C-l> <Plug>(fzf-complete-line)
 
 " windows movements
-nnoremap <silent> <Space> :call PulseCursorLine()<CR>
 nmap <silent> <C-h> :wincmd h<CR>
 nmap <silent> <C-l> :wincmd l<CR>
 nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
-nnoremap <silent> <C-l> :call popup_clear()<CR>:redraw!<CR>
+
+" windows redraw
+nnoremap <silent> <Space> :call PulseCursorLine()<CR>
+nnoremap <Leader>l :call popup_clear()<CR>:redraw!<CR>
+
 
 " fzf
 set rtp+=~/bin/.fzf/bin
