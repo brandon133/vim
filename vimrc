@@ -180,26 +180,7 @@ nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay
 au VimResized * :wincmd =
 
 " folding ambilvalence
-set foldlevelstart=1
-"set foldtext=MyFoldText()
-" recursively open whatever fold we're in
-nnoremap zO zczO
-
-function! MyFoldText()
-	let line=getline(v:foldstart)
-
-	let nucolwidth=&fdc + &number * &numberwidth
-	let windowwidth=winwidth(0) - nucolwidth - 3
-	let foldedlinecount=v:foldend - v:foldstart
-
-	" expand tabs into spaces
-	let onetab=strpart('          ', 0, &tabstop)
-	let line=substitute(line, '\t', onetab, 'g')
-
-	let line=strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-	let fillcharcount=windowwidth - len(line) - len(foldedlinecount)
-	return line . '…' . repeat(' ',fillcharcount) . foldedlinecount . '…' . ' '
-endfunction
+"set foldlevelstart=1
 
 
 " mappings ---------------------------------------------------------------------
@@ -217,6 +198,9 @@ nnoremap <Leader>P :set paste!<CR>
 " natural move
 nnoremap <down> gj
 nnoremap <up> gk
+
+" recursively open whatever fold we're in
+nnoremap zO zczO
 
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
@@ -249,8 +233,6 @@ inoremap <C-u> <Esc>mzgUiw`za
 " panic
 nnoremap <F9> mzggg?G`z
 
-command! RemoveFancyCharacters :call RemoveFancyCharacters()
-
 " show syntax group(s)
 nmap <Leader>ss :call <SID>SynStack()<CR>
 " show highlight group(s)
@@ -270,8 +252,6 @@ nnoremap <silent> <Leader>h6 :call HiInterestingWord(6)<CR>
 " listchars
 nnoremap <Leader>I :set listchars+=tab:⋮\ <CR>
 nnoremap <Leader>i :set listchars-=tab:⋮\ <CR>
-"nnoremap <Leader>I :set listchars+=tab:▸‧<CR>
-"nnoremap <Leader>i :set listchars-=tab:▸‧<CR>
 
 " select (charwise) the contents of the current line, excluding indentation.
 nnoremap vv ^vg_
@@ -301,7 +281,6 @@ nmap <Leader>F :Files<CR>
 nmap <Leader>g :Find<CR>
 nmap <Leader>t :BTags<CR>
 nmap <Leader>T :Tags<CR>
-nmap <Leader>C :Colors<CR>
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
@@ -330,39 +309,6 @@ iabbrev <buffer> :shrug: ¯\_(ツ)_/¯
 
 " functions --------------------------------------------------------------------
 
-" Focus/pulse the current line wiping out z mark, moves line 25 above center.
-" Closes all folds and opens the folds containing the current line.
-
-function! FocusLine()
-	let oldscrolloff=&scrolloff
-	set scrolloff=0
-	execute 'keepjumps normal! mzzMzvzt25\<c-y>`z:call PulseCursorLine()\<CR>'
-	let &scrolloff=oldscrolloff
-endfunction
-
-" Pulse cursor line
-" https://github.com/JessicaKMcIntosh/Vim/blob/master/plugin/pulse.vim
-
-hi CursorLine guibg=NONE ctermbg=NONE
-
-if has('termguicolors') || has('gui_running')
-	let g:PulseColorList=['#ff0000','#00ff00','#0000ff','#ff0000']
-	let g:PulseColorattr='guibg'
-else
-	let g:PulseColorList=['160','40','123','160']
-	let g:PulseColorattr='ctermbg'
-endif
-function! PulseCursorLine()
-	set cursorline
-	for pulse in g:PulseColorList
-		execute 'hi CursorLine ' . g:PulseColorattr . '=' . pulse
-		redraw
-		sleep 20m
-	endfor
-	execute 'hi CursorLine ' . g:PulseColorattr . '=NONE'
-	set nocursorline
-endfunction
-
 function! <SID>SynStack()
 	echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
 endfunc
@@ -378,6 +324,7 @@ function! RemoveFancyCharacters()
 	let typo["…']='...'
 	:exe ":%s/".join(keys(typo), '\|').'/\=typo[submatch(0)]/ge'
 endfunction
+command! RemoveFancyCharacters :call RemoveFancyCharacters()
 
 " Highlight words temporarily
 " http://vim.wikia.com/wiki/Highlight_multiple_words
@@ -464,6 +411,13 @@ inoremap <C-]> <C-x><C-]>
 " http://tilvim.com/2016/01/06/fzf.html
 imap <C-l> <Plug>(fzf-complete-line)
 
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END
+"nnoremap <Leader>c :set cursorline! cursorcolumn!<CR>
+
 " windows movements
 nmap <silent> <C-h> :wincmd h<CR>
 nmap <silent> <C-l> :wincmd l<CR>
@@ -471,7 +425,6 @@ nmap <silent> <C-j> :wincmd j<CR>
 nmap <silent> <C-k> :wincmd k<CR>
 
 " windows redraw
-nnoremap <silent> <Space> :call PulseCursorLine()<CR>
 nnoremap <Leader>l :call popup_clear()<CR>:redraw!<CR>
 
 
@@ -523,7 +476,6 @@ let g:dbext_default_profile_localhost="host=localhost:port=5432:user=$USER"
 au BufNewFile,BufRead .git/index setlocal nolist
 
 " polyglot
-
 let g:polyglot_disabled=[]
 
 " ALE
@@ -548,6 +500,11 @@ nmap gr :ALEFindReferences<CR>
 nmap K :ALEHover<CR>
 
 " mucomplete
+" see: help ft-syntax-omni
+autocmd Filetype *
+	\ if &omnifunc == "" |
+	\	setlocal omnifunc=syntaxcomplete#Complete |
+	\ endif
 
 
 " filetype/plugins -------------------------------------------------------------
@@ -695,12 +652,12 @@ augroup ft_markdown
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
 
-	if $SESSION_TYPE == 'remote/ssh'
+	if g:os == 'Darwin'
+		au Filetype markdown nnoremap <buffer> <localleader>p :up<CR>:!gfm % \|bcat<CR>
+	else
 		au Filetype markdown nnoremap <buffer> <localleader>p :up<CR>:silent !gfm % >~/public_html/tmp.md.html<CR>
 			\ :silent redraw!<CR>
 			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<CR>
-	elseif g:os == 'Darwin'
-		au Filetype markdown nnoremap <buffer> <localleader>p :up<CR>:!gfm % \|bcat<CR>
 	endif
 augroup END
 
@@ -851,9 +808,12 @@ set t_ZR=[23m
 hi Comment gui=italic cterm=italic
 hi SpellBad cterm=undercurl,italic guifg=#d33682
 
+" See http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
+
 " 117 matches lightline (also can use 24, 31)
 autocmd InsertEnter * hi ColorColumn ctermbg=117 guibg=#87dfff
-autocmd InsertLeave * hi ColorColumn ctermbg=7 guibg=#eee8d5
+" for dark bg, use 236
+autocmd InsertLeave * hi ColorColumn ctermbg=254 guibg=#eee8d5
 
 " gui options
 set guicursor=n-c:block-Cursor-blinkon0
@@ -873,7 +833,7 @@ let g:nord_italic=1
 let g:PaperColor_Theme_Options = {
 	\ 'theme': {
 	\   'default': {
-	\     'transparent_background': 0,
+	\     'transparent_background': 1,
 	\     'allow_bold': 1,
 	\     'allow_italic': 1
 	\   },
@@ -884,25 +844,6 @@ let g:PaperColor_Theme_Options = {
 	\   }
 	\ }
 \ }
-
-let g:solarized_contrast='normal' " normal/high/low
-let g:solarized_visibility='low'  " normal/high/low
-
-function! _hiSolarized8()
-	" for terminal.app, use https://github.com/tomislav/osx-terminal.app-colors-solarized
-	hi! link SignColumn LineNr
-	hi Cursor guibg=#f92672
-	hi Search guifg=#f0c674
-	if &background == 'light'
-		hi SpecialKey ctermfg=6 guifg=#ded8b5
-		hi NonText ctermfg=178 guifg=#ffd885
-		hi WarningMsg ctermbg=7 guibg=#eee8d5
-	else
-		hi SpecialKey ctermfg=10 guifg=#586e75
-		hi NonText ctermfg=10 guifg=#4996a2
-		hi SignColumn ctermbg=0 guibg=#073642
-	endif
-endfunction
 
 function! _hiSelenized()
 	hi! link SignColumn LineNr
@@ -920,7 +861,6 @@ endfunction
 " NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
 augroup my_colors
 	autocmd!
-	autocmd ColorScheme solarized8 call _hiSolarized8()
 	autocmd ColorScheme selenized call _hiSelenized()
 
 	autocmd ColorScheme nord
@@ -975,14 +915,3 @@ endif
 " DECSCUSR 1/2 (block), 3/4 (underline), 5/6 (bar) [blinking/steady]
 let &t_SI="\e[5 q"
 let &t_EI="\e[2 q"
-
-" http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
-function! CtermColors()
-	let num=255
-	while num >= 0
-		exec 'hi col_'.num.' ctermbg='.num.' ctermfg=white'
-		exec 'syn match col_'.num.' "ctermbg='.num.':...." containedIn=ALL'
-		call append(0, 'cterm='.num.':....')
-		let num=num - 1
-	endwhile
-endfunction

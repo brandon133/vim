@@ -91,10 +91,8 @@ if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)"
 		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
 		echo "***   cd ${0%/*}/pack/plugins-color-start, and run:"
 		echo "    del selenized-vim"
-		echo "    del vim-colors-solarized"
 		echo "    del tomorrow-theme-vim"
 		echo "    mklink /D selenized-vim .\\selenized\\editors\\vim"
-		echo "    mklink /D vim-colors-solarized .\\solarized\\vim-colors-solarized"
 		echo "    mklink /D tomorrow-theme-vim .\\tomorrow-theme\\vim"
 	}
 # on other platforms, these are committed:
