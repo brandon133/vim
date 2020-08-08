@@ -87,7 +87,7 @@ fi
 # check links for colors
 pushd pack/plugins-color/start >/dev/null
 if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)" == *Microsoft ]]; then
-	[ -L "tomorrow-theme-vim" ] && [ -L "vim-colors-solarized" ] || {
+	[ -L "tomorrow-theme-vim" ] && [ -L "selenized-vim" ] || {
 		echo "*** MANUAL STEP REQUIRED (for Windows), in CMD Administrator mode,"
 		echo "***   cd ${0%/*}/pack/plugins-color-start, and run:"
 		echo "    del selenized-vim"
@@ -98,7 +98,6 @@ if [[ -f "/proc/sys/kernel/osrelease" ]] && [[ "$(< /proc/sys/kernel/osrelease)"
 # on other platforms, these are committed:
 # else
 # [ -L "selenized-vim" ] || ln -s ./selenized/editors/vim selenized-vim
-# [ -L "vim-colors-solarized" ] || ln -s ./solarized/vim-colors-solarized vim-colors-solarized
 # [ -L "tomorrow-theme-vim" ] || ln -s ./tomorrow-theme/vim tomorrow-theme-vim
 fi
 popd >/dev/null
