@@ -278,9 +278,10 @@ nnoremap <Leader><Space> <C-^>
 nmap <Leader>, :Buffers<CR>
 nmap <Leader>f :GFiles<CR>
 nmap <Leader>F :Files<CR>
-nmap <Leader>g :Find<CR>
+nmap <Leader>g :Rg<CR>
 nmap <Leader>t :BTags<CR>
 nmap <Leader>T :Tags<CR>
+nmap <Leader>L :Lines<CR>
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
@@ -401,6 +402,19 @@ function! DiffLineWithNext()
 endfunction
 
 
+" https://stackoverflow.com/a/5519588
+function! DiffLineWithNext()
+    let f1=tempname()
+    let f2=tempname()
+
+    exec ".write " . f1
+    exec ".+1write " . f2
+
+    exec "tabedit " . f1
+    exec "vert diffsplit " . f2
+endfunction
+
+
 " settings/plugins -------------------------------------------------------------
 
 set complete=.,w,b,u,t,i
@@ -483,13 +497,6 @@ let g:polyglot_disabled=[]
 let g:ale_sign_error='▶'
 let g:ale_sign_warning='▷'
 let g:ale_echo_msg_format='[%linter%] %s'
-
-" disable kotlinc
-let g:ale_linters={
-	\ 'kotlin': ['ktlint', 'languageserver']
-	\ }
-
-let g:ale_kotlin_languageserver_executable='kotlin-language-server'
 
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
@@ -822,7 +829,7 @@ set guicursor+=i-ci:ver20
 " default windows (new term): n-v-c:block-Cursor/lCursor,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 "set guioptions=e
 " default windows (new term): aegimrLtT
-set guioptions=egm
+set guioptions=egmT
 
 " colorscheme settings
 let ayucolor='light'

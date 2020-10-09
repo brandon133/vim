@@ -17,6 +17,7 @@ plugins-ui/start/vimux
 plugins-syn/start/ale
 plugins-syn/start/auto-pairs
 plugins-syn/start/fastfold
+plugins-syn/start/gutentags
 plugins-syn/start/indent-sh
 plugins-syn/start/mucomplete
 plugins-syn/start/polyglot
