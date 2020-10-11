@@ -11,7 +11,8 @@ Your ~/.vimrc should look something like:
     scriptencoding utf-8
     set encoding=utf-8
     source ~/.vim/vimrc
-    " --- overrides:
+
+    " --- local:
 
 Then:
 
@@ -62,9 +63,7 @@ See links from above. Also:
 
 Try:
 
-      pbcopy, pbpaste
       lsof, fs_usage, dtrace, opensnoop
-      mdfind, mdls
       C-x C-e (edit current cmd in editor)
       telnet towel.blinkenlights.nl (watch starwars in ascii)
 
@@ -87,7 +86,7 @@ Try:
 
 *  Do you need ZWS? Try: &amp;#8203; &amp;#x200b; <200b>, utf-8 is e2808b
 
-* My font setup: I'm on a MBP 15" 2015+ and use SF Mono 10pt on Solarized Light.
+* My font setup: I'm on a ThinkPad Carbon X1 (g7) and use JetBrains Mono 10pt on PaperColor Light.
 * Try https://app.programmingfonts.org/ for fonts
 
 Windows doesn't seem to render digraphs and special fonts correctly unless you do:

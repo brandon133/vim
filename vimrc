@@ -89,7 +89,7 @@ set clipboard=unnamed
 set undofile
 set undodir=~/.tmp/undo/
 set undoreload=20000 " save the reload unless > #lines
-set textwidth=100
+set textwidth=99
 set backspace=indent,eol,start
 set formatoptions=cqrn1j
 set dictionary=/usr/share/dict/words
@@ -516,9 +516,6 @@ autocmd Filetype *
 
 " filetype/plugins -------------------------------------------------------------
 
-" only set (local) this if you want something different
-set textwidth=99
-
 " highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
@@ -594,11 +591,6 @@ augroup ft_python
 	au FileType python setlocal nowrap
 	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
-	" simpylfold
-	let g:SimpylFold_docstring_preview=0
-	let g:SimpylFold_fold_docstring=1
-	let g:SimpylFold_fold_import=1
-
 	au FileType python nnoremap <localleader>e :up<CR>:Clam python %:p<CR>
 	au FileType python nnoremap <localleader>E :up<CR>:Clam python <C-R>=expand("%:p")<CR>
 
@@ -606,8 +598,6 @@ augroup ft_python
 	let g:yapf_style="pep8"
 	"au FileType python nnoremap <buffer> <localleader>f ^vg_:!yapf<CR>
 	au FileType python vnoremap <buffer> <localleader>f :!yapf<CR>
-
-	au FileType python call MakeSpacelessBufferIabbrev(':pr:', 'print(f">>> {}")<left><left><left>')
 augroup END
 
 augroup ft_ipynb

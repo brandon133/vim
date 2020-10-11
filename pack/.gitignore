@@ -35,6 +35,7 @@ plugins-util/start/dirdiff
 plugins-util/start/fzf
 plugins-util/start/kwbd
 plugins-util/start/matchit
+plugins-util/start/rest-console
 ## ----- tpope in syn and util
 plugins-syn/start/commentary
 plugins-util/start/abolish
