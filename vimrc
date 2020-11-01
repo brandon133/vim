@@ -479,12 +479,8 @@ let g:clam_winpos='botright'
 nnoremap ! :Clam<Space>
 vnoremap ! :ClamVisual<Space>
 
-" dbext
-let g:dbext_default_prompt_for_parameters=0 " globally turn off input prompt
-let g:dbext_default_buffer_lines=27 " size of Result buffer window (default is 5)
-let g:dbext_default_history_file="$HOME/.tmp/.dbext_history"
-let g:dbext_default_type='PGSQL'
-let g:dbext_default_profile_localhost="host=localhost:port=5432:user=$USER"
+" sql
+let g:sql_type_default="pgsql"
 
 " fugitive
 au BufNewFile,BufRead .git/index setlocal nolist
@@ -540,11 +536,6 @@ function! DiffFoldLevel()
 		return '='
 	endif
 endfunction
-
-augroup ft_text
-	au!
-	au Filetype text setlocal spell
-augroup END
 
 augroup ft_vim
 	au!
@@ -616,15 +607,12 @@ augroup END
 
 augroup ft_postgres
 	au!
-	au BufNewFile,BufRead *.sql set filetype=pgsql
-	au BufNewFile,BufRead *.pgsql set filetype=pgsql
+	"au FileType pgsql setlocal foldmethod=marker
+	"au FileType pgsql setlocal foldmarker={{{,}}}
 
-	au FileType pgsql setlocal foldmethod=marker
-	au FileType pgsql setlocal foldmarker={{{,}}}
+	"au FileType pgsql setlocal commentstring=--\ %s comments=:--
 
-	au FileType pgsql setlocal commentstring=--\ %s comments=:--
-
-	au FileType pgsql setl formatprg=pg_format\ -
+	"au FileType pgsql setl formatprg=pg_format\ -
 
 	" send to tmux with localleader e
 	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<CR>vip"ry:call SendToTmux(@r)<CR>:call winrestview(psql_tslime_view)<CR>
@@ -819,7 +807,7 @@ set guicursor+=i-ci:ver20
 " default windows (new term): n-v-c:block-Cursor/lCursor,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor,sm:block-Cursor-blinkwait175-blinkoff150-blinkon175
 "set guioptions=e
 " default windows (new term): aegimrLtT
-set guioptions=egmT
+set guioptions=egm
 
 " colorscheme settings
 let ayucolor='light'
