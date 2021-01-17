@@ -1,11 +1,16 @@
 ## ----- colorscheme
+plugins-color/start/colors-pencil
 plugins-color/start/gruvbox
 plugins-color/start/iceberg
+plugins-color/start/kalisi
+plugins-color/start/lucius
 plugins-color/start/molokai
 plugins-color/start/nord
 plugins-color/start/oceanic-next
 plugins-color/start/papercolor-theme
 plugins-color/start/selenized
+plugins-color/start/seoul256
+plugins-color/start/solarized8
 plugins-color/start/summerfruit256
 plugins-color/start/tomorrow-theme
 plugins-color/start/xterm-color-table

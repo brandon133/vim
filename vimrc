@@ -282,6 +282,7 @@ nmap <Leader>g :Rg<CR>
 nmap <Leader>t :BTags<CR>
 nmap <Leader>T :Tags<CR>
 nmap <Leader>L :Lines<CR>
+nmap <Leader>C :Colors<CR>
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
@@ -866,12 +867,17 @@ augroup END
 " -- set the initial color/background --
 set background=light
 " override for console in ~/.vimrc: if !has('gui_running') ..
-color PaperColor
+if has('gui_running')
+	color PaperColor
+else
+	set notermguicolors " not available for mac terminal.app :(
+	color gruvbox
+	hi Normal ctermbg=NONE
+end
 
 " better diff colorscheme
 if &diff
-	"set background=dark | colorscheme gruvbox
-	set background=dark
+	colorscheme seoul256-light
 endif
 
 if has('transparency')
