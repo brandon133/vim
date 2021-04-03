@@ -89,7 +89,7 @@ set clipboard=unnamed
 set undofile
 set undodir=~/.tmp/undo/
 set undoreload=20000 " save the reload unless > #lines
-set textwidth=99
+set textwidth=90
 set backspace=indent,eol,start
 set formatoptions=cqrn1j
 set dictionary=/usr/share/dict/words
@@ -467,10 +467,8 @@ nmap <Leader>Q :up<CR><Plug>Kwbd
 " `%%` is (command mode) abbrev for current directory
 cabbr <expr> %% expand('%:p:h')
 
-" go
-let g:go_fmt_command='goimports'
-let g:go_fmt_experimental=1
-let g:go_doc_keywordprg_enabled=0
+" sneak
+let g:sneak#label = 1
 
 " clam
 let g:clam_autoreturn=1
@@ -561,7 +559,7 @@ augroup END
 
 augroup ft_kotlin
 	au!
-	au FileType kotlin set tw=120
+	au FileType kotlin set tw=100
 	au FileType kotlin set makeprg=gw\ build
 	au FileType kotlin set errorformat=
 		\ "%E%f:%l:%c: error: %m," .
@@ -578,9 +576,9 @@ augroup END
 
 augroup ft_python
 	au!
-	" pep8 settings (except tw=78)
+	" pep8 settings, black is line len of 88
 	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-	au FileType python setlocal nowrap
+	au FileType python setlocal tw=88 nowrap
 	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
 	au FileType python nnoremap <localleader>e :up<CR>:Clam python %:p<CR>
@@ -596,6 +594,11 @@ augroup ft_ipynb
 	au!
 	au FileType ipynb setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 augroup END
+
+" go
+let g:go_fmt_command='goimports'
+let g:go_fmt_experimental=1
+let g:go_doc_keywordprg_enabled=0
 
 augroup ft_go
 	au!
@@ -877,7 +880,7 @@ end
 
 " better diff colorscheme
 if &diff
-	colorscheme seoul256-light
+	colorscheme summerfruit256
 endif
 
 if has('transparency')
@@ -893,7 +896,9 @@ endif
 " -- set guifont per os
 if g:os == 'Darwin'
 	"set guifont=AnkaCoder-C87-r:h11
-	set guifont=SometypeMono-Regular:h11
+	"set guifont=SometypeMono-Regular:h11
+	"set guifont=JetBrains_Mono:h10
+	set guifont=SFMonto-Regular:h10
 elseif g:os == 'Linux'
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus

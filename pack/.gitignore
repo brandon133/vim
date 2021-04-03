@@ -17,6 +17,7 @@ plugins-color/start/xterm-color-table
 ## ----- ui
 plugins-ui/start/boxdraw
 plugins-ui/start/lightline
+plugins-ui/start/sneak
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale

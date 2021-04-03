@@ -112,3 +112,10 @@ popd >/dev/null
 if [ -n "$gt0" ]; then
 	vim -N -c 'silent! helptags ALL|q'
 fi
+
+## extra dirs
+
+if [ -d "polyglot" ]; then
+	echo "[polyglot]"
+	cd polyglot && git pull && cd ..
+fi
