@@ -491,7 +491,7 @@ let g:polyglot_disabled=[]
 
 let g:ale_sign_error='▶'
 let g:ale_sign_warning='▷'
-let g:ale_echo_msg_format='[%linter%] %s'
+let g:ale_echo_msg_format='[%linter%] %code: %%s'
 
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
@@ -898,7 +898,7 @@ if g:os == 'Darwin'
 	"set guifont=AnkaCoder-C87-r:h11
 	"set guifont=SometypeMono-Regular:h11
 	"set guifont=JetBrains_Mono:h10
-	set guifont=SFMonto-Regular:h10
+	set guifont=SFMono-Regular:h10
 elseif g:os == 'Linux'
 	set guifont=Monospace\ 9
 	set clipboard=unnamedplus
