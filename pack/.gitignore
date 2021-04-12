@@ -30,6 +30,7 @@ plugins-syn/start/prettier
 plugins-syn/start/pgsql
 plugins-syn/start/repl
 plugins-syn/start/snippets
+plugins-syn/start/terraform
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
 plugins-clj/start/eastwood
