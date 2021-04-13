@@ -1,0 +1,92 @@
+" UI settings
+"
+" --- font/gui opts
+
+if g:os == 'Darwin'
+	"set guifont=AnkaCoder-C87-r:h11
+	"set guifont=SometypeMono-Regular:h11
+	"set guifont=JetBrains_Mono:h10
+	set guifont=SFMono-Regular:h10
+elseif g:os == 'Linux'
+	set guifont=Monospace\ 9
+	set clipboard=unnamedplus
+elseif g:os == 'Windows'
+	set guifont=JetBrains_Mono:h9
+	set guioptions+=a
+endif
+
+" --- colors
+" color names: https://codeyarns.github.io/tech/2011-07-29-vim-chart-of-color-names.html
+
+" colorscheme settings
+let ayucolor='light'
+let g:monokai_term_italic=1
+let g:monokai_gui_italic=1
+let g:nord_italic=1
+
+let g:PaperColor_Theme_Options = {
+	\ 'theme': {
+	\   'default': {
+	\     'transparent_background': 0,
+	\     'allow_bold': 1,
+	\     'allow_italic': 1
+	\   },
+	\   'default.light': {
+	\     'override' : {
+	\       'linenumber_bg' : ['#E9E9E9', '15']
+	\     }
+	\   }
+	\ }
+\ }
+
+function! _hiSelenized()
+	hi! link SignColumn LineNr
+	hi! link AleWarning SpellRare
+	if &background == 'light'
+		hi ALEErrorSign guibg=#e9e4e0 guifg=Red
+		hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
+	else
+		hi ALEErrorSign guibg=#184956 guifg=Red
+		hi ALEWarningSign guibg=#184956 guifg=Blue
+	endif
+endfunction
+
+" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
+" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
+augroup my_colors
+	au!
+	au ColorScheme selenized call _hiSelenized()
+
+	au ColorScheme nord
+		\   hi LineNr guibg=#434c5e
+		\ | hi SignColumn guibg=#434c5e
+		\ | hi ALEErrorSign guibg=#434c5e guifg=Red
+		\ | hi ALEWarningSign guibg=#434c5e guifg=Blue
+	au ColorScheme iceberg
+		\   hi ErrorMsg guifg=#161821 guibg=#e27878
+		\ | hi SpecialKey guifg=#444b71
+		\ | hi NonText guifg=#89b8c2
+	au ColorScheme Tomorrow-Night-Blue
+		\   hi SpecialKey ctermfg=67 guifg=#7285b7
+		\ | hi NonText ctermfg=14 guifg=Yellow
+		\ | hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
+augroup END
+
+" set the initial color/background
+set background=light
+" override for console in ~/.vimrc: if !has('gui_running') ..
+if &diff
+	colorscheme summerfruit256
+	set nocursorline
+	" not sure why nocul doesn't work, just unset colors
+	hi CursorLine cterm=NONE ctermbg=NONE guibg=NONE
+elseif has('gui_running')
+	color PaperColor
+else
+	" console
+	set notermguicolors " not available for mac terminal.app :(
+	color gruvbox
+	hi Normal ctermbg=NONE
+endif
+
+" vim: filetype=vim

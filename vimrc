@@ -392,14 +392,14 @@ endfunction
 
 " https://stackoverflow.com/a/5519588
 function! DiffLineWithNext()
-    let f1=tempname()
-    let f2=tempname()
+	let f1=tempname()
+	let f2=tempname()
 
-    exec ".write " . f1
-    exec ".+1write " . f2
+	exec ".write " . f1
+	exec ".+1write " . f2
 
-    exec "tabedit " . f1
-    exec "vert diffsplit " . f2
+	exec "tabedit " . f1
+	exec "vert diffsplit " . f2
 endfunction
 
 
@@ -425,13 +425,6 @@ set completeopt=menuone,preview
 inoremap <C-]> <C-x><C-]>
 " http://tilvim.com/2016/01/06/fzf.html
 imap <C-l> <Plug>(fzf-complete-line)
-
-augroup CursorLine
-  au!
-  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  au WinLeave * setlocal nocursorline
-augroup END
-"nnoremap <Leader>c :set cursorline! cursorcolumn!<CR>
 
 " windows movements
 nmap <silent> <C-h> :wincmd h<CR>
@@ -503,7 +496,7 @@ nmap K :ALEHover<CR>
 
 " mucomplete
 " see: help ft-syntax-omni
-autocmd Filetype *
+au Filetype *
 	\ if &omnifunc == "" |
 	\	setlocal omnifunc=syntaxcomplete#Complete |
 	\ endif
@@ -516,8 +509,8 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 au Filetype qf setlocal number colorcolumn=0 nolist nowrap tw=0 scrolloff=1
 
-autocmd FileType diff setlocal foldmethod=expr
-autocmd FileType diff setlocal foldexpr=DiffFoldLevel()
+au FileType diff setlocal foldmethod=expr
+au FileType diff setlocal foldexpr=DiffFoldLevel()
 
 " https://github.com/sgeb/vim-diff-fold/ without the extra settings crap. Ie just the folding expr
 function! DiffFoldLevel()
@@ -760,8 +753,16 @@ function! EnableParedit()
 endfunction
 
 
-" ui/colorscheme ---------------------------------------------------------------
-" note, other config/plugins can change the colors
+" ui ---------------------------------------------------------------------------
+
+" try: `:h sign`
+
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END
+"nnoremap <Leader>c :set cursorline! cursorcolumn!<CR>
 
 " show trailing spaces in non-insert mode
 augroup trailing
@@ -771,18 +772,11 @@ augroup trailing
 augroup END
 
 " lightline
-
 let g:lightline={
 	\ 'colorscheme': 'myscheme',
 	\ 'separator': { 'left': '', 'right': '' },
 	\ 'subseparator': { 'left': '│', 'right': '⋮' }
 	\ }
-
-" ----- colors/highlights/cursors
-" color names: https://codeyarns.github.io/tech/2011-07-29-vim-chart-of-color-names.html
-" try: `:h sign`
-
-"set notermguicolors " not available for mac terminal.app :(
 
 " tmux, see :h xterm-true-color
 "let &t_8f="\<Esc>[38:2:%lu:%lu:%lum"
@@ -794,15 +788,20 @@ let g:lightline={
 set t_ZH=[3m
 set t_ZR=[23m
 
+" http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
+" DECSCUSR 1/2 (block), 3/4 (underline), 5/6 (bar) [blinking/steady]
+let &t_SI="\e[5 q"
+let &t_EI="\e[2 q"
+
 hi Comment gui=italic cterm=italic
 hi SpellBad cterm=undercurl,italic guifg=#d33682
 
 " See http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
 
 " 117 matches lightline (also can use 24, 31)
-autocmd InsertEnter * hi ColorColumn ctermbg=117 guibg=#87dfff
+au InsertEnter * hi ColorColumn ctermbg=117 guibg=#87dfff
 " for dark bg, use 236
-autocmd InsertLeave * hi ColorColumn ctermbg=254 guibg=#eee8d5
+au InsertLeave * hi ColorColumn ctermbg=254 guibg=#eee8d5
 
 " gui options
 set guicursor=n-c:block-Cursor-blinkon0
@@ -812,76 +811,6 @@ set guicursor+=i-ci:ver20
 "set guioptions=e
 " default windows (new term): aegimrLtT
 set guioptions=egm
-
-" colorscheme settings
-let ayucolor='light'
-let g:monokai_term_italic=1
-let g:monokai_gui_italic=1
-let g:nord_italic=1
-
-let g:PaperColor_Theme_Options = {
-	\ 'theme': {
-	\   'default': {
-	\     'transparent_background': 1,
-	\     'allow_bold': 1,
-	\     'allow_italic': 1
-	\   },
-	\   'default.light': {
-	\     'override' : {
-	\       'linenumber_bg' : ['#E9E9E9', '15']
-	\     }
-	\   }
-	\ }
-\ }
-
-function! _hiSelenized()
-	hi! link SignColumn LineNr
-	hi! link AleWarning SpellRare
-	if &background == 'light'
-		hi ALEErrorSign guibg=#e9e4e0 guifg=Red
-		hi ALEWarningSign guibg=#e9e4e0 guifg=Blue
-	else
-		hi ALEErrorSign guibg=#184956 guifg=Red
-		hi ALEWarningSign guibg=#184956 guifg=Blue
-	endif
-endfunction
-
-" https://gist.github.com/romainl/379904f91fa40533175dfaec4c833f2f
-" NonText for [eol, extends, precedes]; SpecialKey for [nbsp, tab, trail]
-augroup my_colors
-	autocmd!
-	autocmd ColorScheme selenized call _hiSelenized()
-
-	autocmd ColorScheme nord
-		\   hi LineNr guibg=#434c5e
-		\ | hi SignColumn guibg=#434c5e
-		\ | hi ALEErrorSign guibg=#434c5e guifg=Red
-		\ | hi ALEWarningSign guibg=#434c5e guifg=Blue
-	autocmd ColorScheme iceberg
-		\   hi ErrorMsg guifg=#161821 guibg=#e27878
-		\ | hi SpecialKey guifg=#444b71
-		\ | hi NonText guifg=#89b8c2
-	autocmd ColorScheme Tomorrow-Night-Blue
-		\   hi SpecialKey ctermfg=67 guifg=#7285b7
-		\ | hi NonText ctermfg=14 guifg=Yellow
-		\ | hi LineNr ctermbg=19 ctermfg=67 guifg=#7285b7
-augroup END
-
-" -- set the initial color/background --
-set background=light
-" override for console in ~/.vimrc: if !has('gui_running') ..
-if has('gui_running')
-	color PaperColor
-else
-	set notermguicolors " not available for mac terminal.app :(
-	color gruvbox
-	hi Normal ctermbg=NONE
-end
-
-" better diff colorscheme
-if &diff
-	colorscheme summerfruit256
-endif
 
 if has('transparency')
 	set blurradius=15
@@ -893,21 +822,4 @@ if has('gui_running')
 	set mouse=a
 endif
 
-" -- set guifont per os
-if g:os == 'Darwin'
-	"set guifont=AnkaCoder-C87-r:h11
-	"set guifont=SometypeMono-Regular:h11
-	"set guifont=JetBrains_Mono:h10
-	set guifont=SFMono-Regular:h10
-elseif g:os == 'Linux'
-	set guifont=Monospace\ 9
-	set clipboard=unnamedplus
-elseif g:os == 'Windows'
-	set guifont=JetBrains_Mono:h9
-	set guioptions+=a
-endif
-
-" http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
-" DECSCUSR 1/2 (block), 3/4 (underline), 5/6 (bar) [blinking/steady]
-let &t_SI="\e[5 q"
-let &t_EI="\e[2 q"
+source ~/.vim/vimrc.ui
