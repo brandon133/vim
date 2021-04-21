@@ -1,3 +1,6 @@
+Also, see: https://www.hillelwayne.com/post/intermediate-vim/
+Also, vimtips wiki: https://vim.fandom.com/wiki/Vim_Tips_Wiki
+
 22Sep20 : Last Update (Now in VIM Help Format :h helptags)
 ### These Tips are now being maintained at zzapper.co.uk/vimtips.html
 __BEGIN__

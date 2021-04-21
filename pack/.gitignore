@@ -18,11 +18,13 @@ plugins-color/start/xterm-color-table
 plugins-ui/start/boxdraw
 plugins-ui/start/lightline
 plugins-ui/start/sneak
+plugins-ui/start/startify
 plugins-ui/start/vimux
 ## ----- syntax/languages
 plugins-syn/start/ale
-plugins-syn/start/auto-pairs
+plugins-syn/start/commentary
 plugins-syn/start/fastfold
+plugins-syn/start/go
 plugins-syn/start/indent-sh
 plugins-syn/start/kotlin
 plugins-syn/start/mucomplete
@@ -36,19 +38,16 @@ plugins-clj/start/cljfmt
 plugins-clj/start/eastwood
 plugins-clj/start/fireplace
 ## ----- utilities, etc
+plugins-util/start/abolish
 plugins-util/start/ack
 plugins-util/start/clam
+plugins-util/start/dadbod
 plugins-util/start/dadbod-ui
 plugins-util/start/dirdiff
+plugins-util/start/fugitive
 plugins-util/start/fzf
 plugins-util/start/kwbd
 plugins-util/start/matchit
 plugins-util/start/rest-console
-## ----- tpope in syn and util
-plugins-syn/start/commentary
-plugins-util/start/abolish
-plugins-util/start/dadbod
-plugins-util/start/fugitive
-plugins-util/start/surround
 plugins-util/start/undotree
 plugins-util/start/vinegar

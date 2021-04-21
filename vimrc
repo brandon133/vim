@@ -419,7 +419,7 @@ endfunction
 " settings/plugins -------------------------------------------------------------
 
 set complete=.,w,b,u,t,i
-set completeopt=menuone,preview
+set completeopt=menuone,popup,noselect
 
 " complete-functions ins-completion
 inoremap <C-]> <C-x><C-]>
@@ -495,6 +495,8 @@ nmap gr :ALEFindReferences<CR>
 nmap K :ALEHover<CR>
 
 " mucomplete
+let g:mucomplete#enable_auto_at_startup=1
+let g:mucomplete#completion_delay=0
 " see: help ft-syntax-omni
 au Filetype *
 	\ if &omnifunc == "" |
