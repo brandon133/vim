@@ -461,7 +461,7 @@ nmap <Leader>Q :up<CR><Plug>Kwbd
 cabbr <expr> %% expand('%:p:h')
 
 " sneak
-let g:sneak#label = 1
+let g:sneak#label=1
 
 " clam
 let g:clam_autoreturn=1
@@ -495,13 +495,13 @@ nmap gr :ALEFindReferences<CR>
 nmap K :ALEHover<CR>
 
 " mucomplete
-let g:mucomplete#enable_auto_at_startup=1
+let g:mucomplete#enable_auto_at_startup=0
 let g:mucomplete#completion_delay=0
-" see: help ft-syntax-omni
-au Filetype *
-	\ if &omnifunc == "" |
-	\	setlocal omnifunc=syntaxcomplete#Complete |
-	\ endif
+nnoremap <Leader>m :MUcompleteAutoToggle<CR>
+" When the pop-up menu is closed by pressing <Enter>, sometimes Vim does not insert a new line
+inoremap <expr> <Cr> pumvisible() ? "<C-y><CR>" : "<CR>"
+" https://github.com/SpaceVim/SpaceVim/issues/1714
+let g:omni_sql_default_compl_type='syntax'
 
 
 " filetype/plugins -------------------------------------------------------------
@@ -533,7 +533,7 @@ endfunction
 
 augroup ft_vim
 	au!
-	au FileType vim inoremap <c-n> <c-x><c-n>
+	au FileType vim inoremap <C-n> <C-x><C-n>
 augroup END
 
 augroup ft_java
@@ -541,15 +541,15 @@ augroup ft_java
 	au FileType java setlocal foldmethod=marker
 	au FileType java setlocal foldmarker={{{,}}}
 
-	au FileType java call MakeSpacelessBufferIabbrev(':log:', 'private static final Logger LOG = LogManager.getLogger();<left><left>')
+	au FileType java call MakeSpacelessBufferIabbrev(':log:', 'private static final Logger LOG=LogManager.getLogger();<left><left>')
 	au FileType java call MakeSpacelessBufferIabbrev(':pr:', 'org.apache.logging.log4j.LogManager.getLogger(this.getClass()).info(">>> {}", );<left><left>')
 	au FileType java call MakeSpacelessBufferIabbrev(':slf:', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
 	au FileType java call MakeSpacelessBufferIabbrev(':sb:', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
 
 	" abbreviations
-	au FileType java iabbrev <buffer> :implog: import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
-	au FileType java iabbrev <buffer> :imppre: import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
-	au FileType java iabbrev <buffer> :tostr:  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
+	"au FileType java iabbrev <buffer> :implog: import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
+	"au FileType java iabbrev <buffer> :imppre: import static com.google.common.base.Preconditions.checkArgument;import static com.google.common.base.Preconditions.checkNotNull;import static com.google.common.base.Preconditions.checkState;<esc><down>
+	"au FileType java iabbrev <buffer> :tostr:  @Overridepublic String toString() {return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);<esc><down>
 augroup END
 
 augroup ft_kotlin
@@ -567,6 +567,7 @@ augroup END
 augroup ft_javascript
 	au!
 	au FileType javascript call MakeSpacelessBufferIabbrev(':pr:', 'console.log(`>>> ${}`);<left><left><left><left>')
+
 augroup END
 
 augroup ft_python
@@ -602,22 +603,6 @@ augroup ft_go
 	" this language is incredible
 	au FileType go iabbrev <buffer> ernil if err != nil {<CR>return nil, err<esc>jA
 	" }
-augroup END
-
-augroup ft_postgres
-	au!
-	"au FileType pgsql setlocal foldmethod=marker
-	"au FileType pgsql setlocal foldmarker={{{,}}}
-
-	"au FileType pgsql setlocal commentstring=--\ %s comments=:--
-
-	"au FileType pgsql setl formatprg=pg_format\ -
-
-	" send to tmux with localleader e
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>e :let psql_tslime_view=winsaveview()<CR>vip"ry:call SendToTmux(@r)<CR>:call winrestview(psql_tslime_view)<CR>
-
-	" kill pager with q
-	"au FileType pgsql nnoremap <buffer> <silent> <localleader>q :call SendToTmuxRaw("q")<CR>
 augroup END
 
 augroup ft_html
@@ -743,16 +728,22 @@ function! EnableParedit()
 	nunmap <buffer> ]]
 
 	" Better mappings
-	noremap <buffer> () :<c-u>call PareditWrap('(', ')')<CR>
-	noremap <buffer> )( :<c-u>call PareditSplice()<CR>
-	noremap <buffer> (( :<c-u>call PareditMoveLeft()<CR>
-	noremap <buffer> )) :<c-u>call PareditMoveRight()<CR>
-	noremap <buffer> (j :<c-u>call PareditJoin()<CR>
-	noremap <buffer> (s :<c-u>call PareditSplit()<CR>
-	noremap <buffer> )j :<c-u>call PareditJoin()<CR>
-	noremap <buffer> )s :<c-u>call PareditSplit()<CR>
+	noremap <buffer> () :<C-u>call PareditWrap('(', ')')<CR>
+	noremap <buffer> )( :<C-u>call PareditSplice()<CR>
+	noremap <buffer> (( :<C-u>call PareditMoveLeft()<CR>
+	noremap <buffer> )) :<C-u>call PareditMoveRight()<CR>
+	noremap <buffer> (j :<C-u>call PareditJoin()<CR>
+	noremap <buffer> (s :<C-u>call PareditSplit()<CR>
+	noremap <buffer> )j :<C-u>call PareditJoin()<CR>
+	noremap <buffer> )s :<C-u>call PareditSplit()<CR>
 	" ))
 endfunction
+
+" see: help ft-syntax-omni
+au Filetype *
+	\ if &omnifunc == "" |
+	\	setlocal omnifunc=syntaxcomplete#Complete |
+	\ endif
 
 
 " ui ---------------------------------------------------------------------------

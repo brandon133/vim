@@ -78,7 +78,6 @@ if [[ ${#notspec[@]} -gt 0 ]]; then
 	for dir in ${notspec[@]}; do
 		# these are committed
 		[ "$dir" == "pack/plugins-clj/start/paredit" ] && continue
-		[ "$dir" == "pack/plugins-util/start/dbext" ] && continue
 
 		echo "*** Pack plugin \`$dir\` not in gitignore , delete?"
 	done
