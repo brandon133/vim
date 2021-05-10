@@ -32,6 +32,7 @@ plugins-syn/start/prettier
 plugins-syn/start/pgsql
 plugins-syn/start/repl
 plugins-syn/start/snippets
+plugins-syn/start/splitjoin
 plugins-syn/start/terraform
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt

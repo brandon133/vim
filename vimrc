@@ -31,6 +31,7 @@ endif
 if !exists('g:VimUserDir')
 	let g:VimUserDir=split(&rtp, ',')[0]
 endif
+let $VIMHOME = g:VimUserDir
 
 " force py3, see https://robertbasic.com/blog/force-python-version-in-vim/
 if has('python3')
@@ -303,6 +304,7 @@ vnoremap <Leader>ejp :!python -mjson.tool<CR>
 vnoremap <Leader>eju :!underscore print<CR>
 " XML formatting:
 vnoremap <Leader>ex :!python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'<CR>
+" Python formatting
 
 " Insert Abbreviations
 iabbrev <buffer> :mdash: —
@@ -489,13 +491,18 @@ let g:ale_echo_msg_format='[%linter%] %code: %%s'
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
 
+let g:ale_linters={
+	\ 'terraform': ['tflint'],
+	\ 'python': ['flake8']
+	\ }
+
 " https://www.vimfromscratch.com/articles/vim-and-language-server-protocol/
 nmap gd :ALEGoToDefinition<CR>
 nmap gr :ALEFindReferences<CR>
 nmap K :ALEHover<CR>
 
 " mucomplete
-let g:mucomplete#enable_auto_at_startup=0
+let g:mucomplete#enable_auto_at_startup=1
 let g:mucomplete#completion_delay=0
 nnoremap <Leader>m :MUcompleteAutoToggle<CR>
 " When the pop-up menu is closed by pressing <Enter>, sometimes Vim does not insert a new line
@@ -815,4 +822,4 @@ if has('gui_running')
 	set mouse=a
 endif
 
-source ~/.vim/vimrc.ui
+source $VIMHOME/vimrc.ui
