@@ -1,4 +1,5 @@
 ## ----- colorscheme
+plugins-color/start/ayu
 plugins-color/start/colors-pencil
 plugins-color/start/gruvbox
 plugins-color/start/iceberg
@@ -25,15 +26,20 @@ plugins-syn/start/ale
 plugins-syn/start/commentary
 plugins-syn/start/fastfold
 plugins-syn/start/go
+plugins-syn/start/graphql
 plugins-syn/start/indent-sh
+plugins-syn/start/javascript
 plugins-syn/start/kotlin
 plugins-syn/start/mucomplete
-plugins-syn/start/prettier
 plugins-syn/start/pgsql
+plugins-syn/start/prettier
+plugins-syn/start/python-syntax
 plugins-syn/start/repl
 plugins-syn/start/snippets
 plugins-syn/start/splitjoin
 plugins-syn/start/terraform
+plugins-syn/start/vue
+plugins-syn/start/yats
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
 plugins-clj/start/eastwood

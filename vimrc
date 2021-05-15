@@ -93,7 +93,7 @@ set undoreload=20000 " save the reload unless > #lines
 set textwidth=90
 set backspace=indent,eol,start
 set formatoptions=cqrn1j
-set dictionary=/usr/share/dict/words
+"set dictionary=/usr/share/dict/words
 set showmatch
 set matchtime=3
 " 15 tabs and indenting
@@ -492,8 +492,8 @@ let g:ale_echo_msg_format='[%linter%] %code: %%s'
 set omnifunc=ale#completion#OmniFunc
 
 let g:ale_linters={
+	\ 'python': ['flake8'],
 	\ 'terraform': ['tflint'],
-	\ 'python': ['flake8']
 	\ }
 
 " https://www.vimfromscratch.com/articles/vim-and-language-server-protocol/
@@ -574,7 +574,20 @@ augroup END
 augroup ft_javascript
 	au!
 	au FileType javascript call MakeSpacelessBufferIabbrev(':pr:', 'console.log(`>>> ${}`);<left><left><left><left>')
+augroup END
 
+let g:vue_pre_processors = ['pug', 'scss']
+
+augroup ft_typescript
+	au!
+	au FileType typescript setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType typescript setlocal tw=80 nowrap
+augroup END
+
+augroup ft_vue
+	au!
+	au FileType vue setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType vue setlocal tw=80 nowrap
 augroup END
 
 augroup ft_python
@@ -635,6 +648,10 @@ augroup ft_markdown
 			\ :silent redraw!<CR>
 			\ :echom "Open http://".system('hostname')[:-2]."/~".$USER."/tmp.md.html"<CR>
 	endif
+augroup END
+
+augroup ft_text
+	set dictionary+=/usr/share/dict/words
 augroup END
 
 augroup ft_json

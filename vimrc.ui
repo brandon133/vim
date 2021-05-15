@@ -90,7 +90,8 @@ augroup END
 set background=light
 " override for console in ~/.vimrc: if !has('gui_running') ..
 if &diff
-	colorscheme summerfruit256
+	"colorscheme summerfruit256
+	colorscheme gruvbox
 	set nocursorline
 	" not sure why nocul doesn't work, just unset colors
 	hi CursorLine cterm=NONE ctermbg=NONE guibg=NONE
