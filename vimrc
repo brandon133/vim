@@ -274,16 +274,8 @@ noremap [l :lp<CR>
 
 " tags https://github.com/grassdog/dotfiles/blob/master/files/.ctags
 
-" buffer nav, fzf
+" buffer nav
 nnoremap <Leader><Space> <C-^>
-nmap <Leader>, :Buffers<CR>
-nmap <Leader>f :GFiles<CR>
-nmap <Leader>F :Files<CR>
-nmap <Leader>g :Rg<CR>
-nmap <Leader>t :BTags<CR>
-nmap <Leader>T :Tags<CR>
-nmap <Leader>L :Lines<CR>
-nmap <Leader>C :Colors<CR>
 
 " mkdir dir(s) that contains the file in the current buffer
 nnoremap <Leader>MD :!mkdir -p %:p:h<CR>
@@ -448,13 +440,19 @@ au Filetype *
 
 " fzf
 set rtp+=~/bin/.fzf/bin
+nmap <Leader>, :Buffers<CR>
+nmap <Leader>C :Colors<CR>
+nmap <Leader>f :GFiles<CR>
+nmap <Leader>F :Files<CR>
+nmap <Leader>B :Lines<CR>
+nmap <Leader>g :Rg<CR>
+nmap <Leader>T :Tags<CR>
 
 " ack
 let g:ackprg='rg --vimgrep --smart-case --no-heading'
 "let g:ackprg='ag --vimgrep'
 let g:ack_apply_qmappings=1
 let g:ackhighlight=1
-
 nnoremap <Leader>G :Ack!<Space>""<left>
 xnoremap <Leader>G y:Ack!<Space>"<C-r>""
 xnoremap <silent> <Leader>g y:Ack!<Space>"<C-r>"" -w<CR>
