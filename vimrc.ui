@@ -33,7 +33,8 @@ end
 " color names: https://codeyarns.github.io/tech/2011-07-29-vim-chart-of-color-names.html
 
 " colorscheme settings
-let ayucolor='light'
+let g:ayu_italic_comment = 1
+let g:ayu_sign_contrast = 1
 let g:monokai_term_italic=1
 let g:monokai_gui_italic=1
 let g:nord_italic=1

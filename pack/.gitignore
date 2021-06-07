@@ -30,7 +30,6 @@ plugins-syn/start/graphql
 plugins-syn/start/indent-sh
 plugins-syn/start/javascript
 plugins-syn/start/kotlin
-plugins-syn/start/mucomplete
 plugins-syn/start/pgsql
 plugins-syn/start/prettier
 plugins-syn/start/python-syntax
@@ -40,6 +39,7 @@ plugins-syn/start/splitjoin
 plugins-syn/start/terraform
 plugins-syn/start/vue
 plugins-syn/start/yats
+plugins-syn/start/YouCompleteMe
 ## ----- lisp/clojure
 plugins-clj/start/cljfmt
 plugins-clj/start/eastwood

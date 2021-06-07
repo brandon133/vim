@@ -75,18 +75,17 @@ set splitright
 set ttyfast
 set title
 "  9 using the mouse
-" 10 GUI
-" 11 printing
-" 12 messages and info
+" 10 printing
+" 11 messages and info
 " don't give |ins-completion-menu| messages
 set shortmess+=c
 set showcmd
 set noshowmode " lightline makes this redundant
 set ruler
 set visualbell
-" 13 selecting text
+" 12 selecting text
 set clipboard=unnamed
-" 14 editing text
+" 13 editing text
 set undofile
 set undodir=~/.tmp/undo/
 set undoreload=20000 " save the reload unless > #lines
@@ -96,35 +95,36 @@ set formatoptions=cqrn1j
 "set dictionary=/usr/share/dict/words
 set showmatch
 set matchtime=3
-" 15 tabs and indenting
+" 14 tabs and indenting
 set tabstop=8
 set shiftwidth=8
 set softtabstop=8
 set shiftround
 set noexpandtab
 set autoindent
-" 16 folding
+" 15 folding
 set foldmethod=marker
 set foldmarker={{{,}}}
-" 17 diff mode
-" 18 mapping
+" 16 diff mode
+" 17 mapping
 " time out on key codes but not mappings
 set notimeout
 set ttimeout
 set ttimeoutlen=10
-" 19 reading and writing files
+" 18 reading and writing files
 set modelines=2
 set backup
+set fileformat=unix
 set backupskip=/tmp/*,/private/tmp/*,~/.tmp/*
 set backupdir=~/.tmp/backup/
 set autowriteall
 set noautoread
-" 20 the swap file
+" 19 the swap file
 set directory=~/.tmp/swap/
 set swapfile
 " default (4000ms) is too long and noticeable
 set updatetime=1000
-" 21 command line editing
+" 20 command line editing
 set history=9999
 set wildmode=full
 set wildignore+=.hg,.git,.svn
@@ -136,11 +136,11 @@ set wildignore+=*.sw?
 set wildignore+=*.DS_Store
 set wildignore+=*.pyc
 set wildmenu
-" 22 executing external commands
-" 23 running make and jumping to errors
-" 24 language specific
-" 25 multi-byte characters
-" 26 various
+" 21 executing external commands
+" 22 running make and jumping to errors
+" 23 language specific
+" 24 multi-byte characters
+" 25 various
 set virtualedit+=block
 set gdefault
 set viminfo=%,'999,/99,:999
@@ -257,7 +257,7 @@ nnoremap <Leader>i :set listchars-=tab:⋮\ <CR>
 " select (charwise) the contents of the current line, excluding indentation.
 nnoremap vv ^vg_
 
-" custom copy/paste using tmp file
+" copy/paste using tmp file
 vmap <Leader>C :w! ~/.tmp/.pbuf<CR>
 nmap <Leader>V :r ~/.tmp/.pbuf<CR>
 
@@ -407,26 +407,18 @@ endfunction
 
 " https://stackoverflow.com/a/5519588
 function! DiffLineWithNext()
-    let f1=tempname()
-    let f2=tempname()
+	let f1=tempname()
+	let f2=tempname()
 
-    exec ".write " . f1
-    exec ".+1write " . f2
+	exec ".write " . f1
+	exec ".+1write " . f2
 
-    exec "tabedit " . f1
-    exec "vert diffsplit " . f2
+	exec "tabedit " . f1
+	exec "vert diffsplit " . f2
 endfunction
 
 
 " settings/plugins -------------------------------------------------------------
-
-set complete=.,w,b,u,t,i
-set completeopt=menuone,popup,noselect
-
-" complete-functions ins-completion
-inoremap <C-]> <C-x><C-]>
-" http://tilvim.com/2016/01/06/fzf.html
-imap <C-l> <Plug>(fzf-complete-line)
 
 " windows movements
 nmap <silent> <C-h> :wincmd h<CR>
@@ -437,6 +429,22 @@ nmap <silent> <C-k> :wincmd k<CR>
 " windows redraw
 nnoremap <Leader>l :call popup_clear()<CR>:redraw!<CR>
 
+" completions
+set complete=.,w,b,u,t,i
+set completeopt=menuone,popup,noselect
+
+" complete-functions ins-completion
+inoremap <C-]> <C-x><C-]>
+" http://tilvim.com/2015/01/06/fzf.html
+imap <C-l> <Plug>(fzf-complete-line)
+
+" ycm
+
+" see: help ft-syntax-omni
+au Filetype *
+	\ if &omnifunc == "" |
+	\	setlocal omnifunc=syntaxcomplete#Complete |
+	\ endif
 
 " fzf
 set rtp+=~/bin/.fzf/bin
@@ -501,15 +509,6 @@ nmap gd :ALEGoToDefinition<CR>
 nmap gr :ALEFindReferences<CR>
 nmap K :ALEHover<CR>
 
-" mucomplete
-let g:mucomplete#enable_auto_at_startup=1
-let g:mucomplete#completion_delay=0
-nnoremap <Leader>m :MUcompleteAutoToggle<CR>
-" When the pop-up menu is closed by pressing <Enter>, sometimes Vim does not insert a new line
-inoremap <expr> <Cr> pumvisible() ? "<C-y><CR>" : "<CR>"
-" https://github.com/SpaceVim/SpaceVim/issues/1714
-let g:omni_sql_default_compl_type='syntax'
-
 
 " filetype/plugins -------------------------------------------------------------
 
@@ -545,13 +544,9 @@ augroup END
 
 augroup ft_java
 	au!
+	au FileType java setlocal tabstop=8 softtabstop=4 shiftwidth=4 expandtab
 	au FileType java setlocal foldmethod=marker
 	au FileType java setlocal foldmarker={{{,}}}
-
-	au FileType java call MakeSpacelessBufferIabbrev(':log:', 'private static final Logger LOG=LogManager.getLogger();<left><left>')
-	au FileType java call MakeSpacelessBufferIabbrev(':pr:', 'org.apache.logging.log4j.LogManager.getLogger(this.getClass()).info(">>> {}", );<left><left>')
-	au FileType java call MakeSpacelessBufferIabbrev(':slf:', 'org.slf4j.LoggerFactory.getLogger(this.getClass()).info(">>> {}", );<left><left>')
-	au FileType java call MakeSpacelessBufferIabbrev(':sb:', 'org.apache.commons.lang3.builder.ReflectionToStringBuilder.toString()<left>')
 
 	" abbreviations
 	"au FileType java iabbrev <buffer> :implog: import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;<esc><down>
@@ -561,6 +556,7 @@ augroup END
 
 augroup ft_kotlin
 	au!
+	au FileType kotlin setlocal softtabstop=4 shiftwidth=4 expandtab
 	au FileType kotlin set tw=100
 	au FileType kotlin set makeprg=gw\ build
 	au FileType kotlin set errorformat=
@@ -569,31 +565,35 @@ augroup ft_kotlin
 		\ "%Eerror: %m," .
 		\ "%Wwarning: %m," .
 		\ "%Iinfo: %m,"
+
+	au FileType kotlin call MakeSpacelessBufferIabbrev('pr>', 'println(">>> ${}")<left><left><left>')
+
 augroup END
 
 augroup ft_javascript
 	au!
-	au FileType javascript call MakeSpacelessBufferIabbrev(':pr:', 'console.log(`>>> ${}`);<left><left><left><left>')
+	au FileType typescript setlocal softtabstop=2 shiftwidth=2 expandtab
+	au FileType typescript setlocal tw=80 nowrap
 augroup END
 
 let g:vue_pre_processors = ['pug', 'scss']
 
 augroup ft_typescript
 	au!
-	au FileType typescript setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType typescript setlocal softtabstop=2 shiftwidth=2 expandtab
 	au FileType typescript setlocal tw=80 nowrap
 augroup END
 
 augroup ft_vue
 	au!
-	au FileType vue setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType vue setlocal softtabstop=2 shiftwidth=2 expandtab
 	au FileType vue setlocal tw=80 nowrap
 augroup END
 
 augroup ft_python
 	au!
 	" pep8 settings, black is line len of 88
-	au FileType python setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+	au FileType python setlocal softtabstop=4 shiftwidth=4 expandtab
 	au FileType python setlocal tw=88 nowrap
 	"au FileType python setlocal define=^\s*\\(def\\\\|class\\)
 
@@ -608,7 +608,7 @@ augroup END
 
 augroup ft_ipynb
 	au!
-	au FileType ipynb setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+	au FileType ipynb setlocal softtabstop=4 shiftwidth=4 expandtab
 augroup END
 
 " go
@@ -627,16 +627,16 @@ augroup END
 
 augroup ft_html
 	au!
-	au FileType html setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType html setlocal softtabstop=2 shiftwidth=2 expandtab
 	au Filetype html nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
-	au FileType html.mustache setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType html.mustache setlocal softtabstop=2 shiftwidth=2 expandtab
 	au Filetype html.mustache nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
 augroup END
 
 augroup ft_markdown
 	au!
 	au Filetype markdown setlocal spell
-	au FileType markdown setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+	au FileType markdown setlocal softtabstop=4 shiftwidth=4 expandtab
 
 	" Linkify selected text inline to contents of pasteboard.
 	au Filetype markdown vnoremap <buffer> <localleader>l <esc>`>a]<esc>`<i[<esc>`>lla()<esc>"+P
@@ -656,14 +656,14 @@ augroup END
 
 augroup ft_json
 	au!
-	au FileType json setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType json setlocal softtabstop=2 shiftwidth=2 expandtab
 
 	au FileType json setlocal formatprg=jq\ '.'
 augroup END
 
 augroup ft_xml
 	au!
-	au FileType xml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType xml setlocal softtabstop=2 shiftwidth=2 expandtab
 
 	au FileType xml setlocal foldmethod=manual
 	" use <localleader>F to fold the current tag
@@ -674,7 +674,7 @@ augroup END
 
 augroup ft_yaml
 	au!
-	au FileType yaml setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+	au FileType yaml setlocal softtabstop=2 shiftwidth=2 expandtab
 augroup END
 
 augroup ft_muttrc
@@ -763,21 +763,15 @@ function! EnableParedit()
 	" ))
 endfunction
 
-" see: help ft-syntax-omni
-au Filetype *
-	\ if &omnifunc == "" |
-	\	setlocal omnifunc=syntaxcomplete#Complete |
-	\ endif
-
 
 " ui ---------------------------------------------------------------------------
 
 " try: `:h sign`
 
 augroup CursorLine
-  au!
-  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  au WinLeave * setlocal nocursorline
+	au!
+	au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+	au WinLeave * setlocal nocursorline
 augroup END
 "nnoremap <Leader>c :set cursorline! cursorcolumn!<CR>
 
