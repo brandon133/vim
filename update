@@ -38,6 +38,7 @@ for d in $(ls -d $packdir/plugins-*/start); do
 	#echo "cd \$(dirname \$0) && mkdir -p $n/start && cd $n/start" >>$gitall
 	for f in $(ls $d|sort -f); do # osx doesn't sort in same order as linux
 		subdir=$n/start/$f
+		subdir=$(echo $subdir|tr '[:upper:]' '[:lower:]')
 		gitdir="pack/$subdir"
 		[[ -d $gitdir ]] || continue
 		[ -L "$gitdir" ] && continue
