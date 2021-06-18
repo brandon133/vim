@@ -196,6 +196,26 @@ nnoremap <Leader>S :setlocal spell!<CR>
 nnoremap <Leader>N :setlocal number!<CR>
 nnoremap <Leader>P :set paste!<CR>
 
+" perl/python regexs
+nnoremap / /\v
+vnoremap / /\v
+" center next
+nnoremap n nzzzv
+nnoremap N Nzzzv
+" center changelist
+nnoremap g; g;zz
+nnoremap g, g,zz
+
+" line movement
+noremap H ^
+noremap L $
+vnoremap L g_
+" note in insert/command mode
+inoremap <C-a> <Esc>I
+inoremap <C-e> <Esc>A
+cnoremap <C-a> <home>
+cnoremap <C-e> <end>
+
 " natural move
 nnoremap <down> gj
 nnoremap <up> gk
