@@ -451,6 +451,16 @@ inoremap <C-]> <C-x><C-]>
 imap <C-l> <Plug>(fzf-complete-line)
 
 " ycm
+" ~/Library/Application Support/Code/User/globalStorage/fwcd.kotlin/langServerInstall/server/bin/kotlin-language-server
+let g:ycm_log_level='debug'
+let g:ycm_language_server=
+	\ [
+	\   {
+	\     'name': 'kotlin',
+	\     'cmdline': [ 'kotlin-language-server' ],
+	\     'filetypes': [ 'kotlin' ]
+	\   }
+	\ ]
 
 " see: help ft-syntax-omni
 au Filetype *
@@ -517,10 +527,19 @@ let g:ale_echo_msg_format='[%linter%] %code: %%s'
 " ALE provides an omni-completion function you can use for triggering completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
 
-let g:ale_linters={
-	\ 'python': ['flake8'],
-	\ 'terraform': ['tflint'],
+let g:ale_linters_ignore={
+	\ 'java': ['javac'],
+	\ 'kotlin': ['kotlinc'],
+	\ 'python': [''],
+	\ 'terraform': [''],
 	\ }
+let g:ale_kotlin_languageserver_executable='kotlin-language-server'
+
+" ktlint can be problematic, just check on save
+let g:ale_lint_on_save=1
+let g:ale_lint_on_text_changed=0
+let g:ale_lint_on_text_enter=0
+let g:ale_kotlin_ktlint_options='--verbose'
 
 " https://www.vimfromscratch.com/articles/vim-and-language-server-protocol/
 nmap gd :ALEGoToDefinition<CR>
@@ -562,7 +581,7 @@ augroup END
 
 augroup ft_java
 	au!
-	au FileType java setlocal tabstop=8 softtabstop=4 shiftwidth=4 expandtab
+	au FileType java setlocal softtabstop=4 shiftwidth=4 expandtab
 	au FileType java setlocal foldmethod=marker
 	au FileType java setlocal foldmarker={{{,}}}
 
@@ -649,6 +668,11 @@ augroup ft_html
 	au Filetype html nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
 	au FileType html.mustache setlocal softtabstop=2 shiftwidth=2 expandtab
 	au Filetype html.mustache nnoremap <buffer> <localleader>p :up<CR>:!open %<CR>
+augroup END
+
+augroup ft_make
+	au!
+	au FileType make setlocal softtabstop=8 shiftwidth=8 noexpandtab
 augroup END
 
 augroup ft_markdown
